@@ -1,6 +1,7 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import User from '../models/userModel.js';
 import ErrorResponse from '../utils/errorResponse.js';
+import generateToken from '../utils/generateToken.js';
 
 // @desc    Auth user and get token
 // @route   POST /api/users/login
@@ -20,23 +21,46 @@ const authUser = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid email or password'), 401);
   }
 
-  sendTokenResponse(user, 200, res);
+  generateToken(res, user._id);
+
+  res.status(200).json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
 });
 
 // @desc    Register user
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password, isAdmin } = req.body;
+  const { name, email, password } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    return next(new ErrorResponse('User already exists', 400));
+  }
 
   const user = await User.create({
     name,
     email,
     password,
-    isAdmin,
   });
 
-  res.status(200).json({ user });
+  if (user) {
+    generateToken(res, user._id);
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    res.status(400);
+    throw new Error('Invalid user data');
+  }
 });
 
 // @desc    Logout user / clear cookies
@@ -94,26 +118,26 @@ const updateUser = asyncHandler(async (req, res, next) => {
 });
 
 // Get token from model, create cookie and send response
-const sendTokenResponse = (user, statusCode, res) => {
-  // Create token
-  const token = user.getSignedJwtToken();
+// const sendTokenResponse = (user, statusCode, res) => {
+//   // Create token
+//   const token = user.getSignedJwtToken();
 
-  const options = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
-    ),
-    httpOnly: true,
-  };
+//   const options = {
+//     expires: new Date(
+//       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
+//     ),
+//     httpOnly: true,
+//   };
 
-  if (process.env.NODE_ENV === 'production') {
-    options.secure = true;
-  }
+//   if (process.env.NODE_ENV === 'production') {
+//     options.secure = true;
+//   }
 
-  res
-    .status(statusCode)
-    .cookie('token', token, options)
-    .json({ success: true, token });
-};
+//   res
+//     .status(statusCode)
+//     .cookie('token', token, options)
+//     .json({ success: true, token });
+// };
 
 export {
   authUser,
