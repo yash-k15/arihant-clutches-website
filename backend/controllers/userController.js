@@ -79,14 +79,44 @@ const logoutUser = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res, next) => {
-  res.send('get user profile');
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', 404));
+  }
+
+  res.status(200).json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
 });
 
 // @desc    Update user profile
 // @route   PUT /api/users/profile
 // @access  Private
 const updateUserProfile = asyncHandler(async (req, res, next) => {
-  res.send('update user profile');
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', 404));
+  }
+
+  user.name = req.body.name || user.name;
+  user.email = req.body.email || user.email;
+
+  if (req.body.password) {
+    user.password = req.body.password;
+  }
+
+  const updateUser = await user.save();
+  res.status(200).json({
+    _id: updateUser._id,
+    name: updateUser.name,
+    email: updateUser.email,
+    isAdmin: updateUser.isAdmin,
+  });
 });
 
 // @desc    Get users
