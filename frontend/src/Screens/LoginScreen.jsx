@@ -22,15 +22,11 @@ const LoginScreen = () => {
   const sp = new URLSearchParams(search);
   const redirect = sp.get('redirect') || '/';
 
-  useEffect(
-    () => {
-      if (userInfo) {
-        navigate(redirect);
-      }
-    },
-    [userInfo, redirect],
-    navigate,
-  );
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
+    }
+  }, [userInfo, redirect, navigate]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
