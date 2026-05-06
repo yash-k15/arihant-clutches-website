@@ -123,28 +123,63 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users
 // @access  Private/admin
 const getUsers = asyncHandler(async (req, res, next) => {
-  res.send('get users');
+  const users = await User.find({});
+  res.status(200).json(users);
 });
 
 // @desc    Get user by id
 // @route   GET /api/users/:id
 // @access  Private/admin
 const getUserById = asyncHandler(async (req, res, next) => {
-  res.send('get user by Id');
+  const user = await User.findById(req.params.id).select('-password');
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', 404));
+  }
+
+  res.status(200).json(user);
 });
 
 // @desc    Delete users
 // @route   DELETE /api/users/:id
 // @access  Private/admin
 const deleteUser = asyncHandler(async (req, res, next) => {
-  res.send('delete user');
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', 404));
+  }
+
+  if (user.isAdmin) {
+    return next(new ErrorResponse('Cannot delete admin user', 404));
+  }
+
+  await User.deleteOne({ _id: user._id });
+  res.status(200).json({ message: 'User deleted successfully' });
 });
 
 // @desc    Update user
 // @route   PUT /api/users/:id
 // @access  Private/admin
 const updateUser = asyncHandler(async (req, res, next) => {
-  res.send('update user');
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorResponse('User not found', 404));
+  }
+
+  user.name = req.body.name || user.name;
+  user.email = req.body.email || user.email;
+  user.isAdmin = Boolean(req.body.isAdmin);
+
+  const updatedUser = await user.save();
+
+  res.status(200).json({
+    _id: updateUser._id,
+    name: updateUser.name,
+    email: updateUser.email,
+    isAdmin: updateUser.isAdmin,
+  });
 });
 
 // Get token from model, create cookie and send response
