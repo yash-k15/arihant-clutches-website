@@ -1,21 +1,20 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import CheckoutSteps from '../Components/CheckoutSteps.jsx';
 import Loader from '../Components/Loader.jsx';
 import Message from '../Components/Message.jsx';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice.js';
-import { clearCartItems } from '../slices/cartSlice.js';
+import PaymentButton from '../Components/PaymentButton.jsx';
 
 const PlaceOrderScreen = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.auth);
 
-  const [createOrder, { isLoading, error }] = useCreateOrderMutation();
+  const [{ isLoading, error }] = useCreateOrderMutation();
 
   useEffect(() => {
     if (!cart.shippingAddress.address) {
@@ -25,23 +24,23 @@ const PlaceOrderScreen = () => {
     }
   }, [/*cart.paymentMethod,*/ cart.shippingAddress.address, navigate]);
 
-  const placeOrderHandler = async () => {
-    try {
-      const res = await createOrder({
-        orderItems: cart.cartItems,
-        shippingAddress: cart.shippingAddress,
-        //paymentMethod: cart.paymentMethod,
-        itemsPrice: cart.itemsPrice,
-        shippingPrice: cart.shippingPrice,
-        taxPrice: cart.taxPrice,
-        totalPrice: cart.totalPrice,
-      }).unwrap();
-      dispatch(clearCartItems());
-      navigate(`/order/${res._id}`);
-    } catch (error) {
-      toast.error(error);
-    }
-  };
+  // const placeOrderHandler = async () => {
+  //   try {
+  //     const res = await createOrder({
+  //       orderItems: cart.cartItems,
+  //       shippingAddress: cart.shippingAddress,
+  //       //paymentMethod: cart.paymentMethod,
+  //       itemsPrice: cart.itemsPrice,
+  //       shippingPrice: cart.shippingPrice,
+  //       taxPrice: cart.taxPrice,
+  //       totalPrice: cart.totalPrice,
+  //     }).unwrap();
+  //     dispatch(clearCartItems());
+  //     navigate(`/order/${res._id}`);
+  //   } catch (error) {
+  //     toast.error(error);
+  //   }
+  // };
 
   return (
     <>
@@ -62,12 +61,6 @@ const PlaceOrderScreen = () => {
                 {cart.shippingAddress.country}
               </p>
             </ListGroup.Item>
-
-            {/* <ListGroup.Item>
-              <h2>Payment Method</h2>
-              <strong>Method: </strong>
-              {cart.paymentMethod}
-            </ListGroup.Item> */}
 
             <ListGroup.Item>
               <h2>Order Items</h2>
@@ -145,14 +138,16 @@ const PlaceOrderScreen = () => {
               )}
 
               <ListGroup.Item>
-                <Button
+                {/* <Button
                   type='button'
-                  className='btn-block'
+                  className='btn-block me-3'
                   disabled={cart.cartItems.length === 0}
                   onClick={placeOrderHandler}
                 >
                   Place Order
-                </Button>
+                </Button> */}
+
+                <PaymentButton disabled={cart.cartItems.length === 0} />
 
                 {isLoading && <Loader />}
               </ListGroup.Item>

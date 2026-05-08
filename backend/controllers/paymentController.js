@@ -1,0 +1,100 @@
+import crypto from 'crypto';
+import asyncHandler from '../middleware/asyncHandler.js';
+import ErrorResponse from '../utils/errorResponse.js';
+import razorpay from '../utils/razorpay.js';
+import Order from '../models/orderModel.js';
+
+// @desc    Create new Order
+// @route   POST /api/create-order
+// @access  Private
+const createOrder = asyncHandler(async (req, res, next) => {
+  try {
+    const { amount } = req.body;
+
+    const options = {
+      amount: amount * 100,
+      currency: 'INR',
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.json(order);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+    });
+  }
+});
+
+// @desc    Verify Payment
+// @route   POST /api/verify-payment
+// @access  Private
+const verifyPayment = asyncHandler(async (req, res, next) => {
+  try {
+    const { paymentData, orderData } = req.body;
+
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      paymentData;
+
+    // GENERATE SIGNATURE
+    const generated_signature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(razorpay_order_id + '|' + razorpay_payment_id)
+      .digest('hex');
+
+    // VERIFY SIGNATURE
+    if (generated_signature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid signature',
+      });
+    }
+
+    // CREATE ORDER IN DB
+    const order = new Order({
+      orderItems: orderData.orderItems.map((item) => ({
+        ...item,
+        product: item.product,
+        _id: undefined,
+      })),
+      user: req.user._id,
+      shippingAddress: orderData.shippingAddress,
+      itemsPrice: orderData.itemsPrice,
+      shippingPrice: orderData.shippingPrice,
+      taxPrice: orderData.taxPrice,
+      totalPrice: orderData.totalPrice,
+
+      // PAYMENT INFO
+      paymentResult: {
+        id: razorpay_payment_id,
+        status: 'COMPLETED',
+        update_time: new Date().toISOString(),
+      },
+
+      // MARK ORDER PAID
+      isPaid: true,
+      paidAt: Date.now(),
+    });
+
+    // SAVE ORDER
+    const createdOrder = await order.save();
+
+    // RETURN RESPONSE
+    res.json({
+      success: true,
+      order: createdOrder,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    });
+  }
+});
+
+export { createOrder, verifyPayment };
