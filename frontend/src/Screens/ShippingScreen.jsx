@@ -32,7 +32,7 @@ const ShippingScreen = () => {
         country,
       }),
     );
-    navigate('/payment');
+    navigate('/placeorder');
   };
 
   return (
