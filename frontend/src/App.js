@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './Components/Header';
-import Footer from './Components/Footer';
+import FooterComponent from './Components/FooterComponent';
 
 const App = () => {
   return (
@@ -14,7 +14,7 @@ const App = () => {
           <Outlet />
         </Container>
       </main>
-      <Footer />
+      <FooterComponent />
       <ToastContainer />
     </>
   );

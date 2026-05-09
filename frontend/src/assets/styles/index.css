@@ -51,3 +51,60 @@ table th {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
 }
+
+.custom-navbar {
+  background-color: #2c2222;
+  padding: 14px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.custom-navbar .navbar-brand {
+  color: #ffffff !important;
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.5px;
+}
+
+.custom-navbar .navbar-brand img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.custom-navbar .nav-link {
+  color: #f5f5f5 !important;
+  font-weight: 500;
+  margin-left: 12px;
+  transition: color 0.2s ease;
+}
+
+.custom-navbar .nav-link:hover {
+  color: #d4af37 !important;
+}
+
+.custom-navbar .dropdown-toggle {
+  color: #f5f5f5 !important;
+}
+
+.custom-navbar .dropdown-toggle:hover {
+  color: #d4af37 !important;
+}
+
+.custom-navbar .dropdown-menu {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.custom-navbar .dropdown-item:hover {
+  background-color: #f7f7f7;
+}
+
+.custom-navbar .badge {
+  font-size: 0.75rem;
+}
+
+
