@@ -3,6 +3,8 @@ import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import razorpay from '../utils/razorpay.js';
 import Order from '../models/orderModel.js';
+import sendEmail from '../utils/sendEmail.js';
+import orderConfirmationEmail from '../utils/emailTemplates/orderConfirmationEmail.js';
 
 // @desc    Create new Order
 // @route   POST /api/create-order
@@ -82,6 +84,19 @@ const verifyPayment = asyncHandler(async (req, res, next) => {
 
     // SAVE ORDER
     const createdOrder = await order.save();
+
+    // Send Order confirmation Email
+    try {
+      await sendEmail({
+        email: req.user.email,
+
+        subject: 'Order Confirmation from Arihant Clutches',
+
+        html: orderConfirmationEmail(order, razorpay_payment_id),
+      });
+    } catch (err) {
+      console.log('Order email failed:', err.message);
+    }
 
     // RETURN RESPONSE
     res.json({
