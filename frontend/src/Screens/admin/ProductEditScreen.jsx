@@ -17,6 +17,7 @@ const ProductEditScreen = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState('');
+  const [images, setImages] = useState([]);
   const [brand, setBrand] = useState('');
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
@@ -74,11 +75,28 @@ const ProductEditScreen = () => {
 
   const uploadFileHandler = async (e) => {
     const formData = new FormData();
-    formData.append('image', e.target.files[0]);
+    // formData.append('image', e.target.files[0]);
+    // try {
+    //   const res = await uploadProductImage(formData).unwrap();
+    //   toast.success(res.message);
+    //   setImage(res.image);
+    // } catch (err) {
+    //   toast.error(err?.data?.message || err.error);
+    // }
+
+    for (let i = 0; i < e.target.files.length; i++) {
+      formData.append('images', e.target.files[i]);
+    }
+
     try {
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
-      setImage(res.image);
+
+      // FIRST IMAGE = MAIN IMAGE
+      setImage(res.images[0]);
+
+      // ALL IMAGES
+      setImages(res.images);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -129,6 +147,7 @@ const ProductEditScreen = () => {
               ></Form.Control>
               <Form.Control
                 type='file'
+                multiple
                 label='Choose file'
                 onChange={uploadFileHandler}
               ></Form.Control>

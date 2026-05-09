@@ -33,17 +33,19 @@ function fileFilter(req, file, cb) {
 const upload = multer({ storage, fileFilter });
 
 // Use .array to accept an array of images
-const uploadSingleImage = upload.single('image');
+const uploadMultipleImages = upload.array('images', 5);
 
 router.post('/', (req, res) => {
-  uploadSingleImage(req, res, function (err) {
+  uploadMultipleImages(req, res, function (err) {
     if (err) {
       res.status(400).send({ message: err.message });
     }
 
+    const images = req.files.map((file) => `/${file.path}`);
+
     res.status(200).send({
       message: 'Image uploaded successfully',
-      image: `/${req.file.path}`,
+      images,
     });
   });
 });
