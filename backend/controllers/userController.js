@@ -4,6 +4,7 @@ import asyncHandler from '../middleware/asyncHandler.js';
 import User from '../models/userModel.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import generateToken from '../utils/generateToken.js';
+import resetPasswordEmail from '../utils/emailTemplates/resetPasswordEmail.js';
 
 // @desc    Auth user and get token
 // @route   POST /api/users/login
@@ -202,14 +203,14 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   // Create reset url
   const resetUrl = `${process.env.CLIENT_URL}/resetpassword/${resetToken}`;
 
-  const message = `You are recieving this email because you have requested the reset of your password. 
-  Please open: \n\n ${resetUrl}`;
+  // const message = `You are recieving this email because you have requested the reset of your password.
+  // Please open: \n\n ${resetUrl}`;
 
   try {
     await sendEmail({
       email: user.email,
       subject: 'Password reset token',
-      message,
+      html: resetPasswordEmail(resetUrl),
     });
 
     res.status(200).json({ success: true, data: 'Email Sent' });
