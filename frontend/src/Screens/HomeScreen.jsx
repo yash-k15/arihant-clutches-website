@@ -31,8 +31,14 @@ const HomeScreen = () => {
         </Message>
       ) : (
         <>
-          <h1>Latest Products</h1>
-          <Row>
+          <div className='home-header'>
+            <p className='home-subtitle'>
+              Discover premium handbags, clutches & timeless fashion
+              accessories.
+            </p>
+            <h1 className='home-title'>Explore Our Collection</h1>
+          </div>
+          <Row className='g-4'>
             {data.products.map((product) => (
               <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
                 <Product product={product} />

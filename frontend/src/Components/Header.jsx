@@ -34,17 +34,17 @@ const Header = () => {
       <Navbar className='custom-navbar' expand='md' collapseOnSelect>
         <Container>
           <LinkContainer to='/'>
-            <Navbar.Brand>
-              <img src={logo} alt='Arihant Clutches' />
+            <Navbar.Brand className='navbar-brand-custom'>
+              <img src={logo} alt='Arihant Clutches' className='navbar-logo' />
               Arihant Clutches
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
-            <Nav className='ms-auto'>
+            <Nav className='ms-auto align-items-center nav-links'>
               <SearchBox />
               <LinkContainer to='/cart'>
-                <Nav.Link>
+                <Nav.Link className='nav-icon-link'>
                   <FaShoppingCart />
                   Cart
                   {cartItems.length > 0 && (
@@ -65,7 +65,7 @@ const Header = () => {
                 </NavDropdown>
               ) : (
                 <LinkContainer to='/login'>
-                  <Nav.Link>
+                  <Nav.Link className='nav-icon-link'>
                     <FaUser /> Sign In
                   </Nav.Link>
                 </LinkContainer>

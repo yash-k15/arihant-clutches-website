@@ -119,7 +119,7 @@ const ProductScreen = () => {
             <Col md={4}>
               <ListGroup variant='flush'>
                 <ListGroup.Item>
-                  <h3>{product.name}</h3>
+                  <h1 className='product-name'>{product.name}</h1>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Rating
@@ -127,14 +127,29 @@ const ProductScreen = () => {
                     text={`${product.numReviews} reviews`}
                   />
                 </ListGroup.Item>
-                <ListGroup.Item>Price: ₹{product.price}</ListGroup.Item>
                 <ListGroup.Item>
-                  Description: {product.description}
+                  <div className='product-price'>₹{product.price}</div>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <h6 className='section-title'>Description</h6>
+                  <p className='product-description'>{product.description}</p>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <div className='product-meta'>
+                    <span>
+                      Material:
+                      <strong> {product.material}</strong>
+                    </span>
+                    <span>
+                      Category:
+                      <strong> {product.category}</strong>
+                    </span>
+                  </div>
                 </ListGroup.Item>
               </ListGroup>
             </Col>
             <Col md={3}>
-              <Card>
+              <Card className='purchase-card'>
                 <ListGroup>
                   <ListGroup.Item>
                     <Row>
@@ -148,11 +163,15 @@ const ProductScreen = () => {
                     <Row>
                       <Col>Status:</Col>
                       <Col>
-                        <strong>
+                        <span
+                          className={
+                            product.countInStock > 0 ? 'in-stock' : 'out-stock'
+                          }
+                        >
                           {product.countInStock > 0
                             ? 'In Stock'
                             : 'Out of Stock'}
-                        </strong>
+                        </span>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -180,7 +199,7 @@ const ProductScreen = () => {
                   )}
                   <ListGroup.Item>
                     <Button
-                      className='btn-block'
+                      className='w-100 add-cart-btn'
                       type='button'
                       disabled={product.countInStock === 0}
                       onClick={addToCartHandler}
