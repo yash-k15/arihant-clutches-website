@@ -3,16 +3,13 @@ import { Link } from 'react-router-dom';
 
 const FooterComponent = () => {
   return (
-    <footer
-      className='text-light py-4 mt-5'
-      style={{ backgroundColor: '#3b2f2f' }}
-    >
+    <footer className='footer-section'>
       <Container>
         <Row className='gy-4'>
           {/* BRAND */}
           <Col md={4}>
-            <h5 className='fw-bold'>Arihant Clutches</h5>
-            <p style={{ fontSize: '0.95rem' }}>
+            <h5 className='footer-heading'>Arihant Clutches</h5>
+            <p className='footer-text'>
               Premium purses and clutches crafted for elegance and everyday
               style.
             </p>
@@ -20,31 +17,28 @@ const FooterComponent = () => {
 
           {/* QUICK LINKS */}
           <Col md={4}>
-            <h5 className='fw-bold'>Quick Links</h5>
+            <h5 className='footer-heading'>Quick Links</h5>
             <ul className='list-unstyled'>
               <li>
-                <Link to='/' className='text-light text-decoration-none'>
+                <Link to='/' className='footer-link'>
                   Home
                 </Link>
               </li>
 
               <li>
-                <Link to='/cart' className='text-light text-decoration-none'>
+                <Link to='/cart' className='footer-link'>
                   Cart
                 </Link>
               </li>
 
               <li>
-                <Link to='/login' className='text-light text-decoration-none'>
+                <Link to='/login' className='footer-link'>
                   Login
                 </Link>
               </li>
 
               <li>
-                <Link
-                  to='/register'
-                  className='text-light text-decoration-none'
-                >
+                <Link to='/register' className='footer-link'>
                   Register
                 </Link>
               </li>
@@ -53,7 +47,7 @@ const FooterComponent = () => {
 
           {/* CONTACT */}
           <Col md={4}>
-            <h5 className='fw-bold'>Contact</h5>
+            <h5 className='footer-heading'>Contact</h5>
             <p className='mb-1'>Sneha Kothari</p>
             <p className='mb-1'>support@arihantclutches.com</p>
             <p className='mb-0'>+91 98765 43210</p>
@@ -62,7 +56,7 @@ const FooterComponent = () => {
 
         <hr className='border-light my-4' />
 
-        <div className='text-center'>
+        <div className='footer-bottom text-center'>
           © {new Date().getFullYear()} Arihant Clutches. All rights reserved.
         </div>
       </Container>

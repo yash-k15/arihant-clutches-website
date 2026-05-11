@@ -402,3 +402,44 @@ table th {
 .hero-caption {
   z-index: 2;
 }
+
+/* Footer CSS */
+.footer-section {
+  background: #2c2222;
+  color: #f5f5f5;
+  padding: 60px 0 25px;
+  margin-top: 80px;
+}
+
+.footer-heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #fff;
+}
+
+.footer-text {
+  color: #d6d6d6;
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+.footer-link {
+  color: #d6d6d6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  line-height: 2;
+}
+
+.footer-link:hover {
+  color: #d4af37;
+}
+
+.footer-section hr {
+  opacity: 0.12;
+}
+
+.footer-bottom {
+  color: #c8c8c8;
+  font-size: 0.9rem;
+}
