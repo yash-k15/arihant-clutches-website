@@ -613,3 +613,47 @@ table th {
   background: #b08d57;
   color: #000;
 }
+
+/* Place Order Screen */
+.placeorder-section {
+  border: none !important;
+  border-radius: 18px !important;
+  padding: 24px !important;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.placeorder-heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c2222;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  border: none !important;
+  border-radius: 18px !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.order-item {
+  padding: 18px 0 !important;
+}
+
+.order-item img {
+  border-radius: 12px;
+  object-fit: cover;
+  aspect-ratio: 4 / 5;
+}
+
+.order-item-name {
+  text-decoration: none;
+  color: #2c2222;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.order-item-name:hover {
+  color: #b08d57;
+}

@@ -48,8 +48,8 @@ const PlaceOrderScreen = () => {
       <Row>
         <Col md={8}>
           <ListGroup variant='flush'>
-            <ListGroup.Item>
-              <h2>Shipping</h2>
+            <ListGroup.Item className='placeorder-section'>
+              <h2 className='placeorder-heading'>Shipping</h2>
               <p>
                 <strong>To:{'      '}</strong>
                 {user.userInfo.name}
@@ -62,14 +62,14 @@ const PlaceOrderScreen = () => {
               </p>
             </ListGroup.Item>
 
-            <ListGroup.Item>
-              <h2>Order Items</h2>
+            <ListGroup.Item className='placeorder-section'>
+              <h2 className='placeorder-heading'>Order Items</h2>
               {cart.cartItems.length === 0 ? (
                 <Message>Your cart is empty</Message>
               ) : (
                 <ListGroup variant='flush'>
                   {cart.cartItems.map((item, index) => (
-                    <ListGroup.Item key={index}>
+                    <ListGroup.Item key={index} className='order-item'>
                       <Row>
                         <Col md={3}>
                           <Image
@@ -80,7 +80,10 @@ const PlaceOrderScreen = () => {
                           />
                         </Col>
                         <Col>
-                          <Link to={`/products/${item.product}`}>
+                          <Link
+                            to={`/products/${item.product}`}
+                            className='order-item-name'
+                          >
                             {item.name}
                           </Link>
                         </Col>
@@ -96,10 +99,10 @@ const PlaceOrderScreen = () => {
           </ListGroup>
         </Col>
         <Col md={4}>
-          <Card>
+          <Card className='summary-card'>
             <ListGroup variant='flush'>
               <ListGroup.Item>
-                <h2>Order Summary</h2>
+                <h2 className='placeorder-heading'>Order Summary</h2>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
