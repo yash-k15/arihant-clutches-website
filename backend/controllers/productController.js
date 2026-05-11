@@ -36,6 +36,19 @@ const getProduct = asyncHandler(async (req, res, next) => {
   res.status(200).json(product);
 });
 
+const getProductBySlug = asyncHandler(async (req, res) => {
+  const product = await Product.findOne({
+    slug: req.params.slug,
+  });
+
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
 // @desc Create a product
 // @route POST /api/products
 // @access Private/Admin
@@ -192,4 +205,5 @@ export {
   deleteProduct,
   createProductReview,
   getTopProducts,
+  getProductBySlug,
 };

@@ -23,7 +23,7 @@ import Meta from '../Components/Meta.jsx';
 import { addToCart } from '../slices/cartSlice.js';
 
 const ProductScreen = () => {
-  const { id: productId } = useParams();
+  const { slug } = useParams();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,7 +37,9 @@ const ProductScreen = () => {
     isLoading,
     refetch,
     error,
-  } = useGetProductDetailsQuery(productId);
+  } = useGetProductDetailsQuery(slug);
+
+  const productId = product?._id;
 
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
