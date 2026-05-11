@@ -571,3 +571,45 @@ table th {
 .auth-link:hover {
   color: #2c2222;
 }
+
+/* Checkout Steps CSS */
+.checkout-steps {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 35px;
+  flex-wrap: wrap;
+}
+
+.checkout-step {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px !important;
+  border-radius: 999px;
+  background: #f5f5f5;
+  color: #999 !important;
+  font-weight: 600;
+  border: none !important;
+}
+
+.checkout-step span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.checkout-step.active {
+  background: #2c2222;
+  color: #fff !important;
+}
+
+.checkout-step.active span {
+  background: #b08d57;
+  color: #000;
+}
