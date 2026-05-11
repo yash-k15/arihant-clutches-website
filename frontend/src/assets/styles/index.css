@@ -284,3 +284,31 @@ table th {
   background: #b08d57 !important;
   color: #000 !important;
 }
+
+/* Pagination CSS */
+.custom-pagination {
+  justify-content: center;
+  margin-top: 50px;
+  gap: 8px;
+}
+
+.custom-pagination .page-link {
+  border: none;
+  color: #2c2222;
+  border-radius: 10px !important;
+  padding: 10px 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.custom-pagination .page-link:hover {
+  background: #b08d57;
+  color: #fff;
+}
+
+.custom-pagination .active .page-link {
+  background: #2c2222;
+  color: #fff;
+}
