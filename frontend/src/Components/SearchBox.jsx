@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const SearchBox = () => {
-  const naviate = useNavigate();
+  const navigate = useNavigate();
   const { keyword: urlKeyword } = useParams();
   const [keyword, setKeyword] = useState(urlKeyword || '');
 
@@ -11,23 +11,23 @@ const SearchBox = () => {
     e.preventDefault();
     if (keyword.trim()) {
       setKeyword('');
-      naviate(`/search/${keyword}`);
+      navigate(`/search/${keyword}`);
     } else {
-      naviate('/');
+      navigate('/');
     }
   };
 
   return (
-    <Form onSubmit={submitHandler} className='d-flex'>
+    <Form onSubmit={submitHandler} className='search-form'>
       <Form.Control
         type='text'
         name='q'
         onChange={(e) => setKeyword(e.target.value)}
         value={keyword}
         placeholder='Search Products...'
-        className='mr-sm-2 ml-sm-5'
+        className='search-input'
       ></Form.Control>
-      <Button type='submit' variant='outline-light' className='p-2 mx-2'>
+      <Button type='submit' className='search-btn'>
         Search
       </Button>
     </Form>
