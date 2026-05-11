@@ -7,6 +7,12 @@ const Product = ({ product }) => {
     <Card className='product-card h-100'>
       <Link to={`/products/${product.slug}`}>
         <div className='product-image-wrapper'>
+          <div className='product-badges'>
+            {product.isNewArrival && <span className='badge-new'>New</span>}
+            {product.isBestSeller && (
+              <span className='badge-best'>Bestseller</span>
+            )}
+          </div>
           <Card.Img
             src={product.image}
             variant='top'
