@@ -151,8 +151,10 @@ const PlaceOrderScreen = () => {
                 </Button> */}
 
                 <PaymentButton disabled={cart.cartItems.length === 0} />
-
                 {isLoading && <Loader />}
+                <p className='payment-trust'>
+                  Secure payment powered by Razorpay • 100% safe checkout
+                </p>
               </ListGroup.Item>
             </ListGroup>
           </Card>

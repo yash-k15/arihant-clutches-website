@@ -657,3 +657,32 @@ table th {
 .order-item-name:hover {
   color: #b08d57;
 }
+
+/* Payment Button CSS */
+.payment-btn {
+  width: 100%;
+  background: #2c2222 !important;
+  border: none !important;
+  border-radius: 14px !important;
+  padding: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease !important;
+}
+
+.payment-btn:hover {
+  background: #b08d57 !important;
+  color: #000 !important;
+}
+
+.payment-btn:disabled {
+  background: #ccc !important;
+  cursor: not-allowed;
+}
+
+.payment-trust {
+  font-size: 0.8rem;
+  color: #777;
+  text-align: center;
+  margin-top: 10px;
+}

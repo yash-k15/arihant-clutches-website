@@ -102,8 +102,12 @@ const PaymentButton = ({ disabled }) => {
   };
 
   return (
-    <Button disabled={disabled || loadingVerify} onClick={handlePayment}>
-      {isLoading ? 'Processing...' : 'Place Order'}
+    <Button
+      className='payment-btn'
+      disabled={disabled || loadingVerify || isLoading}
+      onClick={handlePayment}
+    >
+      {isLoading ? 'Processing...' : 'Pay & Place Order'}
     </Button>
   );
 };
