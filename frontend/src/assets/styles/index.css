@@ -107,4 +107,35 @@ table th {
   font-size: 0.75rem;
 }
 
+.product-main-image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #f8f8f8;
+}
 
+.product-thumbnails {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.thumbnail {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.thumbnail:hover {
+  border-color: #d4af37;
+}
+
+.thumbnail.active {
+  border-color: #d4af37;
+}

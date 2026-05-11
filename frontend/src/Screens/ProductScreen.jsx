@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   useGetProductDetailsQuery,
@@ -28,6 +28,7 @@ const ProductScreen = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [selectedImage, setSelectedImage] = useState('');
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -50,6 +51,14 @@ const ProductScreen = () => {
     dispatch(addToCart({ ...product, qty }));
     navigate('/cart');
   };
+
+  useEffect(() => {
+    if (product?.images?.length > 0) {
+      setSelectedImage(product.images[0]);
+    } else {
+      setSelectedImage(product?.image);
+    }
+  }, [product]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -85,7 +94,27 @@ const ProductScreen = () => {
           <Meta title={product.name} />
           <Row>
             <Col md={5}>
-              <Image src={product.image} alt={product.name} fluid />
+              <Image
+                src={selectedImage}
+                alt={product.name}
+                fluid
+                className='product-main-image'
+              />
+              {product.images?.length > 0 && (
+                <div className='product-thumbnails'>
+                  {product.images.map((img, index) => (
+                    <img
+                      key={index}
+                      src={img}
+                      alt={product.name}
+                      className={
+                        selectedImage === img ? 'thumbnail active' : 'thumbnail'
+                      }
+                      onClick={() => setSelectedImage(img)}
+                    />
+                  ))}
+                </div>
+              )}
             </Col>
             <Col md={4}>
               <ListGroup variant='flush'>
