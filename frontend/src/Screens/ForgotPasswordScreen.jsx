@@ -26,28 +26,29 @@ const ForgotPasswordScreen = () => {
 
   return (
     <FormContainer>
-      <h1>Password Reset</h1>
-      <Form>
-        <Form.Group controlId='email' className='my-3'>
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            type='email'
-            placeholder='Enter email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+      <div className='auth-card'>
+        <p className='auth-subtitle'>ACCOUNT RECOVERY</p>
+        <h1 className='auth-title'>Forgot Password</h1>
+        <p className='auth-description'>
+          Enter your email address and we’ll send you a password reset link.
+        </p>
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId='email' className='my-3'>
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              type='email'
+              placeholder='Enter email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className='auth-input'
+            ></Form.Control>
+          </Form.Group>
 
-        <Button
-          type='submit'
-          variant='primary'
-          className='mt-2'
-          disabled={email ? false : true}
-          onClick={submitHandler}
-        >
-          Reset Password
-        </Button>
-      </Form>
+          <Button type='submit' className='auth-btn mt-3' disabled={!email}>
+            Reset Password
+          </Button>
+        </Form>
+      </div>
     </FormContainer>
   );
 };
