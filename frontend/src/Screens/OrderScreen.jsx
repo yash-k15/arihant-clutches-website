@@ -42,11 +42,30 @@ const OrderScreen = () => {
     <Message variant='danger' />
   ) : (
     <>
-      <h1>Order {order._id}</h1>
+      {order.isPaid && (
+        <div className='order-success'>
+          <h1 className='success-title'>🎉 Thank You for Your Order!</h1>
+          <p className='success-text'>
+            Your payment was successful. We've received your order and are
+            getting it ready.
+          </p>
+          <div className='order-trust'>
+            <p>✔ Secure Payment Completed</p>
+            <p>✔ Order Confirmed</p>
+            <p>✔ Email Receipt Sent</p>
+          </div>
+        </div>
+      )}
+      <div className='order-page-header'>
+        <h1 className='order-title'>Order Confirmation</h1>
+        <p className='order-meta'>
+          Order ID: <span>{order._id}</span>
+        </p>
+      </div>
       <Row>
         <Col md={8}>
           <ListGroup variant='flush'>
-            <ListGroup.Item>
+            <ListGroup.Item className='order-section'>
               <h2>Shipping</h2>
               <p>
                 <strong>Name: </strong> {order.user.name}
@@ -70,7 +89,7 @@ const OrderScreen = () => {
               )}
             </ListGroup.Item>
 
-            <ListGroup.Item>
+            <ListGroup.Item className='order-section'>
               <h2>Payment</h2>
               {/* <p>
                 <strong>Method: </strong> {order.paymentMethod}
@@ -82,16 +101,21 @@ const OrderScreen = () => {
               )}
             </ListGroup.Item>
 
-            <ListGroup.Item>
+            <ListGroup.Item className='order-section'>
               <h2>Order Items</h2>
               {order.orderItems.map((item, index) => (
-                <ListGroup.Item key={index}>
+                <ListGroup.Item key={index} className='order-item-row'>
                   <Row>
                     <Col md={3}>
                       <Image src={item.image} alt={item.name} fluid rounded />
                     </Col>
                     <Col>
-                      <Link to={`/product/${item.product}`}>{item.name}</Link>
+                      <Link
+                        to={`/product/${item.product}`}
+                        className='order-product-link'
+                      >
+                        {item.name}
+                      </Link>
                     </Col>
                     <Col md={4}>
                       {item.qty} x ₹{item.price} = ₹{item.qty * item.price}
@@ -103,7 +127,7 @@ const OrderScreen = () => {
           </ListGroup>
         </Col>
         <Col md={4}>
-          <Card>
+          <Card className='order-summary-card'>
             <ListGroup variant='flush'>
               <ListGroup.Item>
                 <h2>Order Summary</h2>
