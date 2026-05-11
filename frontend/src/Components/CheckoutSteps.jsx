@@ -1,7 +1,7 @@
 import { Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-const CheckoutSteps = ({ step1, step2, step3 }) => {
+const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
   return (
     <Nav className='checkout-steps'>
       <Nav.Item>
@@ -19,27 +19,40 @@ const CheckoutSteps = ({ step1, step2, step3 }) => {
       </Nav.Item>
       <Nav.Item>
         {step2 ? (
-          <LinkContainer to='/shipping'>
+          <LinkContainer to='/cart'>
             <Nav.Link className='checkout-step active'>
-              <span>2</span>Shipping
+              <span>2</span>Cart
             </Nav.Link>
           </LinkContainer>
         ) : (
           <Nav.Link disabled className='checkout-step'>
-            <span>2</span>Shipping
+            <span>2</span>Cart
           </Nav.Link>
         )}
       </Nav.Item>
       <Nav.Item>
         {step3 ? (
-          <LinkContainer to='/placeorder'>
+          <LinkContainer to='/shipping'>
             <Nav.Link className='checkout-step active'>
-              <span>3</span>Place Order
+              <span>3</span>Shipping
             </Nav.Link>
           </LinkContainer>
         ) : (
           <Nav.Link disabled className='checkout-step'>
-            <span>3</span>Place Order
+            <span>3</span>Shipping
+          </Nav.Link>
+        )}
+      </Nav.Item>
+      <Nav.Item>
+        {step4 ? (
+          <LinkContainer to='/placeorder'>
+            <Nav.Link className='checkout-step active'>
+              <span>4</span>Place Order
+            </Nav.Link>
+          </LinkContainer>
+        ) : (
+          <Nav.Link disabled className='checkout-step'>
+            <span>4</span>Place Order
           </Nav.Link>
         )}
       </Nav.Item>

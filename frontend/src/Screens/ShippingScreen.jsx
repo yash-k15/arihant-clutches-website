@@ -37,7 +37,7 @@ const ShippingScreen = () => {
 
   return (
     <FormContainer>
-      <CheckoutSteps step1 step2 />
+      <CheckoutSteps step1 step2 step3 />
       <div className='auth-card'>
         <p className='auth-subtitle'>CHECKOUT</p>
         <h1 className='auth-title'>Shipping Details</h1>

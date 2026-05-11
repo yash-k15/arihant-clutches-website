@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 import { FaTrash } from 'react-icons/fa';
 import Message from '../Components/Message.jsx';
+import CheckoutSteps from '../Components/CheckoutSteps.jsx';
 import { addToCart, removeFromCart } from '../slices/cartSlice.js';
 
 const CartScreen = () => {
@@ -34,6 +35,7 @@ const CartScreen = () => {
 
   return (
     <>
+      <CheckoutSteps step1 step2 />
       <Row>
         <Col md={8}>
           <div className='cart-header'>
