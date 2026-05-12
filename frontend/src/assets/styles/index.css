@@ -183,6 +183,36 @@ table th {
   background: #b08d57;
 }
 
+.variant-selector {
+  margin-top: 1.5rem;
+}
+
+.variant-options {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.variant-btn {
+  border: 1px solid #d8d2c8;
+  background: #fff;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.variant-btn:hover {
+  border-color: #111;
+}
+
+.variant-btn.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
 /* Home Page CSS */
 .home-header {
   margin: 40px 0 30px;

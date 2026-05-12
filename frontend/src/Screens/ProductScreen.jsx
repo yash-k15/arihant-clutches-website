@@ -32,6 +32,7 @@ const ProductScreen = () => {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
   const {
     data: product,
@@ -40,23 +41,37 @@ const ProductScreen = () => {
     error,
   } = useGetProductDetailsQuery(slug);
 
-  const productId = product?._id;
-
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
   const addToCartHandler = () => {
-    dispatch(addToCart({ ...product, qty }));
+    dispatch(
+      addToCart({
+        product: product._id,
+        slug: product.slug,
+        variantId: selectedVariant._id,
+        color: selectedVariant.color,
+        name: product.name,
+        image: selectedVariant.images[0],
+        price: selectedVariant.price,
+        countInStock: selectedVariant.countInStock,
+        qty,
+      }),
+    );
     navigate('/cart');
   };
 
   useEffect(() => {
-    if (product?.images?.length > 0) {
-      setSelectedImage(product.images[0]);
-    } else {
-      setSelectedImage(product?.image);
+    if (product?.variants?.length > 0) {
+      const firstVariant = product.variants[0];
+
+      setSelectedVariant(firstVariant);
+
+      if (firstVariant.images?.length > 0) {
+        setSelectedImage(firstVariant.images[0]);
+      }
     }
   }, [product]);
 
@@ -100,9 +115,9 @@ const ProductScreen = () => {
                 fluid
                 className='product-main-image'
               />
-              {product.images?.length > 0 && (
+              {selectedVariant?.images?.length > 0 && (
                 <div className='product-thumbnails'>
-                  {product.images.map((img, index) => (
+                  {selectedVariant.images.map((img, index) => (
                     <img
                       key={index}
                       src={img}
@@ -128,7 +143,34 @@ const ProductScreen = () => {
                   />
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <div className='product-price'>₹{product.price}</div>
+                  <div className='product-price'>₹{selectedVariant?.price}</div>
+
+                  <div className='variant-selector'>
+                    <h6 className='section-title'>Select Color</h6>
+
+                    <div className='variant-options'>
+                      {product.variants.map((variant) => (
+                        <button
+                          key={variant._id}
+                          type='button'
+                          className={`variant-btn ${
+                            selectedVariant?._id === variant._id ? 'active' : ''
+                          }`}
+                          onClick={() => {
+                            setSelectedVariant(variant);
+
+                            if (variant.images?.length > 0) {
+                              setSelectedImage(variant.images[0]);
+                            }
+
+                            setQty(1);
+                          }}
+                        >
+                          {variant.color}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <h6 className='section-title'>Description</h6>
@@ -155,7 +197,7 @@ const ProductScreen = () => {
                     <Row>
                       <Col>Price:</Col>
                       <Col>
-                        <strong>₹{product.price}</strong>
+                        <strong>₹{selectedVariant?.price}</strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -165,17 +207,19 @@ const ProductScreen = () => {
                       <Col>
                         <span
                           className={
-                            product.countInStock > 0 ? 'in-stock' : 'out-stock'
+                            selectedVariant?.countInStock > 0
+                              ? 'in-stock'
+                              : 'out-stock'
                           }
                         >
-                          {product.countInStock > 0
+                          {selectedVariant?.countInStock > 0
                             ? 'In Stock'
                             : 'Out of Stock'}
                         </span>
                       </Col>
                     </Row>
                   </ListGroup.Item>
-                  {product.countInStock > 0 && (
+                  {selectedVariant?.countInStock > 0 && (
                     <ListGroup.Item>
                       <Row>
                         <Col>Qty</Col>
@@ -185,13 +229,13 @@ const ProductScreen = () => {
                             value={qty}
                             onChange={(e) => setQty(Number(e.target.value))}
                           >
-                            {[...Array(product.countInStock).keys()].map(
-                              (x) => (
-                                <option key={x + 1} value={x + 1}>
-                                  {x + 1}
-                                </option>
-                              ),
-                            )}
+                            {[
+                              ...Array(selectedVariant?.countInStock).keys(),
+                            ].map((x) => (
+                              <option key={x + 1} value={x + 1}>
+                                {x + 1}
+                              </option>
+                            ))}
                           </Form.Control>
                         </Col>
                       </Row>
@@ -201,7 +245,9 @@ const ProductScreen = () => {
                     <Button
                       className='w-100 add-cart-btn'
                       type='button'
-                      disabled={product.countInStock === 0}
+                      disabled={
+                        !selectedVariant || selectedVariant.countInStock === 0
+                      }
                       onClick={addToCartHandler}
                     >
                       Add To Cart
