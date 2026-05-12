@@ -26,8 +26,7 @@ const ProductCreateScreen = () => {
   const navigate = useNavigate();
 
   const [createProduct, { isLoading }] = useCreateProductMutation();
-  const [uploadProductImage, { isLoading: loadingUpload }] =
-    useUploadProductImageMutation();
+  const [uploadProductImage] = useUploadProductImageMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
