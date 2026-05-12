@@ -213,6 +213,113 @@ table th {
   border-color: #111;
 }
 
+/* Product Page Review Section */
+.review-section {
+  margin-top: 5rem;
+  margin-bottom: 4rem;
+}
+
+.review-header {
+  margin-bottom: 2rem;
+}
+
+.review-header h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.review-header p {
+  color: #777;
+  margin: 0;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-card {
+  background: #fff;
+  border: 1px solid #f1f1f1;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.review-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.review-user {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.review-date {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}
+
+.review-comment {
+  color: #444;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.review-form-card {
+  margin-top: 3rem;
+  background: #fff;
+  border: 1px solid #f1f1f1;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.review-form-title {
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.review-submit-btn {
+  width: 100%;
+  border-radius: 12px;
+  padding: 0.85rem;
+  font-weight: 600;
+  border: none;
+  background: #111;
+  transition: all 0.3s ease;
+}
+
+.review-submit-btn:hover {
+  background: #333;
+}
+
+.review-form-card textarea,
+.review-form-card select {
+  border-radius: 12px;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+}
+
+.review-form-card textarea:focus,
+.review-form-card select:focus {
+  box-shadow: none;
+  border-color: #111;
+}
+
 /* Home Page CSS */
 .home-header {
   margin: 40px 0 30px;

@@ -269,67 +269,91 @@ const ProductScreen = () => {
               </Card>
             </Col>
           </Row>
-          <Row className='review'>
-            <Col md={6}>
-              <h2>Reviews</h2>
-              {product.reviews.length === 0 && <Message>No Reviews</Message>}
-              <ListGroup variant='flush'>
-                {product.reviews.map((review) => (
-                  <ListGroup.Item key={review._id}>
-                    <strong>{review.name}</strong>
-                    <Rating value={review.rating}></Rating>
-                    <p>
-                      {new Date(review.createdAt).toLocaleDateString('en-GB')}
-                    </p>
-                    <p>{review.comment}</p>
-                  </ListGroup.Item>
-                ))}
-                <ListGroup.Item>
-                  <h2>Write a customer review</h2>
+          <Row className='review-section'>
+            <Col lg={9}>
+              <div className='review-header'>
+                <h2>Customer Reviews</h2>
+                <p>
+                  {product.numReviews} review
+                  {product.numReviews !== 1 ? 's' : ''}
+                </p>
+              </div>
 
-                  {loadingProductReview && <Loader />}
+              {product.reviews.length === 0 ? (
+                <Message>No Reviews Yet</Message>
+              ) : (
+                <div className='review-list'>
+                  {product.reviews.map((review) => (
+                    <div key={review._id} className='review-card'>
+                      <div className='review-top'>
+                        <div>
+                          <h5 className='review-user'>{review.name}</h5>
 
-                  {userInfo ? (
-                    <Form onSubmit={submitHandler}>
-                      <Form.Group controlId='rating' className='my-2'>
-                        <Form.Label>Rating</Form.Label>
-                        <Form.Control
-                          as='select'
-                          value={rating}
-                          onChange={(e) => setRating(Number(e.target.value))}
-                        >
-                          <option value=''>Select...</option>
-                          <option value='1'>1 - Poor</option>
-                          <option value='2'>2 - Fair</option>
-                          <option value='3'>3 - Good</option>
-                          <option value='4'>4 - Very Good</option>
-                          <option value='5'>5 - Excellent</option>
-                        </Form.Control>
-                      </Form.Group>
-                      <Form.Group controlId='comment' className='my-2'>
-                        <Form.Label>Comment</Form.Label>
-                        <Form.Control
-                          as='textarea'
-                          row='3'
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                        ></Form.Control>
-                      </Form.Group>
-                      <Button
-                        disabled={loadingProductReview}
-                        type='submit'
-                        variant='primary'
+                          <p className='review-date'>
+                            {new Date(review.createdAt).toLocaleDateString(
+                              'en-GB',
+                            )}
+                          </p>
+                        </div>
+
+                        <Rating value={review.rating} />
+                      </div>
+
+                      <p className='review-comment'>{review.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className='review-form-card'>
+                <h3 className='review-form-title'>Write a Review</h3>
+
+                {loadingProductReview && <Loader />}
+
+                {userInfo ? (
+                  <Form onSubmit={submitHandler}>
+                    <Form.Group controlId='rating' className='mb-3'>
+                      <Form.Label>Rating</Form.Label>
+
+                      <Form.Select
+                        value={rating}
+                        onChange={(e) => setRating(Number(e.target.value))}
                       >
-                        Submit
-                      </Button>
-                    </Form>
-                  ) : (
-                    <Message>
-                      Please <Link to='/login'>sign in</Link> to write a review
-                    </Message>
-                  )}
-                </ListGroup.Item>
-              </ListGroup>
+                        <option value=''>Select Rating</option>
+                        <option value='1'>1 - Poor</option>
+                        <option value='2'>2 - Fair</option>
+                        <option value='3'>3 - Good</option>
+                        <option value='4'>4 - Very Good</option>
+                        <option value='5'>5 - Excellent</option>
+                      </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group controlId='comment' className='mb-3'>
+                      <Form.Label>Comment</Form.Label>
+
+                      <Form.Control
+                        as='textarea'
+                        rows={4}
+                        placeholder='Share your experience with this product...'
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                      />
+                    </Form.Group>
+
+                    <Button
+                      disabled={loadingProductReview}
+                      type='submit'
+                      className='review-submit-btn'
+                    >
+                      Submit Review
+                    </Button>
+                  </Form>
+                ) : (
+                  <Message>
+                    Please <Link to='/login'>sign in</Link> to write a review
+                  </Message>
+                )}
+              </div>
             </Col>
           </Row>
         </>
