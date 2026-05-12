@@ -865,3 +865,119 @@ table th {
 .profile-accordion .accordion-body {
   padding: 28px;
 }
+
+/* Admin functionality */
+/* Product List Screen */
+.admin-page-header {
+  margin-bottom: 25px;
+}
+
+.admin-page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c2222;
+}
+
+/* ADMIN TABLE */
+.admin-table {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.admin-table thead {
+  background: #f8f5f1;
+}
+
+.admin-table th {
+  border: none;
+  padding: 16px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.admin-table td {
+  padding: 16px;
+  vertical-align: middle;
+  border-color: #f3f3f3;
+}
+
+/* PRODUCT IMAGE */
+.admin-product-image {
+  width: 65px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* PRODUCT NAME */
+.admin-product-name {
+  font-weight: 600;
+  color: #2c2222;
+  min-width: 220px;
+}
+
+/* STOCK BADGES */
+.stock-badge {
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.in-stock-badge {
+  background: #e7f8ee;
+  color: #1d7a46;
+}
+
+.out-stock-badge {
+  background: #fdecec;
+  color: #c0392b;
+}
+
+/* ACTION BUTTONS */
+.admin-actions {
+  white-space: nowrap;
+}
+
+.admin-action-btn {
+  border-radius: 8px !important;
+  padding: 6px 10px !important;
+  border: none !important;
+  margin-right: 8px;
+}
+
+.edit-btn {
+  background: #f3f3f3 !important;
+  color: #2c2222 !important;
+}
+
+.edit-btn:hover {
+  background: #e8e8e8 !important;
+}
+
+.delete-btn {
+  background: #f5e9e7 !important;
+  color: #9f4b3f !important;
+}
+
+.delete-btn:hover {
+  background: #e7d3cf !important;
+  color: #7d372d !important;
+}
+
+/* CREATE BUTTON */
+.admin-create-btn {
+  background: #2c2222;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.admin-create-btn:hover {
+  background: #b08d57;
+  color: #fff;
+  transform: translateY(-1px);
+}
