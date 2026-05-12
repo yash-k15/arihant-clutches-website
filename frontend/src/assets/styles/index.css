@@ -1036,3 +1036,51 @@ table th {
   font-weight: 500;
   color: #444;
 }
+
+/* Admin Variant Manager Component */
+.variant-card {
+  border: 1px solid #f1f1f1;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.admin-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c2222;
+}
+
+.admin-add-btn {
+  background: #2c2222 !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 8px 14px !important;
+  font-weight: 600 !important;
+}
+
+.admin-add-btn:hover {
+  background: #b08d57 !important;
+  color: white !important;
+}
+
+.admin-delete-soft-btn {
+  background: #f8f5f2 !important;
+  color: #8b5e3c !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+.variant-image-preview {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.variant-preview-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #eee;
+}

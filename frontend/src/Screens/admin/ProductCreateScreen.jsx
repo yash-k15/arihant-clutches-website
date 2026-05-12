@@ -8,6 +8,7 @@ import {
   useCreateProductMutation,
   useUploadProductImageMutation,
 } from '../../slices/productsApiSlice';
+import AdminVariantManager from '../../Components/AdminVariantManager';
 
 const ProductCreateScreen = () => {
   const [name, setName] = useState('');
@@ -24,6 +25,7 @@ const ProductCreateScreen = () => {
   const [isFeatured, setIsFeatured] = useState(false);
   const [isNewArrival, setIsNewArrival] = useState(false);
   const [isBestSeller, setIsBestSeller] = useState(false);
+  const [variants, setVariants] = useState([]);
 
   const navigate = useNavigate();
 
@@ -62,6 +64,7 @@ const ProductCreateScreen = () => {
         isFeatured,
         isNewArrival,
         isBestSeller,
+        variants,
       }).unwrap();
 
       toast.success('Product created');
@@ -249,6 +252,13 @@ const ProductCreateScreen = () => {
             className='my-3 admin-switch'
             checked={isBestSeller}
             onChange={(e) => setIsBestSeller(e.target.checked)}
+          />
+
+          <AdminVariantManager
+            variants={variants}
+            setVariants={setVariants}
+            uploadProductImage={uploadProductImage}
+            toast={toast}
           />
 
           <Button

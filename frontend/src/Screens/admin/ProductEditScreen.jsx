@@ -10,6 +10,7 @@ import {
   useGetProductDetailsQuery,
   useUploadProductImageMutation,
 } from '../../slices/productsApiSlice';
+import AdminVariantManager from '../../Components/AdminVariantManager';
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
@@ -28,6 +29,7 @@ const ProductEditScreen = () => {
   const [isFeatured, setIsFeatured] = useState(false);
   const [isNewArrival, setIsNewArrival] = useState(false);
   const [isBestSeller, setIsBestSeller] = useState(false);
+  const [variants, setVariants] = useState([]);
 
   const {
     data: product,
@@ -59,6 +61,7 @@ const ProductEditScreen = () => {
       setIsFeatured(product.isFeatured || false);
       setIsNewArrival(product.isNewArrival || false);
       setIsBestSeller(product.isBestSeller || false);
+      setVariants(product.variants || []);
     }
   }, [product]);
 
@@ -79,6 +82,7 @@ const ProductEditScreen = () => {
       isFeatured,
       isNewArrival,
       isBestSeller,
+      variants,
     };
 
     const result = await updateProduct(updatedProduct);
@@ -274,6 +278,13 @@ const ProductEditScreen = () => {
               className='my-3 admin-switch'
               checked={isBestSeller}
               onChange={(e) => setIsBestSeller(e.target.checked)}
+            />
+
+            <AdminVariantManager
+              variants={variants}
+              setVariants={setVariants}
+              uploadProductImage={uploadProductImage}
+              toast={toast}
             />
 
             <Button type='submit' variant='primary' className='my-2'>

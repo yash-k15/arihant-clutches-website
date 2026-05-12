@@ -56,6 +56,7 @@ const createProduct = asyncHandler(async (req, res, next) => {
     isFeatured,
     isNewArrival,
     isBestSeller,
+    variants,
   } = req.body;
 
   const product = new Product({
@@ -74,6 +75,7 @@ const createProduct = asyncHandler(async (req, res, next) => {
     isFeatured,
     isNewArrival,
     isBestSeller,
+    variants,
   });
 
   const createdProduct = await product.save();
