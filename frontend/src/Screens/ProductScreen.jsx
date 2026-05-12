@@ -65,7 +65,7 @@ const ProductScreen = () => {
 
     try {
       await createReview({
-        productId,
+        productSlug: product.slug,
         rating,
         comment,
       }).unwrap();
