@@ -81,7 +81,7 @@ const ProductListScreen = () => {
                 <tr key={product._id}>
                   <td>
                     <img
-                      src={product.image}
+                      src={product.variants[0]?.images[0]}
                       alt={product.name}
                       className='admin-product-image'
                     />
@@ -90,9 +90,9 @@ const ProductListScreen = () => {
                   <td className='admin-product-name'>
                     <Link to={`/products/${product.slug}`}>{product.name}</Link>
                   </td>
-                  <td>₹{product.price}</td>
+                  <td>₹{product.variants[0]?.price}</td>
                   <td>
-                    {product.countInStock > 0 ? (
+                    {product.variants[0]?.countInStock > 0 ? (
                       <span className='stock-badge in-stock-badge'>
                         In Stock
                       </span>

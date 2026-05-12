@@ -188,6 +188,18 @@ const ProductScreen = () => {
                     </span>
                   </div>
                 </ListGroup.Item>
+                <ListGroup.Item>
+                  <div className='product-meta'>
+                    <span>
+                      Dimensions:
+                      <strong> {product.dimensions}</strong>
+                    </span>
+                    <span>
+                      Weight:
+                      <strong> {product.weight}</strong>
+                    </span>
+                  </div>
+                </ListGroup.Item>
               </ListGroup>
             </Col>
             <Col md={3}>

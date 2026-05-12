@@ -18,7 +18,7 @@ const ProductCarousel = () => {
           <Link to={`/product/${product.slug}`}>
             <div className='hero-slide'>
               <Image
-                src={product.image}
+                src={product.variants[0]?.images[0]}
                 alt={product.name}
                 fluid
                 className='hero-image'
@@ -26,7 +26,9 @@ const ProductCarousel = () => {
               <div className='hero-overlay'></div>
               <Carousel.Caption className='hero-caption ps-4'>
                 <h2 className='hero-title'>{product.name}</h2>
-                <p className='hero-price'>Starting at ₹{product.price}</p>
+                <p className='hero-price'>
+                  Starting at ₹{product.variants[0]?.price}
+                </p>
               </Carousel.Caption>
             </div>
           </Link>

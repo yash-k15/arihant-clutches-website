@@ -14,7 +14,7 @@ const Product = ({ product }) => {
             )}
           </div>
           <Card.Img
-            src={product.image}
+            src={product.variants[0]?.images[0]}
             variant='top'
             className='product-image'
           />
@@ -36,7 +36,7 @@ const Product = ({ product }) => {
         </Card.Text>
 
         <Card.Text as='h5' className='product-price pt-2 mt-auto'>
-          ₹{product.price}
+          ₹{product.variants[0]?.price}
         </Card.Text>
       </Card.Body>
     </Card>
