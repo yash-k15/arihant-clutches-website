@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 import dotenv from 'dotenv';
 import colors from 'colors';
 import users from './data/users.js';
@@ -22,9 +23,14 @@ const importData = async () => {
 
     const adminUser = createdUsers[0]._id;
 
-    const sampleProducts = products.map((product) => {
-      return { ...product, user: adminUser };
-    });
+    const sampleProducts = products.map((product) => ({
+      ...product,
+      user: adminUser,
+      slug: slugify(product.name, {
+        lower: true,
+        strict: true,
+      }),
+    }));
 
     await Product.insertMany(sampleProducts);
 
