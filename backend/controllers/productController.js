@@ -22,20 +22,8 @@ const getProducts = asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Get Single Products
-// @route   GET /api/products/:id
+// @route   GET /api/products/:slug
 // @access  Public
-const getProduct = asyncHandler(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
-
-  if (!product) {
-    return next(
-      new ErrorResponse(`Product with id ${req.params.id} not found`, 404),
-    );
-  }
-
-  res.status(200).json(product);
-});
-
 const getProductBySlug = asyncHandler(async (req, res) => {
   const product = await Product.findOne({
     slug: req.params.slug,
@@ -102,7 +90,7 @@ const updateProduct = asyncHandler(async (req, res, next) => {
     variants,
   } = req.body;
 
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findOne({ slug: req.params.slug });
 
   if (!product) {
     return next(new ErrorResponse('Resource not found', 404));
@@ -140,7 +128,7 @@ const updateProduct = asyncHandler(async (req, res, next) => {
 // @route DELETE /api/product/:id
 // @access Private/Admin
 const deleteProduct = asyncHandler(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findOne({ slug: req.params.slug });
 
   if (!product) {
     return next(new ErrorResponse('Resource not found', 404));
@@ -198,7 +186,6 @@ const getTopProducts = asyncHandler(async (req, res) => {
 
 export {
   getProducts,
-  getProduct,
   createProduct,
   updateProduct,
   deleteProduct,

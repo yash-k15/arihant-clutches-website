@@ -1,6 +1,6 @@
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import Message from '../../Components/Message';
 import Loader from '../../Components/Loader';
@@ -26,10 +26,10 @@ const ProductListScreen = () => {
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
 
-  const deleteHandler = async (id) => {
+  const deleteHandler = async (slug) => {
     if (window.confirm('Are you sure?')) {
       try {
-        await deleteProduct(id);
+        await deleteProduct(slug);
         toast.success('Product Deleted');
         refetch();
       } catch (err) {
@@ -39,14 +39,6 @@ const ProductListScreen = () => {
   };
 
   const createProductHandler = async () => {
-    // if (window.confirm('Are you sure you want to create a new product?')) {
-    //   try {
-    //     await createProduct();
-    //     refetch();
-    //   } catch (err) {
-    //     toast.error(err?.data?.message || err.error);
-    //   }
-    // }
     navigate('/admin/product/create');
   };
 
@@ -95,7 +87,9 @@ const ProductListScreen = () => {
                     />
                   </td>
                   {/* <td>{product._id}</td> */}
-                  <td className='admin-product-name'>{product.name}</td>
+                  <td className='admin-product-name'>
+                    <Link to={`/products/${product.slug}`}>{product.name}</Link>
+                  </td>
                   <td>₹{product.price}</td>
                   <td>
                     {product.countInStock > 0 ? (
@@ -110,7 +104,7 @@ const ProductListScreen = () => {
                   </td>
                   <td>{product.category}</td>
                   <td className='admin-actions'>
-                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
+                    <LinkContainer to={`/admin/product/${product.slug}/edit`}>
                       <Button
                         variant='light'
                         className='admin-action-btn edit-btn'
@@ -121,7 +115,7 @@ const ProductListScreen = () => {
                     <Button
                       variant='danger'
                       className='admin-action-btn delete-btn'
-                      onClick={() => deleteHandler(product._id)}
+                      onClick={() => deleteHandler(product.slug)}
                     >
                       <FaTrash />
                     </Button>
