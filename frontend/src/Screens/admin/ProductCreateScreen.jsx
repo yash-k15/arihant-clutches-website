@@ -12,12 +12,8 @@ import AdminVariantManager from '../../Components/AdminVariantManager';
 
 const ProductCreateScreen = () => {
   const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [image, setImage] = useState('');
-  const [images, setImages] = useState([]);
   const [brand, setBrand] = useState('');
   const [category, setCategory] = useState('');
-  const [countInStock, setCountInStock] = useState('');
   const [description, setDescription] = useState('');
   const [material, setMaterial] = useState('');
   const [dimensions, setDimensions] = useState('');
@@ -35,28 +31,31 @@ const ProductCreateScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (
-      !name ||
-      !price ||
-      !image ||
-      !brand ||
-      !category ||
-      !countInStock ||
-      !description
-    ) {
-      toast.error('Please fill all fields');
+    if (!name || !brand || !category || !description) {
+      toast.error('Please fill all required fields');
+      return;
+    }
+
+    if (variants.length === 0) {
+      toast.error('Please add at least one variant');
+      return;
+    }
+
+    const invalidVariant = variants.find(
+      (variant) =>
+        !variant.color || !variant.price || variant.images.length === 0,
+    );
+
+    if (invalidVariant) {
+      toast.error('Each variant must have color, price and at least one image');
       return;
     }
 
     try {
       const createdProduct = await createProduct({
         name,
-        price,
-        image,
-        images,
         brand,
         category,
-        countInStock,
         description,
         material,
         dimensions,
@@ -70,35 +69,6 @@ const ProductCreateScreen = () => {
       toast.success('Product created');
 
       navigate(`/products/${createdProduct.slug}`);
-    } catch (err) {
-      toast.error(err?.data?.message || err.error);
-    }
-  };
-
-  const uploadFileHandler = async (e) => {
-    const formData = new FormData();
-    // formData.append('image', e.target.files[0]);
-    // try {
-    //   const res = await uploadProductImage(formData).unwrap();
-    //   toast.success(res.message);
-    //   setImage(res.image);
-    // } catch (err) {
-    //   toast.error(err?.data?.message || err.error);
-    // }
-
-    for (let i = 0; i < e.target.files.length; i++) {
-      formData.append('images', e.target.files[i]);
-    }
-
-    try {
-      const res = await uploadProductImage(formData).unwrap();
-      toast.success(res.message);
-
-      // FIRST IMAGE = MAIN IMAGE
-      setImage(res.images[0]);
-
-      // ALL IMAGES
-      setImages(res.images);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -123,33 +93,6 @@ const ProductCreateScreen = () => {
             ></Form.Control>
           </Form.Group>
 
-          <Form.Group controlId='price' className='my-2'>
-            <Form.Label>Price</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter Price'
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
-          <Form.Group controlId='image' className='my-2'>
-            <Form.Label>Image</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Enter Image URL'
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-            ></Form.Control>
-            <Form.Control
-              type='file'
-              multiple
-              label='Choose file'
-              onChange={uploadFileHandler}
-            ></Form.Control>
-            {loadingUpload && <Loader />}
-          </Form.Group>
-
           <Form.Group controlId='brand' className='my-2'>
             <Form.Label>Brand</Form.Label>
             <Form.Control
@@ -167,16 +110,6 @@ const ProductCreateScreen = () => {
               placeholder='Enter Category'
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
-
-          <Form.Group controlId='countInStock' className='my-2'>
-            <Form.Label>Count In Stock</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Enter Count In Stock'
-              value={countInStock}
-              onChange={(e) => setCountInStock(e.target.value)}
             ></Form.Control>
           </Form.Group>
 

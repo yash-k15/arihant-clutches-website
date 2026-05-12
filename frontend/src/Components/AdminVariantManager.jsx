@@ -109,11 +109,26 @@ const AdminVariantManager = ({
 
               <Col md={6}>
                 <Form.Group className='mb-3'>
+                  <Form.Label>Price</Form.Label>
+
+                  <Form.Control
+                    type='text'
+                    placeholder='Enter Price'
+                    value={variant.price}
+                    onChange={(e) =>
+                      updateVariantField(index, 'price', e.target.value)
+                    }
+                  />
+                </Form.Group>
+              </Col>
+
+              <Col md={6}>
+                <Form.Group className='mb-3'>
                   <Form.Label>Stock</Form.Label>
 
                   <Form.Control
                     type='number'
-                    placeholder='Enter stock'
+                    placeholder='Enter Stock'
                     value={variant.countInStock}
                     onChange={(e) =>
                       updateVariantField(

@@ -30,6 +30,12 @@ const variantSchema = mongoose.Schema({
   color: {
     type: String,
   },
+  price: {
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0,
+  },
   countInStock: {
     type: Number,
     default: 0,
@@ -50,15 +56,6 @@ const productSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    image: {
-      type: String,
-      required: true,
-    },
-    images: [
-      {
-        type: String,
-      },
-    ],
     brand: {
       type: String,
       default: 'Arihant Clutches',
@@ -90,21 +87,9 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    price: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
-    },
     variants: {
       type: [variantSchema],
-      default: [],
-    },
-    countInStock: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
+      validate: [(val) => val.length > 0, 'At least one variant required'],
     },
     isFeatured: {
       type: Boolean,

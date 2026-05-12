@@ -43,12 +43,8 @@ const getProductBySlug = asyncHandler(async (req, res) => {
 const createProduct = asyncHandler(async (req, res, next) => {
   const {
     name,
-    price,
-    image,
-    images,
     brand,
     category,
-    countInStock,
     description,
     material,
     dimensions,
@@ -62,12 +58,8 @@ const createProduct = asyncHandler(async (req, res, next) => {
   const product = new Product({
     user: req.user._id,
     name,
-    price,
-    image,
-    images,
     brand,
     category,
-    countInStock,
     description,
     material,
     dimensions,
@@ -88,13 +80,9 @@ const createProduct = asyncHandler(async (req, res, next) => {
 const updateProduct = asyncHandler(async (req, res, next) => {
   const {
     name,
-    price,
     description,
-    image,
-    images,
     brand,
     category,
-    countInStock,
     material,
     isFeatured,
     isNewArrival,
@@ -111,11 +99,9 @@ const updateProduct = asyncHandler(async (req, res, next) => {
   }
 
   product.name = name || product.name;
-  product.price = price ?? product.price;
   product.description = description || product.description;
   product.brand = brand || product.brand;
   product.category = category || product.category;
-  product.countInStock = countInStock ?? product.countInStock;
   product.material = material || product.material;
   product.isFeatured = isFeatured ?? product.isFeatured;
   product.isNewArrival = isNewArrival ?? product.isNewArrival;
@@ -123,16 +109,6 @@ const updateProduct = asyncHandler(async (req, res, next) => {
   product.weight = weight ?? product.weight;
   product.dimensions = dimensions || product.dimensions;
   product.variants = variants || product.variants;
-
-  // IMAGES
-  product.image = image || product.image;
-  product.images = images?.length ? images : product.images;
-
-  // SAFETY:
-  // Ensure main image exists
-  if (product.images.length > 0) {
-    product.image = product.images[0];
-  }
 
   const updatedProduct = await product.save();
   res.status(200).json(updatedProduct);
