@@ -1020,3 +1020,19 @@ table th {
   background: #b08d57 !important;
   color: #fff !important;
 }
+
+.admin-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c2222;
+  margin-bottom: 15px;
+}
+
+.admin-switch .form-check-input {
+  cursor: pointer;
+}
+
+.admin-switch .form-check-label {
+  font-weight: 500;
+  color: #444;
+}

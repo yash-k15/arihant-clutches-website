@@ -18,6 +18,12 @@ const ProductCreateScreen = () => {
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState('');
   const [description, setDescription] = useState('');
+  const [material, setMaterial] = useState('');
+  const [dimensions, setDimensions] = useState('');
+  const [weight, setWeight] = useState('');
+  const [isFeatured, setIsFeatured] = useState(false);
+  const [isNewArrival, setIsNewArrival] = useState(false);
+  const [isBestSeller, setIsBestSeller] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,16 +47,6 @@ const ProductCreateScreen = () => {
     }
 
     try {
-      console.log({
-        name,
-        price,
-        image,
-        images,
-        brand,
-        category,
-        countInStock,
-        description,
-      });
       const createdProduct = await createProduct({
         name,
         price,
@@ -60,11 +56,17 @@ const ProductCreateScreen = () => {
         category,
         countInStock,
         description,
+        material,
+        dimensions,
+        weight,
+        isFeatured,
+        isNewArrival,
+        isBestSeller,
       }).unwrap();
 
       toast.success('Product created');
 
-      navigate(`/admin/product/${createdProduct.slug}/edit`);
+      navigate(`/products/${createdProduct.slug}`);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -179,11 +181,76 @@ const ProductCreateScreen = () => {
             <Form.Label>Description</Form.Label>
             <Form.Control
               type='text'
-              placeholder='Enter description'
+              placeholder='Enter Description'
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></Form.Control>
           </Form.Group>
+
+          <hr className='my-4' />
+          <h5 className='admin-section-title'>Product Details</h5>
+
+          <Form.Group controlId='material' className='my-2'>
+            <Form.Label>Material</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter Material'
+              value={material}
+              onChange={(e) => setMaterial(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId='dimension' className='my-2'>
+            <Form.Label>Dimension</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter Dimension'
+              value={dimensions}
+              onChange={(e) => setDimensions(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId='weight' className='my-2'>
+            <Form.Label>Weight</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter Weight'
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <hr className='my-4' />
+
+          <h5 className='admin-section-title'>Product Visibility</h5>
+
+          <Form.Check
+            type='switch'
+            id='featured'
+            label='Featured Product'
+            className='my-3 admin-switch'
+            checked={isFeatured}
+            onChange={(e) => setIsFeatured(e.target.checked)}
+          />
+
+          <Form.Check
+            type='switch'
+            id='newarrival'
+            label='New Arrival'
+            className='my-3 admin-switch'
+            checked={isNewArrival}
+            onChange={(e) => setIsNewArrival(e.target.checked)}
+          />
+
+          <Form.Check
+            type='switch'
+            id='bestseller'
+            label='Best Seller'
+            className='my-3 admin-switch'
+            checked={isBestSeller}
+            onChange={(e) => setIsBestSeller(e.target.checked)}
+          />
+
           <Button
             type='submit'
             className='admin-submit-btn w-100 mt-3'

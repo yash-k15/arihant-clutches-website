@@ -30,11 +30,10 @@ const variantSchema = mongoose.Schema({
   color: {
     type: String,
   },
-  size: {
-    type: String,
-  },
-  material: {
-    type: String,
+  countInStock: {
+    type: Number,
+    default: 0,
+    min: 0,
   },
   images: [String],
 });
@@ -107,31 +106,26 @@ const productSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
-    featured: {
+    isFeatured: {
       type: Boolean,
       default: false,
     },
-
     isNewArrival: {
       type: Boolean,
       default: false,
     },
-
     isBestSeller: {
       type: Boolean,
       default: false,
     },
     dimensions: {
-      length: Number,
-      width: Number,
-      height: Number,
+      type: String,
+      trim: true,
     },
-
     weight: {
-      type: Number,
-      min: 0,
+      type: String,
+      trim: true,
     },
-
     material: {
       type: String,
       trim: true,

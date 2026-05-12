@@ -50,6 +50,12 @@ const createProduct = asyncHandler(async (req, res, next) => {
     category,
     countInStock,
     description,
+    material,
+    dimensions,
+    weight,
+    isFeatured,
+    isNewArrival,
+    isBestSeller,
   } = req.body;
 
   const product = new Product({
@@ -62,6 +68,12 @@ const createProduct = asyncHandler(async (req, res, next) => {
     category,
     countInStock,
     description,
+    material,
+    dimensions,
+    weight,
+    isFeatured,
+    isNewArrival,
+    isBestSeller,
   });
 
   const createdProduct = await product.save();
@@ -82,7 +94,7 @@ const updateProduct = asyncHandler(async (req, res, next) => {
     category,
     countInStock,
     material,
-    featured,
+    isFeatured,
     isNewArrival,
     isBestSeller,
     weight,
@@ -103,7 +115,7 @@ const updateProduct = asyncHandler(async (req, res, next) => {
   product.category = category || product.category;
   product.countInStock = countInStock ?? product.countInStock;
   product.material = material || product.material;
-  product.featured = featured ?? product.featured;
+  product.isFeatured = isFeatured ?? product.isFeatured;
   product.isNewArrival = isNewArrival ?? product.isNewArrival;
   product.isBestSeller = isBestSeller ?? product.isBestSeller;
   product.weight = weight ?? product.weight;
