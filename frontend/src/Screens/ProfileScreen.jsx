@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Table, Form, Button, Row, Col } from 'react-bootstrap';
+import { Accordion } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -55,59 +56,74 @@ const ProfileScreen = () => {
   };
 
   return (
-    <Row>
-      <Col md={3}>
-        <h2>User Profile</h2>
+    <>
+      <div className='profile-page'>
+        <div className='profile-header'>
+          <h1 className='page-title'>My Account</h1>
+          <p className='page-subtitle'>
+            Manage your profile and track your orders
+          </p>
+        </div>
 
-        <Form onSubmit={submitHandler}>
-          <Form.Group controlId='name' className='my-2'>
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type='name'
-              placeholder='Enter name'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
+        <Accordion className='profile-accordion mb-4'>
+          <Accordion.Item eventKey='0'>
+            <Accordion.Header>Profile Settings</Accordion.Header>
+            <Accordion.Body>
+              <h4 className='mb-4'>Update Profile</h4>
+              <Form onSubmit={submitHandler}>
+                <Form.Group controlId='name' className='mb-3'>
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    type='name'
+                    placeholder='Enter name'
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  ></Form.Control>
+                </Form.Group>
 
-          <Form.Group controlId='email' className='my-2'>
-            <Form.Label>Email Address</Form.Label>
-            <Form.Control
-              type='email'
-              placeholder='Enter Email Address'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
+                <Form.Group controlId='email' className='mb-3'>
+                  <Form.Label>Email Address</Form.Label>
+                  <Form.Control
+                    type='email'
+                    placeholder='Enter Email Address'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  ></Form.Control>
+                </Form.Group>
 
-          <Form.Group controlId='password' className='my-2'>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Enter password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
+                <Form.Group controlId='password' className='mb-3'>
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type='password'
+                    placeholder='Enter password'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  ></Form.Control>
+                </Form.Group>
 
-          <Form.Group controlId='confirmPassword' className='my-2'>
-            <Form.Label>Confirm Password</Form.Label>
-            <Form.Control
-              type='password'
-              placeholder='Confirm password'
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            ></Form.Control>
-          </Form.Group>
+                <Form.Group controlId='confirmPassword' className='mb-3'>
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type='password'
+                    placeholder='Confirm password'
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  ></Form.Control>
+                </Form.Group>
 
-          <Button type='submit' variant='primary' className='my-2'>
-            Update
-          </Button>
-          {loadingUpdateProfile && <Loader />}
-        </Form>
-      </Col>
-      <Col md={9}>
-        <h2>My Orders</h2>
+                <Button type='submit' variant='primary' className='w-100 mt-3'>
+                  Update
+                </Button>
+                {loadingUpdateProfile && <Loader />}
+              </Form>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+
+        <div className='orders-section'>
+          <h2>My Orders</h2>
+          <p>Track your order history and delivery status</p>
+        </div>
         {isLoading ? (
           <Loader />
         ) : error ? (
@@ -115,7 +131,7 @@ const ProfileScreen = () => {
             {error?.data?.message || error.error}
           </Message>
         ) : (
-          <Table striped hover responsive className='table-sm'>
+          <Table striped hover responsive className='table-sm profile-table'>
             <thead>
               <tr>
                 <th>ID</th>
@@ -127,7 +143,7 @@ const ProfileScreen = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {orders?.map((order) => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
@@ -158,8 +174,8 @@ const ProfileScreen = () => {
             </tbody>
           </Table>
         )}
-      </Col>
-    </Row>
+      </div>
+    </>
   );
 };
 

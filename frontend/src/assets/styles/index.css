@@ -775,3 +775,93 @@ table th {
   margin-bottom: 25px;
   flex-wrap: wrap;
 }
+
+/* Profile Screen CSS */
+.profile-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px 0 60px;
+}
+
+.profile-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 40px;
+}
+
+.profile-section-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #2c2222;
+  margin-bottom: 4px;
+}
+
+.profile-section-header p {
+  font-size: 0.9rem;
+  color: #777;
+  margin: 0;
+}
+
+.profile-table {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.profile-table th {
+  background: #f8f8f8;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.profile-table td {
+  vertical-align: middle;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c2222;
+}
+
+.profile-header {
+  margin-bottom: 30px;
+}
+
+.page-subtitle {
+  color: #777;
+  margin-top: 6px;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #333;
+}
+
+.profile-accordion .accordion-item {
+  border: none;
+  border-radius: 16px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.profile-accordion .accordion-button {
+  font-weight: 600;
+  padding: 18px 22px;
+  background: #fff;
+  color: #2c2222;
+}
+
+.profile-accordion .accordion-button:not(.collapsed) {
+  background: #fff;
+  box-shadow: none;
+}
+
+.profile-accordion .accordion-body {
+  padding: 28px;
+}
