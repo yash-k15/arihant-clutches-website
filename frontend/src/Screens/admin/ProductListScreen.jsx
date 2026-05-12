@@ -1,26 +1,27 @@
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import Message from '../../Components/Message';
 import Loader from '../../Components/Loader';
 import { toast } from 'react-toastify';
 import {
   useGetProductsQuery,
-  useCreateProductMutation,
+  // useCreateProductMutation,
   useDeleteProductMutation,
 } from '../../slices/productsApiSlice';
 import Paginate from '../../Components/Paginate';
 
 const ProductListScreen = () => {
   const { pageNumber } = useParams();
+  const navigate = useNavigate();
 
   const { data, isLoading, error, refetch } = useGetProductsQuery({
     pageNumber,
   });
 
-  const [createProduct, { isLoading: loadingCreate }] =
-    useCreateProductMutation();
+  // const [createProduct, { isLoading: loadingCreate }] =
+  //   useCreateProductMutation();
 
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
@@ -38,14 +39,15 @@ const ProductListScreen = () => {
   };
 
   const createProductHandler = async () => {
-    if (window.confirm('Are you sure you want to create a new product?')) {
-      try {
-        await createProduct();
-        refetch();
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
-    }
+    // if (window.confirm('Are you sure you want to create a new product?')) {
+    //   try {
+    //     await createProduct();
+    //     refetch();
+    //   } catch (err) {
+    //     toast.error(err?.data?.message || err.error);
+    //   }
+    // }
+    navigate('/admin/product/create');
   };
 
   return (
@@ -62,7 +64,7 @@ const ProductListScreen = () => {
           </Col>
         </Row>
       </div>
-      {loadingCreate && <Loader />}
+
       {loadingDelete && <Loader />}
       {isLoading ? (
         <Loader />

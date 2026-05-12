@@ -53,28 +53,27 @@ const getProductBySlug = asyncHandler(async (req, res) => {
 // @route POST /api/products
 // @access Private/Admin
 const createProduct = asyncHandler(async (req, res, next) => {
+  const {
+    name,
+    price,
+    image,
+    images,
+    brand,
+    category,
+    countInStock,
+    description,
+  } = req.body;
+
   const product = new Product({
-    name: 'Sample name',
-    price: 0,
     user: req.user._id,
-    image: '/images/sample.jpg',
-    images: ['/images/sample.jpg'],
-    brand: 'Sample Brand',
-    category: 'Sample Category',
-    countInStock: 0,
-    numReviews: 0,
-    description: 'Sample Description',
-    material: 'PU Leather',
-    featured: false,
-    isNewArrival: false,
-    isBestSeller: false,
-    weight: 0,
-    dimensions: {
-      length: 0,
-      width: 0,
-      height: 0,
-    },
-    variants: [],
+    name,
+    price,
+    image,
+    images,
+    brand,
+    category,
+    countInStock,
+    description,
   });
 
   const createdProduct = await product.save();

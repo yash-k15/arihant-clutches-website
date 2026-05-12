@@ -981,3 +981,42 @@ table th {
   color: #fff;
   transform: translateY(-1px);
 }
+
+/* Product Create Screen */
+.admin-form-card {
+  border: none;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.admin-form-header {
+  margin-bottom: 24px;
+}
+
+.admin-form-subtitle {
+  color: #b08d57;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.admin-form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c2222;
+}
+
+.admin-submit-btn {
+  background: #2c2222 !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  font-weight: 600 !important;
+}
+
+.admin-submit-btn:hover {
+  background: #b08d57 !important;
+  color: #fff !important;
+}

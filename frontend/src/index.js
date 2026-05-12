@@ -32,6 +32,7 @@ import UserListScreen from './Screens/admin/UserListScreen.jsx';
 import UserEditScreen from './Screens/admin/UserEditScreen.jsx';
 import ForgotPasswordScreen from './Screens/ForgotPasswordScreen.jsx';
 import ResetPasswordScreen from './Screens/ResetPasswordScreen.jsx';
+import ProductCreateScreen from './Screens/admin/ProductCreateScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,6 +68,7 @@ const router = createBrowserRouter(
         <Route path='/admin/product/:id/edit' element={<ProductEditScreen />} />
         <Route path='/admin/userlist' element={<UserListScreen />} />
         <Route path='/admin/user/:id/edit' element={<UserEditScreen />} />
+        <Route path='/admin/product/create' element={<ProductCreateScreen />} />
       </Route>
     </Route>,
   ),
