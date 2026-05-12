@@ -42,7 +42,7 @@ const OrderScreen = () => {
     <Message variant='danger' />
   ) : (
     <>
-      {order.isPaid && (
+      {order.isPaid && !userInfo.isAdmin && (
         <div className='order-success'>
           <h1 className='success-title'>🎉 Thank You for Your Order!</h1>
           <p className='success-text'>
@@ -82,7 +82,8 @@ const OrderScreen = () => {
               </p>
               {order.isDelivered ? (
                 <Message variant='success'>
-                  Delivered on {order.deliveredAt}
+                  Delivered on{' '}
+                  {new Date(order.deliveredAt).toLocaleDateString('en-GB')}
                 </Message>
               ) : (
                 <Message variant='danger'>Not Delivered</Message>
@@ -95,7 +96,9 @@ const OrderScreen = () => {
                 <strong>Method: </strong> {order.paymentMethod}
               </p> */}
               {order.isPaid ? (
-                <Message variant='success'>Paid on {order.paidAt}</Message>
+                <Message variant='success'>
+                  Paid on {new Date(order.paidAt).toLocaleDateString('en-GB')}
+                </Message>
               ) : (
                 <Message variant='danger'>Not Paid</Message>
               )}

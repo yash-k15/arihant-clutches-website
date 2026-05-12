@@ -220,7 +220,9 @@ const ProductScreen = () => {
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>
                     <Rating value={review.rating}></Rating>
-                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>
+                      {new Date(review.createdAt).toLocaleDateString('en-GB')}
+                    </p>
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}
