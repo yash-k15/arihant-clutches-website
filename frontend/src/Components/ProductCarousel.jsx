@@ -15,7 +15,7 @@ const ProductCarousel = () => {
     <Carousel pause='hover' className='hero-carousel mb-5'>
       {products.map((product) => (
         <Carousel.Item key={product._id}>
-          <Link to={`/product/${product.slug}`}>
+          <Link to={`/products/${product.slug}`}>
             <div className='hero-slide'>
               <Image
                 src={product.variants[0]?.images[0]}
