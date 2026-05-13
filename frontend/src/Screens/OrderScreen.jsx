@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 // import { useEffect } from 'react';
 import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -15,6 +15,7 @@ const OrderScreen = () => {
   const { id: orderId } = useParams();
 
   const { userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   const {
     data: order,
@@ -56,12 +57,24 @@ const OrderScreen = () => {
           </div>
         </div>
       )}
-      <div className='order-page-header'>
-        <h1 className='order-title'>Order Confirmation</h1>
-        <p className='order-meta'>
-          Order ID: <span>{order._id}</span>
-        </p>
-      </div>
+      <Row className='align-items-center'>
+        <Col>
+          <div className='order-page-header'>
+            <h1 className='order-title'>Order Confirmation</h1>
+            <p className='order-meta'>
+              Order ID: <span>{order._id}</span>
+            </p>
+          </div>
+        </Col>
+        <Col className='text-end'>
+          <Button
+            className='admin-create-btn'
+            onClick={() => navigate('/admin/orderlist')}
+          >
+            Order List
+          </Button>
+        </Col>
+      </Row>
       <Row>
         <Col md={8}>
           <ListGroup variant='flush'>
@@ -169,7 +182,7 @@ const OrderScreen = () => {
                   <ListGroup.Item>
                     <Button
                       type='button'
-                      className='btn btn-block'
+                      className='admin-create-btn'
                       onClick={deliverOrderHandler}
                     >
                       Mark As Delivered
