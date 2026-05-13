@@ -107,7 +107,9 @@ const ProductListScreen = () => {
                         ))}
                       </div>
                     </td>
-                    <td>₹{product.variants[0]?.price}</td>
+                    <td className='admin-price-cell'>
+                      ₹{product.variants[0]?.price}
+                    </td>
                     <td>
                       {product.variants[0]?.countInStock > 0 ? (
                         <span className='stock-badge in-stock-badge'>
@@ -119,7 +121,11 @@ const ProductListScreen = () => {
                         </span>
                       )}
                     </td>
-                    <td>{product.category}</td>
+                    <td>
+                      <span className='admin-category-badge'>
+                        {product.category}
+                      </span>
+                    </td>
                     <td className='admin-actions'>
                       <LinkContainer to={`/admin/product/${product.slug}/edit`}>
                         <Button

@@ -48,19 +48,13 @@ const OrderListScreen = () => {
                   </td>
 
                   <td>
-                    <div className='admin-user-cell'>
-                      <span className='admin-user-name'>
-                        {order.user?.name}
-                      </span>
-
-                      <span className='admin-user-email'>
-                        {order.user?.email}
-                      </span>
-                    </div>
+                    <span className='admin-user-name'>{order.user?.name}</span>
                   </td>
 
                   <td>
-                    {new Date(order.createdAt).toLocaleDateString('en-GB')}
+                    <span className='admin-date-text'>
+                      {new Date(order.createdAt).toLocaleDateString('en-GB')}
+                    </span>
                   </td>
 
                   <td>

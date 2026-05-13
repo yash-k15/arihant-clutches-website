@@ -1092,6 +1092,21 @@ table th {
   min-width: 220px;
 }
 
+.admin-category-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f5f1;
+  color: #7a5c3e;
+  border: 1px solid #eadfce;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  min-width: 90px;
+}
+
 /* STOCK BADGES */
 .stock-badge {
   padding: 6px 12px;
@@ -1203,6 +1218,7 @@ table th {
 .admin-user-cell {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.85rem;
 }
 
@@ -1218,18 +1234,28 @@ table th {
   font-weight: 600;
 }
 
-.admin-user-name {
+/* .admin-user-name {
   font-weight: 600;
   color: #111827;
-}
+} */
 
 .admin-user-email {
   color: #4b5563;
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
 .admin-user-email:hover {
   color: #111827;
+  text-decoration: underline;
+}
+
+.admin-date-text {
+  color: #444;
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: 0.2px;
 }
 
 .admin-role-badge,
@@ -1292,19 +1318,14 @@ table th {
 
 /* USER */
 
-.admin-user-cell {
+/* .admin-user-cell {
   display: flex;
   flex-direction: column;
-}
+} */
 
 .admin-user-name {
   font-weight: 600;
   color: #111;
-}
-
-.admin-user-email {
-  font-size: 0.8rem;
-  color: #888;
 }
 
 /* ITEMS */

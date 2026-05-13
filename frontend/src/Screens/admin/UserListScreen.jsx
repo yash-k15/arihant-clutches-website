@@ -84,7 +84,9 @@ const UserListScreen = () => {
                   </td>
 
                   <td>
-                    {new Date(user.createdAt).toLocaleDateString('en-GB')}
+                    <span className='admin-date-text'>
+                      {new Date(user.createdAt).toLocaleDateString('en-GB')}
+                    </span>
                   </td>
 
                   <td>
