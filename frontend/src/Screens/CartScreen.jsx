@@ -26,15 +26,15 @@ const CartScreen = () => {
     dispatch(addToCart({ ...product, qty }));
   };
 
-  const removeFromCartHandler = async (id) => {
-    dispatch(removeFromCart(id));
+  const removeFromCartHandler = async (variantId) => {
+    dispatch(removeFromCart(variantId));
   };
 
   const checkoutHandler = () => {
     navigate('/login?redirect=/shipping');
   };
 
-  const onClickHandler = () => {
+  const onContinueClickHandler = () => {
     navigate('/');
   };
 
@@ -43,7 +43,10 @@ const CartScreen = () => {
       <CheckoutSteps step1 step2 />
 
       <BackButton />
-      <Button onClick={onClickHandler} className='continue-shopping-btn mx-2'>
+      <Button
+        onClick={onContinueClickHandler}
+        className='continue-shopping-btn mx-2'
+      >
         Continue Shopping →
       </Button>
 
@@ -99,7 +102,7 @@ const CartScreen = () => {
                       <Button
                         type='button'
                         variant='light'
-                        onClick={() => removeFromCartHandler(item._id)}
+                        onClick={() => removeFromCartHandler(item.variantId)}
                       >
                         <FaTrash></FaTrash>
                       </Button>
