@@ -21,6 +21,7 @@ import Loader from '../Components/Loader.jsx';
 import Message from '../Components/Message.jsx';
 import Meta from '../Components/Meta.jsx';
 import { addToCart } from '../slices/cartSlice.js';
+import BackButton from '../Components/BackButton.jsx';
 
 const ProductScreen = () => {
   const { slug } = useParams();
@@ -95,9 +96,7 @@ const ProductScreen = () => {
 
   return (
     <>
-      <Link className='btn btn-light my-3' to='/'>
-        Go Back
-      </Link>
+      <BackButton />
       {isLoading ? (
         <Loader />
       ) : error ? (

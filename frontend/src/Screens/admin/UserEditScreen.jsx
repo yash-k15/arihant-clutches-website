@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import Message from '../../Components/Message';
 import Loader from '../../Components/Loader';
@@ -9,6 +9,7 @@ import {
   useGetUserDetailsQuery,
   useUpdateUserMutation,
 } from '../../slices/usersApiSlice';
+import BackButton from '../../Components/BackButton';
 
 const UserEditScreen = () => {
   const { id: userId } = useParams();
@@ -50,9 +51,7 @@ const UserEditScreen = () => {
 
   return (
     <>
-      <Link to='/admin/userlist' className='btn btn-light my-3'>
-        Go Back
-      </Link>
+      <BackButton />
       <FormContainer>
         <h1>Edit User</h1>
         {loadingUpdate && <Loader />}

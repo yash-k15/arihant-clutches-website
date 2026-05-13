@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import Message from '../../Components/Message';
 import Loader from '../../Components/Loader';
@@ -11,6 +11,7 @@ import {
   useUploadProductImageMutation,
 } from '../../slices/productsApiSlice';
 import AdminVariantManager from '../../Components/AdminVariantManager';
+import BackButton from '../../Components/BackButton';
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
@@ -86,9 +87,7 @@ const ProductEditScreen = () => {
 
   return (
     <>
-      <Link to='/admin/productlist' className='btn btn-light my-3'>
-        Go Back
-      </Link>
+      <BackButton />
       <FormContainer>
         <h1>Edit Product</h1>
         {loadingUpdate && <Loader />}

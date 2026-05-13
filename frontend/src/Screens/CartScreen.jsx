@@ -13,6 +13,7 @@ import { FaTrash } from 'react-icons/fa';
 import Message from '../Components/Message.jsx';
 import CheckoutSteps from '../Components/CheckoutSteps.jsx';
 import { addToCart, removeFromCart } from '../slices/cartSlice.js';
+import BackButton from '../Components/BackButton.jsx';
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -33,9 +34,19 @@ const CartScreen = () => {
     navigate('/login?redirect=/shipping');
   };
 
+  const onClickHandler = () => {
+    navigate('/');
+  };
+
   return (
     <>
       <CheckoutSteps step1 step2 />
+
+      <BackButton />
+      <Button onClick={onClickHandler} className='continue-shopping-btn mx-2'>
+        Continue Shopping →
+      </Button>
+
       <Row>
         <Col md={8}>
           <div className='cart-header'>
@@ -44,7 +55,7 @@ const CartScreen = () => {
           </div>
           {cartItems.length === 0 ? (
             <Message>
-              Your cart is empty <Link to='/'>Go Back</Link>
+              Your cart is empty <Link to='/'>Shop Now</Link>
             </Message>
           ) : (
             <ListGroup variant='flush'>

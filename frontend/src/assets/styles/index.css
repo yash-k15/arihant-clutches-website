@@ -657,6 +657,14 @@ table th {
   color: #000 !important;
 }
 
+.cart-actions {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  margin: 1.5rem 0;
+  gap: 1rem;
+}
+
 /* Login Screen CSS */
 .auth-card {
   background: #fff;
@@ -1233,4 +1241,36 @@ table th {
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid #eee;
+}
+
+/* Back Button CSS */
+.back-btn {
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-weight: 500;
+  border: 1px solid #e5e5e5;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #f8f8f8;
+  transform: translateX(-2px);
+}
+
+/* Continue Button */
+.continue-shopping-btn {
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-weight: 500;
+  border: 1px solid #e5e5e5;
+  background: black;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.continue-shopping-btn:hover {
+  background: #222;
+  color: #fff;
+  transform: translateY(-2px);
 }

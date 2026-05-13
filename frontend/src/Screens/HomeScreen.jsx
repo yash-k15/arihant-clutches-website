@@ -1,11 +1,12 @@
 import { Row, Col } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Product from '../Components/Product';
 import { useGetProductsQuery } from '../slices/productsApiSlice.js';
 import Loader from '../Components/Loader.jsx';
 import Message from '../Components/Message.jsx';
 import Paginate from '../Components/Paginate.jsx';
 import ProductCarousel from '../Components/ProductCarousel.jsx';
+import BackButton from '../Components/BackButton.jsx';
 
 const HomeScreen = () => {
   const { pageNumber, keyword } = useParams();
@@ -16,13 +17,7 @@ const HomeScreen = () => {
 
   return (
     <>
-      {!keyword ? (
-        <ProductCarousel />
-      ) : (
-        <Link to='/' className='btn btn-light mb-4'>
-          Go Back
-        </Link>
-      )}
+      {!keyword ? <ProductCarousel /> : <BackButton />}
       {isLoading ? (
         <Loader />
       ) : error ? (
