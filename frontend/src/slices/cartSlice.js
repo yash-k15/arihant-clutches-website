@@ -11,11 +11,15 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const item = action.payload;
-      const existItem = state.cartItems.find((x) => x._id === item._id);
+      const existItem = state.cartItems.find(
+        (x) => x._id === item._id && x.variantId === item.variantId,
+      );
 
       if (existItem) {
         state.cartItems = state.cartItems.map((x) =>
-          x._id === existItem._id ? item : x,
+          x._id === existItem._id && x.variantId === existItem.variantId
+            ? item
+            : x,
         );
       } else {
         state.cartItems = [...state.cartItems, item];

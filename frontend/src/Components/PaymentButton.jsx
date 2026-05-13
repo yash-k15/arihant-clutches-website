@@ -47,10 +47,12 @@ const PaymentButton = ({ disabled }) => {
               paymentData: response,
               orderData: {
                 orderItems: cart.cartItems.map((item) => ({
-                  product: item._id,
+                  product: item.product,
                   name: item.name,
                   image: item.image,
                   price: item.price,
+                  color: item.color,
+                  variantId: item.variantId,
                   qty: item.qty,
                 })),
                 shippingAddress: cart.shippingAddress,
