@@ -1281,6 +1281,100 @@ table th {
   background: #ffedd5;
 }
 
+/* Order List Screen */
+/* ORDER ID */
+
+.admin-order-id {
+  font-weight: 700;
+  color: #111;
+  letter-spacing: 1px;
+}
+
+/* USER */
+
+.admin-user-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-user-name {
+  font-weight: 600;
+  color: #111;
+}
+
+.admin-user-email {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ITEMS */
+
+.admin-items-badge {
+  background: #f3f4f6;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* PRICE */
+
+.admin-price-cell {
+  font-weight: 700;
+  color: #111;
+}
+
+/* PAYMENT */
+
+.admin-payment-method {
+  text-transform: capitalize;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* STATUS */
+
+.admin-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.admin-status.success {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.admin-status.pending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.admin-status.processing {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+/* BUTTON */
+
+.admin-action-btn {
+  border-radius: 10px !important;
+  padding: 0.45rem 1rem !important;
+  font-weight: 500 !important;
+  border: 1px solid #e5e7eb !important;
+  transition: all 0.2s ease;
+}
+
+.admin-action-btn:hover {
+  background: #111 !important;
+  color: #fff !important;
+  border-color: #111 !important;
+}
+
 /* Product Create Screen */
 .admin-form-card {
   border: none;
