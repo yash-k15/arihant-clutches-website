@@ -89,131 +89,139 @@ const ProductEditScreen = () => {
     <>
       <BackButton />
       <FormContainer>
-        <h1>Edit Product</h1>
-        {loadingUpdate && <Loader />}
+        <div className='auth-card'>
+          <p className='auth-subtitle'>WELCOME ADMIN</p>
+          <h1 className='auth-title'>Edit Product</h1>
+          {loadingUpdate && <Loader />}
 
-        {isLoading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>{error.data.message}</Message>
-        ) : (
-          <Form onSubmit={submitHandler}>
-            <Form.Group controlId='name' className='my-2'>
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Name'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <Message variant='danger'>{error.data.message}</Message>
+          ) : (
+            <Form onSubmit={submitHandler}>
+              <Form.Group controlId='name' className='my-2'>
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter Name'
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
 
-            <Form.Group controlId='brand' className='my-2'>
-              <Form.Label>Brand</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Brand'
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+              <Form.Group controlId='brand' className='my-2'>
+                <Form.Label>Brand</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter Brand'
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
 
-            <Form.Group controlId='category' className='my-2'>
-              <Form.Label>Category</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Category'
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+              <Form.Group controlId='category' className='my-2'>
+                <Form.Label>Category</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter Category'
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
 
-            <Form.Group controlId='description' className='my-2'>
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter description'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+              <Form.Group controlId='description' className='my-2'>
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  type='text'
+                  as='textarea'
+                  placeholder='Enter description'
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
 
-            <hr className='my-4' />
-            <h5 className='admin-section-title'>Product Details</h5>
+              <hr className='my-4' />
+              <h5 className='admin-section-title'>Product Details</h5>
 
-            <Form.Group controlId='material' className='my-2'>
-              <Form.Label>Material</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Material'
-                value={material}
-                onChange={(e) => setMaterial(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+              <Form.Group controlId='material' className='my-2'>
+                <Form.Label>Material</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter Material'
+                  value={material}
+                  onChange={(e) => setMaterial(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
 
-            <Form.Group controlId='dimension' className='my-2'>
-              <Form.Label>Dimension</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Dimension'
-                value={dimensions}
-                onChange={(e) => setDimensions(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+              <Form.Group controlId='dimension' className='my-2'>
+                <Form.Label>Dimension</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter Dimension'
+                  value={dimensions}
+                  onChange={(e) => setDimensions(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
 
-            <Form.Group controlId='weight' className='my-2'>
-              <Form.Label>Weight</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter Weight'
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-              ></Form.Control>
-            </Form.Group>
+              <Form.Group controlId='weight' className='my-2'>
+                <Form.Label>Weight</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter Weight'
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
 
-            <hr className='my-4' />
+              <hr className='my-4' />
 
-            <h5 className='admin-section-title'>Product Visibility</h5>
+              <h5 className='admin-section-title'>Product Visibility</h5>
 
-            <Form.Check
-              type='switch'
-              id='featured'
-              label='Featured Product'
-              className='my-3 admin-switch'
-              checked={isFeatured}
-              onChange={(e) => setIsFeatured(e.target.checked)}
-            />
+              <Form.Check
+                type='switch'
+                id='featured'
+                label='Featured Product'
+                className='my-3 admin-switch'
+                checked={isFeatured}
+                onChange={(e) => setIsFeatured(e.target.checked)}
+              />
 
-            <Form.Check
-              type='switch'
-              id='newarrival'
-              label='New Arrival'
-              className='my-3 admin-switch'
-              checked={isNewArrival}
-              onChange={(e) => setIsNewArrival(e.target.checked)}
-            />
+              <Form.Check
+                type='switch'
+                id='newarrival'
+                label='New Arrival'
+                className='my-3 admin-switch'
+                checked={isNewArrival}
+                onChange={(e) => setIsNewArrival(e.target.checked)}
+              />
 
-            <Form.Check
-              type='switch'
-              id='bestseller'
-              label='Best Seller'
-              className='my-3 admin-switch'
-              checked={isBestSeller}
-              onChange={(e) => setIsBestSeller(e.target.checked)}
-            />
+              <Form.Check
+                type='switch'
+                id='bestseller'
+                label='Best Seller'
+                className='my-3 admin-switch'
+                checked={isBestSeller}
+                onChange={(e) => setIsBestSeller(e.target.checked)}
+              />
 
-            <AdminVariantManager
-              variants={variants}
-              setVariants={setVariants}
-              uploadProductImage={uploadProductImage}
-              toast={toast}
-            />
+              <AdminVariantManager
+                variants={variants}
+                setVariants={setVariants}
+                uploadProductImage={uploadProductImage}
+                toast={toast}
+              />
 
-            <Button type='submit' variant='primary' className='my-2'>
-              Update
-            </Button>
-          </Form>
-        )}
+              <Button
+                type='submit'
+                variant='primary'
+                className='admin-create-btn'
+              >
+                Update
+              </Button>
+            </Form>
+          )}
+        </div>
       </FormContainer>
     </>
   );
