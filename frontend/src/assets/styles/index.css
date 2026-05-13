@@ -1157,6 +1157,130 @@ table th {
   transform: translateY(-1px);
 }
 
+/* User List Screen */
+.admin-table-wrapper {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.admin-page-header {
+  margin-bottom: 1.5rem;
+}
+
+.admin-page-subtitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: #888;
+  margin-bottom: 0.2rem;
+}
+
+.admin-page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.admin-table thead th {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  color: #777;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.admin-table td {
+  vertical-align: middle;
+  padding: 1rem 0.5rem;
+}
+
+.admin-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.admin-user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #111827;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.admin-user-name {
+  font-weight: 600;
+  color: #111827;
+}
+
+.admin-user-email {
+  color: #4b5563;
+  text-decoration: none;
+}
+
+.admin-user-email:hover {
+  color: #111827;
+}
+
+.admin-role-badge,
+.customer-role-badge {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.admin-role-badge {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.customer-role-badge {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.admin-action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.admin-edit-btn,
+.admin-delete-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-edit-btn {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.admin-delete-btn {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.admin-delete-btn:hover {
+  background: #ffedd5;
+}
+
 /* Product Create Screen */
 .admin-form-card {
   border: none;
