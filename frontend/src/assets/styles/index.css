@@ -1060,6 +1060,23 @@ table th {
   border-color: #f3f3f3;
 }
 
+.admin-variant-list {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(2, max-content);
+  gap: 0.45rem;
+}
+
+.admin-variant-badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #333;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1px solid #e5e7eb;
+}
+
 /* PRODUCT IMAGE */
 .admin-product-image {
   width: 65px;

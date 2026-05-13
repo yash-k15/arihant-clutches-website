@@ -70,6 +70,7 @@ const ProductListScreen = () => {
                 <th>IMAGE</th>
                 {/* <th>ID</th> */}
                 <th>NAME</th>
+                <th>STYLES</th>
                 <th>PRICE</th>
                 <th>STOCK</th>
                 <th>CATEGORY</th>
@@ -89,6 +90,15 @@ const ProductListScreen = () => {
                   {/* <td>{product._id}</td> */}
                   <td className='admin-product-name'>
                     <Link to={`/products/${product.slug}`}>{product.name}</Link>
+                  </td>
+                  <td>
+                    <div className='admin-variant-list'>
+                      {product.variants.map((variant, index) => (
+                        <span key={index} className='admin-variant-badge'>
+                          {variant.color}
+                        </span>
+                      ))}
+                    </div>
                   </td>
                   <td>₹{product.variants[0]?.price}</td>
                   <td>
