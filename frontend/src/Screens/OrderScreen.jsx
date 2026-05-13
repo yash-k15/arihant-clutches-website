@@ -113,12 +113,15 @@ const OrderScreen = () => {
                       <Image src={item.image} alt={item.name} fluid rounded />
                     </Col>
                     <Col>
-                      <Link
-                        to={`/product/${item.product}`}
-                        className='order-product-link'
-                      >
-                        {item.name}
-                      </Link>
+                      <p>
+                        <Link
+                          to={`/product/${item.product}`}
+                          className='order-product-link'
+                        >
+                          {item.name}
+                        </Link>
+                      </p>
+                      <p className='cart-variant'>Color: {item.color}</p>
                     </Col>
                     <Col md={4}>
                       {item.qty} x ₹{item.price} = ₹{item.qty * item.price}

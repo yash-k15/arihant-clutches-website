@@ -586,6 +586,19 @@ table th {
   margin-bottom: 30px;
 }
 
+.cart-variant {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  background: #f7f7f7;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  color: #555;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
 .cart-subtitle {
   color: #b08d57;
   letter-spacing: 2px;

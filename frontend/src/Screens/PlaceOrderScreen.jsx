@@ -80,12 +80,15 @@ const PlaceOrderScreen = () => {
                           />
                         </Col>
                         <Col>
-                          <Link
-                            to={`/products/${item.product}`}
-                            className='order-item-name'
-                          >
-                            {item.name}
-                          </Link>
+                          <p>
+                            <Link
+                              to={`/products/${item.product}`}
+                              className='order-item-name'
+                            >
+                              {item.name}
+                            </Link>
+                          </p>
+                          <p className='cart-variant'>Color: {item.color}</p>
                         </Col>
                         <Col md={4}>
                           {item.qty} x ₹{item.price} = ₹{item.qty * item.price}

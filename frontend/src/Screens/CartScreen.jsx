@@ -66,6 +66,7 @@ const CartScreen = () => {
                       >
                         {item.name}
                       </Link>
+                      <p className='cart-variant'>Color: {item.color}</p>
                     </Col>
                     <Col md={2}>₹{item.price}</Col>
                     <Col md={2}>
