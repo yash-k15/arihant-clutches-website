@@ -3,6 +3,7 @@ import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import razorpay from '../utils/razorpay.js';
 import Order from '../models/orderModel.js';
+import Product from '../models/productModel.js';
 import sendEmail from '../utils/sendEmail.js';
 import orderConfirmationEmail from '../utils/emailTemplates/orderConfirmationEmail.js';
 
@@ -56,6 +57,41 @@ const verifyPayment = asyncHandler(async (req, res, next) => {
       });
     }
 
+    // CHECK + DEDUCT STOCK ATOMICALLY
+    for (const item of orderData.orderItems) {
+      const updatedProduct = await Product.findOneAndUpdate(
+        {
+          _id: item.product,
+          variants: {
+            $elemMatch: {
+              _id: item.variantId,
+              countInStock: { $gte: item.qty },
+            },
+          },
+        },
+        {
+          $inc: {
+            'variants.$.countInStock': -item.qty,
+          },
+        },
+        { new: true },
+      );
+
+      if (!updatedProduct) {
+        return res.status(400).json({
+          success: false,
+          message: `${item.name} (${item.color}) is out of stock`,
+        });
+      }
+    }
+
+    // CAPTURE PAYMENT
+    await razorpay.payments.capture(
+      razorpay_payment_id,
+      Math.round(orderData.totalPrice * 100),
+      'INR',
+    );
+
     // CREATE ORDER IN DB
     const order = new Order({
       orderItems: orderData.orderItems.map((item) => ({
@@ -73,7 +109,7 @@ const verifyPayment = asyncHandler(async (req, res, next) => {
       // PAYMENT INFO
       paymentResult: {
         id: razorpay_payment_id,
-        status: 'COMPLETED',
+        status: 'CAPTURED',
         update_time: new Date().toISOString(),
       },
 
