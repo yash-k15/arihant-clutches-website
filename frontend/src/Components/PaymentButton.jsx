@@ -6,6 +6,7 @@ import {
   useCreateRazorpayOrderMutation,
   useVerifyPaymentMutation,
 } from '../slices/paymentApiSlice';
+import { useCheckStockMutation } from '../slices/ordersApiSlice.js';
 import { clearCartItems } from '../slices/cartSlice.js';
 
 const PaymentButton = ({ disabled }) => {
@@ -14,6 +15,7 @@ const PaymentButton = ({ disabled }) => {
   const cart = useSelector((state) => state.cart);
   const userInfo = useSelector((state) => state.auth);
 
+  const [checkStock] = useCheckStockMutation();
   const [createRazorpayOrder, { isLoading }] = useCreateRazorpayOrderMutation();
 
   const [verifyPayment, { isLoading: loadingVerify }] =
@@ -27,6 +29,17 @@ const PaymentButton = ({ disabled }) => {
     }
 
     try {
+      // CHECK STOCK BEFORE OPENING RAZORPAY
+      await checkStock({
+        orderItems: cart.cartItems.map((item) => ({
+          product: item.product,
+          name: item.name,
+          color: item.color,
+          variantId: item.variantId,
+          qty: item.qty,
+        })),
+      }).unwrap();
+
       // CREATE RAZORPAY ORDER
       const order = await createRazorpayOrder(cart.totalPrice).unwrap();
 
@@ -74,6 +87,17 @@ const PaymentButton = ({ disabled }) => {
           } catch (error) {
             console.log(error);
 
+            const outOfStock = error?.data?.outOfStockItems;
+
+            if (outOfStock?.length) {
+              const items = outOfStock
+                .map((item) => `${item.name} (${item.color})`)
+                .join(', ');
+
+              toast.error(`Out of stock: ${items}`);
+              return;
+            }
+
             toast.error(
               error?.data?.message || error?.message || 'Something went wrong',
             );
@@ -98,6 +122,17 @@ const PaymentButton = ({ disabled }) => {
       paymentObject.open();
     } catch (error) {
       console.log(error);
+
+      const outOfStock = error?.data?.outOfStockItems;
+
+      if (outOfStock?.length) {
+        const items = outOfStock
+          .map((item) => `${item.name} (${item.color})`)
+          .join(', ');
+
+        toast.error(`Out of stock: ${items}`);
+        return;
+      }
 
       toast.error(error?.data?.message || error?.message || 'Payment Failed');
     }

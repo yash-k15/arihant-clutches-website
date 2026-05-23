@@ -1,6 +1,7 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import Order from '../models/orderModel.js';
+import Product from '../models/productModel.js';
 
 // @desc    Create new Order
 // @route   POST /api/orders
@@ -101,6 +102,49 @@ const getOrders = asyncHandler(async (req, res, next) => {
   res.status(200).json(orders);
 });
 
+// @desc    Check stock before payment
+// @route   POST /api/orders/checkStock
+// @access  Private
+const checkStock = asyncHandler(async (req, res) => {
+  const { orderItems } = req.body;
+
+  const outOfStockItems = [];
+
+  for (const item of orderItems) {
+    const product = await Product.findOne({
+      _id: item.product,
+      variants: {
+        $elemMatch: {
+          _id: item.variantId,
+          countInStock: { $gte: item.qty },
+        },
+      },
+    });
+
+    if (!product) {
+      outOfStockItems.push({
+        productId: item.product,
+        variantId: item.variantId,
+        name: item.name,
+        color: item.color,
+        qty: item.qty,
+      });
+    }
+  }
+
+  if (outOfStockItems.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Some items are out of stock',
+      outOfStockItems,
+    });
+  }
+
+  res.json({
+    success: true,
+  });
+});
+
 export {
   addOrderItems,
   getMyOrders,
@@ -108,4 +152,5 @@ export {
   updateOrderToPaid,
   updateOrderToDelivered,
   getOrders,
+  checkStock,
 };

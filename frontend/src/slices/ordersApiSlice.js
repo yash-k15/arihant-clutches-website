@@ -36,6 +36,13 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    checkStock: builder.mutation({
+      query: (data) => ({
+        url: '/api/orders/checkStock',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -45,4 +52,5 @@ export const {
   useGetMyOrdersQuery,
   useGetOrdersQuery,
   useDeliverOrderMutation,
+  useCheckStockMutation,
 } = ordersApiSlice;
