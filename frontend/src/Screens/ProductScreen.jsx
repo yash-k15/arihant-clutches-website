@@ -23,6 +23,7 @@ import Message from '../Components/Message.jsx';
 import Meta from '../Components/Meta.jsx';
 import { addToCart } from '../slices/cartSlice.js';
 import BackButton from '../Components/BackButton.jsx';
+import { FaEdit } from 'react-icons/fa';
 
 const ProductScreen = () => {
   const { slug } = useParams();
@@ -134,7 +135,21 @@ const ProductScreen = () => {
 
   return (
     <>
-      <BackButton />
+      <Row className='align-items-center'>
+        <Col>
+          <BackButton />
+        </Col>
+        {userInfo && userInfo.isAdmin && (
+          <Col className='text-end'>
+            <Button
+              className='admin-create-btn'
+              onClick={() => navigate(`/admin/product/${product.slug}/edit`)}
+            >
+              <FaEdit /> Edit Product
+            </Button>
+          </Col>
+        )}
+      </Row>
       {isLoading ? (
         <Loader />
       ) : error ? (
