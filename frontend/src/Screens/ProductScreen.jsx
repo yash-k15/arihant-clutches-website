@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   useGetProductDetailsQuery,
@@ -69,15 +69,12 @@ const ProductScreen = () => {
   };
 
   useEffect(() => {
-    if (product?.variants?.length > 0) {
-      const firstVariant = product.variants[0];
+    if (!product?.variants?.length) return;
 
-      setSelectedVariant(firstVariant);
+    const firstVariant = product.variants[0];
 
-      if (firstVariant.images?.length > 0) {
-        setSelectedImage(firstVariant.images[0]);
-      }
-    }
+    setSelectedVariant(firstVariant);
+    setSelectedImage(firstVariant.images?.[0] || '');
   }, [product]);
 
   const submitHandler = async (e) => {
@@ -97,6 +94,43 @@ const ProductScreen = () => {
       toast.error(err?.data?.error || err.error);
     }
   };
+
+  const images = useMemo(() => {
+    return selectedVariant?.images || [];
+  }, [selectedVariant]);
+  const currentIndex = images.indexOf(zoomImage);
+
+  const nextImage = useCallback(() => {
+    if (!images.length) return;
+
+    const next = (currentIndex + 1) % images.length;
+    setZoomImage(images[next]);
+  }, [currentIndex, images]);
+
+  const prevImage = useCallback(() => {
+    if (!images.length) return;
+
+    const prev = (currentIndex - 1 + images.length) % images.length;
+
+    setZoomImage(images[prev]);
+  }, [currentIndex, images]);
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (!showImageModal) return;
+
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+
+      if (e.key === 'Escape') {
+        setShowImageModal(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKey);
+
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [showImageModal, nextImage, prevImage]);
 
   return (
     <>
@@ -373,12 +407,26 @@ const ProductScreen = () => {
             backdropClassName='image-zoom-backdrop'
             dialogClassName='m-0'
           >
-            <Modal.Body className='image-zoom-modal-body'>
+            <Modal.Body
+              className='image-zoom-modal-body'
+              onClick={() => setShowImageModal(false)}
+            >
               <button
                 className='image-modal-close'
+                type='button'
                 onClick={() => setShowImageModal(false)}
               >
-                ×
+                &#10005;
+              </button>
+
+              <button
+                className='modal-nav left'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevImage();
+                }}
+              >
+                &#8249;
               </button>
 
               {zoomImage && (
@@ -386,8 +434,19 @@ const ProductScreen = () => {
                   src={zoomImage}
                   alt={product.name}
                   className='zoomed-product-image'
+                  onClick={(e) => e.stopPropagation()}
                 />
               )}
+
+              <button
+                className='modal-nav right'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage();
+                }}
+              >
+                &#8250;
+              </button>
             </Modal.Body>
           </Modal>
         </>

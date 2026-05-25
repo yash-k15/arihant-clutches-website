@@ -128,18 +128,114 @@ table th {
   position: relative;
 }
 
+/* Close + arrows shared */
+.image-modal-close,
+.modal-nav {
+  position: absolute;
+  border: none;
+  background: rgba(255, 255, 255, 0.88);
+
+  color: #222;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 20;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
 /* Close button */
 .image-modal-close {
-  position: absolute;
-  top: 20px;
-  right: 24px;
-  background: transparent;
-  border: none;
-  color: #111;
+  top: 18px;
+  right: 22px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+/* Arrow buttons */
+.modal-nav {
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 50%;
+
   font-size: 2rem;
   line-height: 1;
-  cursor: pointer;
-  z-index: 10;
+}
+
+/* Position */
+.modal-nav.left {
+  left: 18px;
+}
+
+.modal-nav.right {
+  right: 18px;
+}
+
+/* Hover */
+.image-modal-close:hover,
+.modal-nav:hover {
+  background: #fff;
+  color: #000;
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* Close button needs its own transform */
+.image-modal-close:hover {
+  transform: scale(1.05);
+}
+
+/* Click */
+.image-modal-close:active,
+.modal-nav:active {
+  transform: scale(0.96);
+}
+
+.modal-nav:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .image-modal-close {
+    width: 38px;
+    height: 38px;
+    top: 14px;
+    right: 14px;
+    font-size: 1.5rem;
+  }
+
+  .modal-nav {
+    width: 38px;
+    height: 38px;
+    font-size: 1.75rem;
+  }
+
+  .modal-nav.left {
+    left: 10px;
+  }
+
+  .modal-nav.right {
+    right: 10px;
+  }
 }
 
 .product-name {
