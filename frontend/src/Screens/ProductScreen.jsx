@@ -13,6 +13,7 @@ import {
   ListGroup,
   Card,
   Button,
+  Modal,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -34,6 +35,9 @@ const ProductScreen = () => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [selectedVariant, setSelectedVariant] = useState(null);
+
+  const [zoomImage, setZoomImage] = useState('');
+  const [showImageModal, setShowImageModal] = useState(false);
 
   const {
     data: product,
@@ -113,6 +117,10 @@ const ProductScreen = () => {
                 alt={product.name}
                 fluid
                 className='product-main-image'
+                onClick={() => {
+                  setZoomImage(selectedImage);
+                  setShowImageModal(true);
+                }}
               />
               {selectedVariant?.images?.length > 0 && (
                 <div className='product-thumbnails'>
@@ -355,6 +363,33 @@ const ProductScreen = () => {
               </div>
             </Col>
           </Row>
+
+          <Modal
+            show={showImageModal}
+            onHide={() => setShowImageModal(false)}
+            centered
+            fullscreen
+            contentClassName='image-zoom-modal-content'
+            backdropClassName='image-zoom-backdrop'
+            dialogClassName='m-0'
+          >
+            <Modal.Body className='image-zoom-modal-body'>
+              <button
+                className='image-modal-close'
+                onClick={() => setShowImageModal(false)}
+              >
+                ×
+              </button>
+
+              {zoomImage && (
+                <Image
+                  src={zoomImage}
+                  alt={product.name}
+                  className='zoomed-product-image'
+                />
+              )}
+            </Modal.Body>
+          </Modal>
         </>
       )}
     </>

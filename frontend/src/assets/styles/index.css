@@ -54,12 +54,19 @@ table th {
   background: rgba(0, 0, 0, 0.5);
 }
 
+/* Product Page CSS */
 .product-main-image {
   width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
   border-radius: 14px;
   background: #f8f8f8;
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+}
+
+.product-main-image:hover {
+  transform: scale(1.02);
 }
 
 .product-thumbnails {
@@ -87,7 +94,54 @@ table th {
   border-color: #d4af37;
 }
 
-/* Product Page CSS */
+.zoomed-product-image {
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  display: block;
+  /* cursor: zoom-out; */
+}
+
+/* White background modal */
+.image-zoom-modal-content {
+  background: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Remove dark overlay */
+.image-zoom-backdrop {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Center image
+/* Fill screen without scrolling */
+.image-zoom-modal-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Close button */
+.image-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: transparent;
+  border: none;
+  color: #111;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+}
+
 .product-name {
   font-size: 2rem;
   font-weight: 700;
