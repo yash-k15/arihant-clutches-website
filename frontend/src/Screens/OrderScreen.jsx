@@ -66,14 +66,16 @@ const OrderScreen = () => {
             </p>
           </div>
         </Col>
-        <Col className='text-end'>
-          <Button
-            className='admin-create-btn'
-            onClick={() => navigate('/admin/orderlist')}
-          >
-            Order List
-          </Button>
-        </Col>
+        {userInfo && userInfo.isAdmin && (
+          <Col className='text-end'>
+            <Button
+              className='admin-create-btn'
+              onClick={() => navigate('/admin/orderlist')}
+            >
+              Order List
+            </Button>
+          </Col>
+        )}
       </Row>
       <Row>
         <Col md={8}>
