@@ -5,6 +5,7 @@ const AdminVariantManager = ({
   setVariants,
   uploadProductImage,
   toast,
+  productName,
 }) => {
   // ADD VARIANT
   const addVariantHandler = () => {
@@ -43,6 +44,12 @@ const AdminVariantManager = ({
     for (let i = 0; i < e.target.files.length; i++) {
       formData.append('images', e.target.files[i]);
     }
+
+    // send product name
+    formData.append('productName', productName || 'temp');
+
+    // send current variant color
+    formData.append('color', variants[index]?.color || 'default');
 
     try {
       const res = await uploadProductImage(formData).unwrap();

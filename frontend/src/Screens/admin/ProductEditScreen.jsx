@@ -210,6 +210,7 @@ const ProductEditScreen = () => {
                 setVariants={setVariants}
                 uploadProductImage={uploadProductImage}
                 toast={toast}
+                productName={name}
               />
 
               <Button
