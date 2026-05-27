@@ -7,6 +7,7 @@ import Loader from '../Components/Loader.jsx';
 import Message from '../Components/Message.jsx';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice.js';
 import PaymentButton from '../Components/PaymentButton.jsx';
+import { getCloudinaryImage } from '../utils/cloudinary.js';
 
 const PlaceOrderScreen = () => {
   const navigate = useNavigate();
@@ -73,7 +74,10 @@ const PlaceOrderScreen = () => {
                       <Row>
                         <Col md={3}>
                           <Image
-                            src={item.image}
+                            src={getCloudinaryImage(
+                              item.image,
+                              'w_400,h_400,c_fill,f_auto,q_auto',
+                            )}
                             alt={item.name}
                             fluid
                             rounded

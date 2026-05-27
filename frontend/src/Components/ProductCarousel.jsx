@@ -3,6 +3,7 @@ import { Carousel, Image } from 'react-bootstrap';
 import Loader from './Loader';
 import Message from './Message';
 import { useGetTopProductsQuery } from '../slices/productsApiSlice';
+import { getCloudinaryImage } from '../utils/cloudinary';
 
 const ProductCarousel = () => {
   const { data: products, isLoading, error } = useGetTopProductsQuery();
@@ -18,7 +19,10 @@ const ProductCarousel = () => {
           <Link to={`/products/${product.slug}`}>
             <div className='hero-slide'>
               <Image
-                src={product.variants[0]?.images[0]}
+                src={getCloudinaryImage(
+                  product.variants[0]?.images[0],
+                  'w_1600,f_auto,q_auto',
+                )}
                 alt={product.name}
                 fluid
                 className='hero-image'

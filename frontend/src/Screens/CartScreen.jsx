@@ -14,6 +14,7 @@ import Message from '../Components/Message.jsx';
 import CheckoutSteps from '../Components/CheckoutSteps.jsx';
 import { addToCart, removeFromCart } from '../slices/cartSlice.js';
 import BackButton from '../Components/BackButton.jsx';
+import { getCloudinaryImage } from '../utils/cloudinary.js';
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -67,7 +68,10 @@ const CartScreen = () => {
                   <Row>
                     <Col md={2}>
                       <Image
-                        src={item.image}
+                        src={getCloudinaryImage(
+                          item.image,
+                          'w_400,h_400,c_fill,f_auto,q_auto',
+                        )}
                         alt={item.name}
                         fluid
                         className='cart-image'

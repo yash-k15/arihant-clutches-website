@@ -11,6 +11,7 @@ import {
   useDeleteProductMutation,
 } from '../../slices/productsApiSlice';
 import Paginate from '../../Components/Paginate';
+import { getCloudinaryImage } from '../../utils/cloudinary';
 
 const ProductListScreen = () => {
   const { pageNumber } = useParams();
@@ -87,7 +88,10 @@ const ProductListScreen = () => {
                   <tr key={product._id}>
                     <td>
                       <img
-                        src={product.variants[0]?.images[0]}
+                        src={getCloudinaryImage(
+                          product.variants[0]?.images[0],
+                          'w_120,h_120,c_fill,f_auto,q_auto',
+                        )}
                         alt={product.name}
                         className='admin-product-image'
                       />

@@ -10,6 +10,7 @@ import {
   useGetOrderDetailsQuery,
   useDeliverOrderMutation,
 } from '../slices/ordersApiSlice';
+import { getCloudinaryImage } from '../utils/cloudinary.js';
 
 const OrderScreen = () => {
   const { id: orderId } = useParams();
@@ -125,7 +126,15 @@ const OrderScreen = () => {
                 <ListGroup.Item key={index} className='order-item-row'>
                   <Row>
                     <Col md={3}>
-                      <Image src={item.image} alt={item.name} fluid rounded />
+                      <Image
+                        src={getCloudinaryImage(
+                          item.image,
+                          'w_400,h_400,c_fill,f_auto,q_auto',
+                        )}
+                        alt={item.name}
+                        fluid
+                        rounded
+                      />
                     </Col>
                     <Col>
                       <p>

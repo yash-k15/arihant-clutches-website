@@ -1,8 +1,18 @@
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
+import { getCloudinaryImage } from '../utils/cloudinary';
 
 const Product = ({ product }) => {
+  console.log('original:', product.variants[0]?.images[0]);
+
+  console.log(
+    'transformed:',
+    getCloudinaryImage(
+      product.variants[0]?.images[0],
+      'w_400,h_400,c_fill,f_auto,q_auto',
+    ),
+  );
   return (
     <Card className='product-card h-100'>
       <Link to={`/products/${product.slug}`}>
@@ -14,7 +24,10 @@ const Product = ({ product }) => {
             )}
           </div>
           <Card.Img
-            src={product.variants[0]?.images[0]}
+            src={getCloudinaryImage(
+              product.variants[0]?.images[0],
+              'w_400,h_400,c_fill,f_auto,q_auto',
+            )}
             variant='top'
             className='product-image'
           />

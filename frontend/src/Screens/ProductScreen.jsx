@@ -24,6 +24,7 @@ import Meta from '../Components/Meta.jsx';
 import { addToCart } from '../slices/cartSlice.js';
 import BackButton from '../Components/BackButton.jsx';
 import { FaEdit } from 'react-icons/fa';
+import { getCloudinaryImage } from '../utils/cloudinary.js';
 
 const ProductScreen = () => {
   const { slug } = useParams();
@@ -162,7 +163,7 @@ const ProductScreen = () => {
           <Row>
             <Col md={5}>
               <Image
-                src={selectedImage}
+                src={getCloudinaryImage(selectedImage, 'w_1000,f_auto,q_auto')}
                 alt={product.name}
                 fluid
                 className='product-main-image'
@@ -176,7 +177,10 @@ const ProductScreen = () => {
                   {selectedVariant.images.map((img, index) => (
                     <img
                       key={index}
-                      src={img}
+                      src={getCloudinaryImage(
+                        img,
+                        'w_120,h_120,c_fill,f_auto,q_auto',
+                      )}
                       alt={product.name}
                       className={
                         selectedImage === img ? 'thumbnail active' : 'thumbnail'
@@ -446,7 +450,7 @@ const ProductScreen = () => {
 
               {zoomImage && (
                 <Image
-                  src={zoomImage}
+                  src={getCloudinaryImage(zoomImage, 'w_1600,f_auto,q_auto')}
                   alt={product.name}
                   className='zoomed-product-image'
                   onClick={(e) => e.stopPropagation()}

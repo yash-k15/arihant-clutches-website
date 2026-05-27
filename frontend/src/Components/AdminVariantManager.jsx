@@ -1,4 +1,5 @@
 import { Card, Row, Col, Form, Button } from 'react-bootstrap';
+import { getCloudinaryImage } from '../utils/cloudinary';
 
 const AdminVariantManager = ({
   variants,
@@ -164,7 +165,10 @@ const AdminVariantManager = ({
                 {variant.images.map((img, i) => (
                   <img
                     key={i}
-                    src={img}
+                    src={getCloudinaryImage(
+                      img,
+                      'w_120,h_120,c_fill,f_auto,q_auto',
+                    )}
                     alt='variant'
                     className='variant-preview-img'
                   />
