@@ -1,21 +1,16 @@
 import path from 'path';
 import express from 'express';
 import multer from 'multer';
+import streamifier from 'streamifier';
+
+import cloudinary from '../config/cloudinary.js';
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`,
-    );
-  },
-});
+// Store file in memory instead of uploads folder
+const storage = multer.memoryStorage();
 
+// Validate file type
 function fileFilter(req, file, cb) {
   const filetypes = /jpe?g|png|webp/;
   const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
@@ -35,18 +30,48 @@ const upload = multer({ storage, fileFilter });
 // Use .array to accept an array of images
 const uploadMultipleImages = upload.array('images', 5);
 
+//Upload buffer → Cloudinary
+const uploadToCloudinary = (fileBuffer) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'products',
+      },
+
+      (error, result) => {
+        if (result) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
+      },
+    );
+
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
+
 router.post('/', (req, res) => {
-  uploadMultipleImages(req, res, function (err) {
+  uploadMultipleImages(req, res, async function (err) {
     if (err) {
-      res.status(400).send({ message: err.message });
+      return res.status(400).send({ message: err.message });
     }
 
-    const images = req.files.map((file) => `/${file.path}`);
+    try {
+      const uploads = await Promise.all(
+        req.files.map((file) => uploadToCloudinary(file.buffer)),
+      );
 
-    res.status(200).send({
-      message: 'Image uploaded successfully',
-      images,
-    });
+      const images = uploads.map((file) => file.secure_url);
+
+      res.status(200).send({
+        message: 'Image uploaded successfully',
+        images,
+      });
+    } catch (error) {
+      res.status(500).send({
+        message: 'Cloudinary upload failed',
+      });
+    }
   });
 });
 
