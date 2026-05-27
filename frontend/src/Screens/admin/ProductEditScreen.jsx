@@ -9,6 +9,7 @@ import {
   useUpdateProductMutation,
   useGetProductDetailsQuery,
   useUploadProductImageMutation,
+  useDeleteProductImageMutation,
 } from '../../slices/productsApiSlice';
 import AdminVariantManager from '../../Components/AdminVariantManager';
 import BackButton from '../../Components/BackButton';
@@ -39,6 +40,7 @@ const ProductEditScreen = () => {
     useUpdateProductMutation();
 
   const [uploadProductImage] = useUploadProductImageMutation();
+  const [deleteProductImage] = useDeleteProductImageMutation();
 
   const navigate = useNavigate();
 
@@ -209,6 +211,7 @@ const ProductEditScreen = () => {
                 variants={variants}
                 setVariants={setVariants}
                 uploadProductImage={uploadProductImage}
+                deleteProductImage={deleteProductImage}
                 toast={toast}
                 productName={name}
               />

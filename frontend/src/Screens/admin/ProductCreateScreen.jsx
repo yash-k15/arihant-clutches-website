@@ -7,6 +7,7 @@ import Loader from '../../Components/Loader';
 import {
   useCreateProductMutation,
   useUploadProductImageMutation,
+  useDeleteProductImageMutation,
 } from '../../slices/productsApiSlice';
 import AdminVariantManager from '../../Components/AdminVariantManager';
 
@@ -27,6 +28,7 @@ const ProductCreateScreen = () => {
 
   const [createProduct, { isLoading }] = useCreateProductMutation();
   const [uploadProductImage] = useUploadProductImageMutation();
+  const [deleteProductImage] = useDeleteProductImageMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -190,6 +192,7 @@ const ProductCreateScreen = () => {
             variants={variants}
             setVariants={setVariants}
             uploadProductImage={uploadProductImage}
+            deleteProductImage={deleteProductImage}
             toast={toast}
             productName={name}
           />

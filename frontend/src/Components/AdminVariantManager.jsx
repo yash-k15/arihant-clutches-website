@@ -5,6 +5,7 @@ const AdminVariantManager = ({
   variants,
   setVariants,
   uploadProductImage,
+  deleteProductImage,
   toast,
   productName,
 }) => {
@@ -33,7 +34,10 @@ const AdminVariantManager = ({
   const updateVariantField = (index, field, value) => {
     const updatedVariants = [...variants];
 
-    updatedVariants[index][field] = value;
+    updatedVariants[index] = {
+      ...updatedVariants[index],
+      [field]: value,
+    };
 
     setVariants(updatedVariants);
   };
@@ -57,11 +61,36 @@ const AdminVariantManager = ({
 
       const updatedVariants = [...variants];
 
-      updatedVariants[index].images = res.images;
+      updatedVariants[index] = {
+        ...updatedVariants[index],
+        images: res.images,
+      };
 
       setVariants(updatedVariants);
 
       toast.success('Variant images uploaded');
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  // REMOVE VARIANT IMAGE
+  const removeVariantImageHandler = async (variantIndex, imageUrl) => {
+    try {
+      await deleteProductImage(imageUrl).unwrap();
+
+      const updatedVariants = [...variants];
+
+      updatedVariants[variantIndex] = {
+        ...updatedVariants[variantIndex],
+        images: updatedVariants[variantIndex].images.filter(
+          (img) => img !== imageUrl,
+        ),
+      };
+
+      setVariants(updatedVariants);
+
+      toast.success('Image Removed');
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -163,15 +192,26 @@ const AdminVariantManager = ({
             {variant.images?.length > 0 && (
               <div className='variant-image-preview'>
                 {variant.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={getCloudinaryImage(
-                      img,
-                      'w_120,h_120,c_fill,f_auto,q_auto',
-                    )}
-                    alt='variant'
-                    className='variant-preview-img'
-                  />
+                  <div key={i} className='variant-preview-wrapper'>
+                    <img
+                      src={getCloudinaryImage(
+                        img,
+                        'w_120,h_120,c_fill,f_auto,q_auto',
+                      )}
+                      alt='variant'
+                      className='variant-preview-img'
+                    />
+
+                    <button
+                      type='button'
+                      className='remove-image-btn'
+                      onClick={() => {
+                        removeVariantImageHandler(index, img);
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

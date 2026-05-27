@@ -1641,12 +1641,30 @@ table th {
   margin-top: 15px;
 }
 
+.variant-preview-wrapper {
+  position: relative;
+}
+
 .variant-preview-img {
   width: 80px;
   height: 80px;
   object-fit: cover;
   border-radius: 10px;
   border: 1px solid #eee;
+  display: block;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 /* Back Button CSS */

@@ -5,6 +5,7 @@ import streamifier from 'streamifier';
 import slugify from 'slugify';
 
 import cloudinary from '../config/cloudinary.js';
+import asyncHandler from '../middleware/asyncHandler.js';
 
 const router = express.Router();
 
@@ -110,5 +111,26 @@ router.post('/', (req, res) => {
     }
   });
 });
+
+// Delete Image on Cloudinary
+const getPublicIdFromUrl = (url) => {
+  const parts = url.split('/upload/')[1];
+
+  const withoutVersion = parts.replace(/^.*?\/v\d+\//, '');
+
+  return withoutVersion.replace(/\.[^/.]+$/, '');
+};
+
+const deleteProductImage = asyncHandler(async (req, res) => {
+  const { imageUrl } = req.body;
+
+  const publicId = getPublicIdFromUrl(imageUrl);
+
+  await cloudinary.uploader.destroy(publicId);
+
+  res.json({ message: 'Image deleted' });
+});
+
+router.delete('/', deleteProductImage);
 
 export default router;
