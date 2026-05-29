@@ -83,7 +83,7 @@ const ProductEditScreen = () => {
     } else {
       toast.success('Product updated');
       refetch();
-      navigate('/admin/productlist');
+      navigate(-1);
     }
   };
 

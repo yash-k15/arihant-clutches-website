@@ -30,7 +30,7 @@ function fileFilter(req, file, cb) {
 const upload = multer({ storage, fileFilter });
 
 // Use .array to accept an array of images
-const uploadMultipleImages = upload.array('images', 5);
+const uploadMultipleImages = upload.array('images', 10);
 
 //Upload buffer → Cloudinary
 const uploadToCloudinary = (fileBuffer, folder, publicId) =>
