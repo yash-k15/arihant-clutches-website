@@ -251,6 +251,33 @@ table th {
   color: #2c2222;
 }
 
+.product-color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.product-color-option {
+  background: #f3f4f6;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.product-color-option:hover {
+  border-color: #222;
+}
+
+.product-color-option.active {
+  border-color: #222;
+  font-weight: 600;
+}
+
 .section-title {
   font-weight: 600;
   margin-bottom: 10px;
