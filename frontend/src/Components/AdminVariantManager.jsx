@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, Row, Col, Form, Button } from 'react-bootstrap';
 import { getCloudinaryImage } from '../utils/cloudinary';
 
@@ -9,6 +10,8 @@ const AdminVariantManager = ({
   toast,
   productName,
 }) => {
+  const [draggedImage, setDraggedImage] = useState(null);
+
   // ADD VARIANT
   const addVariantHandler = () => {
     setVariants([
@@ -72,6 +75,43 @@ const AdminVariantManager = ({
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
+  };
+
+  // Drag and Drop Images
+  const handleDragStart = (variantIndex, imageIndex) => {
+    setDraggedImage({
+      variantIndex,
+      imageIndex,
+    });
+  };
+
+  const handleDrop = (variantIndex, targetIndex) => {
+    if (!draggedImage) return;
+
+    if (draggedImage.variantIndex !== variantIndex) {
+      return;
+    }
+
+    const updatedVariants = [...variants];
+
+    const updatedImages = [...updatedVariants[variantIndex].images];
+
+    const [movedImage] = updatedImages.splice(draggedImage.imageIndex, 1);
+
+    updatedImages.splice(targetIndex, 0, movedImage);
+
+    updatedVariants[variantIndex] = {
+      ...updatedVariants[variantIndex],
+      images: updatedImages,
+    };
+
+    setVariants(updatedVariants);
+
+    setDraggedImage(null);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   // REMOVE VARIANT IMAGE
@@ -192,7 +232,14 @@ const AdminVariantManager = ({
             {variant.images?.length > 0 && (
               <div className='variant-image-preview'>
                 {variant.images.map((img, i) => (
-                  <div key={i} className='variant-preview-wrapper'>
+                  <div
+                    key={i}
+                    className='variant-preview-wrapper'
+                    draggable
+                    onDragStart={() => handleDragStart(index, i)}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(index, i)}
+                  >
                     <img
                       src={getCloudinaryImage(
                         img,

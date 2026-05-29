@@ -1643,6 +1643,11 @@ table th {
 
 .variant-preview-wrapper {
   position: relative;
+  cursor: grab;
+}
+
+.variant-preview-wrapper:active {
+  cursor: grabbing;
 }
 
 .variant-preview-img {
