@@ -1,51 +1,54 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import CheckoutSteps from '../Components/CheckoutSteps.jsx';
 import Loader from '../Components/Loader.jsx';
 import Message from '../Components/Message.jsx';
 import { useCreateOrderMutation } from '../slices/ordersApiSlice.js';
 import PaymentButton from '../Components/PaymentButton.jsx';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
+import { toast } from 'react-toastify';
+import { clearCartItems } from '../slices/cartSlice.js';
 
 const PlaceOrderScreen = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.auth);
 
-  const [{ isLoading, error }] = useCreateOrderMutation();
+  const [createOrder, { isLoading, error }] = useCreateOrderMutation();
 
   useEffect(() => {
     if (!cart.shippingAddress.address) {
       navigate('/shipping');
-      // } else if (!cart.paymentMethod) {
-      //   navigate('/payment');
+    } else if (!cart.paymentMethod) {
+      navigate('/paymentmethod');
     }
-  }, [/*cart.paymentMethod,*/ cart.shippingAddress.address, navigate]);
+  }, [cart.paymentMethod, cart.shippingAddress.address, navigate]);
 
-  // const placeOrderHandler = async () => {
-  //   try {
-  //     const res = await createOrder({
-  //       orderItems: cart.cartItems,
-  //       shippingAddress: cart.shippingAddress,
-  //       //paymentMethod: cart.paymentMethod,
-  //       itemsPrice: cart.itemsPrice,
-  //       shippingPrice: cart.shippingPrice,
-  //       taxPrice: cart.taxPrice,
-  //       totalPrice: cart.totalPrice,
-  //     }).unwrap();
-  //     dispatch(clearCartItems());
-  //     navigate(`/order/${res._id}`);
-  //   } catch (error) {
-  //     toast.error(error);
-  //   }
-  // };
+  const placeOrderHandler = async () => {
+    try {
+      const res = await createOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+      }).unwrap();
+      dispatch(clearCartItems());
+      navigate(`/order/${res._id}`);
+    } catch (error) {
+      toast.error(error?.data?.message || error.message);
+    }
+  };
 
   return (
     <>
-      <CheckoutSteps step1 step2 step3 step4 />
+      <CheckoutSteps step1 step2 step3 step4 step5 />
       <Row>
         <Col md={8}>
           <ListGroup variant='flush'>
@@ -138,7 +141,6 @@ const PlaceOrderScreen = () => {
                   <Col>₹ {cart.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-
               {error && (
                 <ListGroup.Item>
                   {error && (
@@ -146,22 +148,14 @@ const PlaceOrderScreen = () => {
                   )}
                 </ListGroup.Item>
               )}
-
               <ListGroup.Item>
-                {/* <Button
-                  type='button'
-                  className='btn-block me-3'
-                  disabled={cart.cartItems.length === 0}
-                  onClick={placeOrderHandler}
-                >
-                  Place Order
-                </Button> */}
-
                 <PaymentButton disabled={cart.cartItems.length === 0} />
-                {isLoading && <Loader />}
                 <p className='payment-trust'>
-                  Secure payment powered by Razorpay • 100% safe checkout
+                  {cart.paymentMethod === 'ONLINE'
+                    ? 'Secure payment powered by Razorpay • 100% safe checkout'
+                    : 'Pay with cash when your order arrives'}
                 </p>
+                {isLoading && <Loader />}
               </ListGroup.Item>
             </ListGroup>
           </Card>

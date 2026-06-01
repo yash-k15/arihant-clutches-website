@@ -22,12 +22,6 @@ const PaymentButton = ({ disabled }) => {
     useVerifyPaymentMutation();
 
   const handlePayment = async () => {
-    // CHECK IF RAZORPAY EXISTS
-    if (!window.Razorpay) {
-      alert('Razorpay SDK failed to load');
-      return;
-    }
-
     try {
       // CHECK STOCK BEFORE OPENING RAZORPAY
       await checkStock({
@@ -39,6 +33,45 @@ const PaymentButton = ({ disabled }) => {
           qty: item.qty,
         })),
       }).unwrap();
+
+      // ---------- COD ----------
+      if (cart.paymentMethod === 'COD') {
+        const res = await verifyPayment({
+          orderData: {
+            orderItems: cart.cartItems.map((item) => ({
+              product: item.product,
+              name: item.name,
+              image: item.image,
+              price: item.price,
+              color: item.color,
+              variantId: item.variantId,
+              qty: item.qty,
+            })),
+
+            shippingAddress: cart.shippingAddress,
+
+            paymentMethod: 'COD',
+
+            itemsPrice: cart.itemsPrice,
+            shippingPrice: cart.shippingPrice,
+            taxPrice: cart.taxPrice,
+            totalPrice: cart.totalPrice,
+          },
+        }).unwrap();
+
+        dispatch(clearCartItems());
+
+        navigate(`/order/${res.order._id}`);
+
+        return;
+      }
+
+      // ---------- ONLINE ----------
+      // CHECK IF RAZORPAY EXISTS
+      if (!window.Razorpay) {
+        alert('Razorpay SDK failed to load');
+        return;
+      }
 
       // CREATE RAZORPAY ORDER
       const order = await createRazorpayOrder(cart.totalPrice).unwrap();
@@ -69,6 +102,7 @@ const PaymentButton = ({ disabled }) => {
                   qty: item.qty,
                 })),
                 shippingAddress: cart.shippingAddress,
+                paymentMethod: 'ONLINE',
                 itemsPrice: cart.itemsPrice,
                 shippingPrice: cart.shippingPrice,
                 taxPrice: cart.taxPrice,
@@ -144,7 +178,11 @@ const PaymentButton = ({ disabled }) => {
       disabled={disabled || loadingVerify || isLoading}
       onClick={handlePayment}
     >
-      {isLoading ? 'Processing...' : 'Pay & Place Order'}
+      {cart.paymentMethod === 'COD'
+        ? 'Place Order'
+        : isLoading
+          ? 'Processing...'
+          : 'Pay & Place Order'}
     </Button>
   );
 };

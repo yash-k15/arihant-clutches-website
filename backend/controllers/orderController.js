@@ -40,6 +40,11 @@ const addOrderItems = asyncHandler(async (req, res, next) => {
     totalPrice,
   });
 
+  if (!['COD', 'ONLINE'].includes(paymentMethod)) {
+    res.status(400);
+    throw new Error('Invalid payment method');
+  }
+
   const createdOrder = await order.save();
 
   res.status(201).json(createdOrder);

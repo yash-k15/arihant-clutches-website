@@ -758,6 +758,43 @@ table th {
   font-size: 0.9rem;
 }
 
+/* Payment Method Screen  */
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.payment-option-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-option-card:hover {
+  border-color: #222;
+}
+
+.payment-option-card.active {
+  border: 2px solid #222;
+}
+
+.payment-option-card h6 {
+  margin: 0;
+}
+
+.payment-option-card small {
+  color: #666;
+}
+
 /* Shopping Cart Screen CSS */
 .cart-header {
   margin-bottom: 30px;
