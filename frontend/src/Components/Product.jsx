@@ -6,7 +6,6 @@ import { getCloudinaryImage } from '../utils/cloudinary';
 
 const Product = ({ product }) => {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
-  console.log(selectedVariant);
 
   return (
     <Card className='product-card h-100'>
