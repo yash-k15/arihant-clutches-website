@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Badge, Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
@@ -7,6 +8,7 @@ import { useLogoutMutation } from '../slices/usersApiSlice.js';
 import { logout } from '../slices/authSlice.js';
 import SearchBox from './SearchBox.jsx';
 import logo from '../assets/logo.png';
+import AuthModal from './AuthModal.jsx';
 // import { clearCartItems } from '../slices/cartSlice.js';
 
 const Header = () => {
@@ -15,6 +17,8 @@ const Header = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const [logoutApiCall] = useLogoutMutation();
 
@@ -64,11 +68,12 @@ const Header = () => {
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <LinkContainer to='/login'>
-                  <Nav.Link className='nav-icon-link'>
-                    <FaUser /> Sign In
-                  </Nav.Link>
-                </LinkContainer>
+                <Nav.Link
+                  className='nav-icon-link'
+                  onClick={() => setShowAuthModal(true)}
+                >
+                  <FaUser /> Sign In
+                </Nav.Link>
               )}
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown title='Admin' id='adminmenu'>
@@ -87,6 +92,7 @@ const Header = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      <AuthModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
     </header>
   );
 };

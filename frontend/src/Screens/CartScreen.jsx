@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,13 +16,18 @@ import CheckoutSteps from '../Components/CheckoutSteps.jsx';
 import { addToCart, removeFromCart } from '../slices/cartSlice.js';
 import BackButton from '../Components/BackButton.jsx';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
+import AuthModal from '../Components/AuthModal.jsx';
 
 const CartScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { userInfo } = useSelector((state) => state.auth);
   const cart = useSelector((state) => state.cart);
+
   const { cartItems } = cart;
+
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const addToCartHandler = async (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
@@ -32,7 +38,12 @@ const CartScreen = () => {
   };
 
   const checkoutHandler = () => {
-    navigate('/login?redirect=/shipping');
+    if (!userInfo) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    navigate('/shipping');
   };
 
   const onContinueClickHandler = () => {
@@ -144,6 +155,7 @@ const CartScreen = () => {
           </Card>
         </Col>
       </Row>
+      <AuthModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
     </>
   );
 };

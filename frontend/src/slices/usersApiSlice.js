@@ -71,6 +71,29 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: { password },
       }),
     }),
+    sendOtp: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/send-otp`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    verifyOtp: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/verify-otp`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    registerPhone: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/register-phone`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -85,4 +108,7 @@ export const {
   useUpdateUserMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+  useRegisterPhoneMutation,
 } = usersApiSlice;
