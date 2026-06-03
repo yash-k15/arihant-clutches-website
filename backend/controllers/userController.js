@@ -256,6 +256,91 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc        Send OTP
+// @route       POST /api/users/send-otp
+// @access      Public
+const sendOTP = asyncHandler(async (req, res, next) => {
+  const phone = String(req.body.phone).trim();
+
+  if (!phone) {
+    return next(new ErrorResponse('Phone number is required', 400));
+  }
+
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    toast.error('Enter a valid mobile number');
+    return;
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'OTP sent successfully',
+  });
+});
+
+// @desc        Verify OTP
+// @route       POST /api/users/verify-otp
+// @access      Public
+const verifyOTP = asyncHandler(async (req, res, next) => {
+  const { otp } = req.body;
+  const phone = String(req.body.phone).trim();
+
+  if (String(otp) !== '123456') {
+    return next(new ErrorResponse('Invalid OTP', 400));
+  }
+
+  const user = await User.findOne({ phone });
+
+  if (!user) {
+    return res.status(200).json({
+      isNewUser: true,
+      phone,
+    });
+  }
+
+  generateToken(res, user._id);
+
+  res.status(200).json({
+    isNewUser: false,
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    isAdmin: user.isAdmin,
+  });
+});
+
+// @desc        Register With Phone
+// @route       POST /api/users/register-phone
+// @access      Public
+const registerWithPhone = asyncHandler(async (req, res, next) => {
+  const { name, email } = req.body;
+  const phone = String(req.body.phone).trim();
+
+  const existingUser = await User.findOne({ phone });
+
+  if (existingUser) {
+    return next(new ErrorResponse('Phone number already registered', 400));
+  }
+
+  const user = await User.create({
+    name,
+    email,
+    phone,
+    password: crypto.randomBytes(32).toString('hex'),
+    phoneVerified: true,
+  });
+
+  generateToken(res, user._id);
+
+  res.status(201).json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    isAdmin: user.isAdmin,
+  });
+});
+
 // Get token from model, create cookie and send response
 // const sendTokenResponse = (user, statusCode, res) => {
 //   // Create token
@@ -290,4 +375,7 @@ export {
   updateUser,
   forgotPassword,
   resetPassword,
+  sendOTP,
+  verifyOTP,
+  registerWithPhone,
 };

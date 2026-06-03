@@ -11,6 +11,9 @@ import {
   updateUser,
   forgotPassword,
   resetPassword,
+  sendOTP,
+  verifyOTP,
+  registerWithPhone,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
@@ -26,6 +29,10 @@ router
   .route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+
+router.post('/send-otp', sendOTP);
+router.post('/verify-otp', verifyOTP);
+router.post('/register-phone', registerWithPhone);
 
 router
   .route('/:id')
