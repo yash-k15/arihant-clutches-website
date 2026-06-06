@@ -17,6 +17,8 @@ import {
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
+import { sendMSG91OTP } from '../utils/msg91Service.js';
+
 const router = express.Router();
 
 router.post('/login', authUser);
@@ -33,6 +35,12 @@ router
 router.post('/send-otp', sendOTP);
 router.post('/verify-otp', verifyOTP);
 router.post('/register-phone', registerWithPhone);
+
+router.get('/test-msg91', async (req, res) => {
+  const result = await sendMSG91OTP('9167015147');
+
+  res.json(result);
+});
 
 router
   .route('/:id')
