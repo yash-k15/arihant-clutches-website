@@ -1,5 +1,6 @@
 import { Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Product from '../Components/Product';
 import { useGetProductsQuery } from '../slices/productsApiSlice.js';
 import Loader from '../Components/Loader.jsx';
@@ -40,11 +41,11 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
-          <Paginate
-            pages={data.pages}
-            page={data.page}
-            keyword={keyword ? keyword : ''}
-          />
+          <div className='view-all-container'>
+            <Link to='/products' className='view-all-btn'>
+              View All Products
+            </Link>
+          </div>
         </>
       )}
     </>
