@@ -533,13 +533,16 @@ table th {
 
 .product-image-wrapper {
   position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
+  background: #fff;
 }
 
 .product-image {
   width: 100%;
-  height: 320px;
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -556,6 +559,12 @@ table th {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+@media (max-width: 767.98px) {
+  .desktop-only {
+    display: none !important;
+  }
 }
 
 .view-all-container {
