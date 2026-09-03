@@ -1,0 +1,620 @@
+/* =========================================
+   Header
+   ========================================= */
+
+
+/* =========================================
+   DESKTOP / BASE
+   ========================================= */
+
+/* ---------- Site Header ---------- */
+
+.site-header {
+  position: relative;
+  z-index: 1000;
+
+  width: 100%;
+
+  background: #fff;
+}
+
+/* ---------- Mobile Header ---------- */
+
+.mobile-header {
+  display: none;
+}
+
+/* ---------- Top Header ---------- */
+
+.header-top {
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.header-top-inner {
+  position: relative;
+
+  min-height: 82px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ---------- Brand ---------- */
+
+.header-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #2c2222 !important;
+
+  font-size: 1.35rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.header-brand:hover {
+  color: #2c2222 !important;
+}
+
+.header-logo {
+  width: auto;
+  height: 45px;
+
+  object-fit: contain;
+}
+
+
+/* ---------- Header Actions ---------- */
+
+.header-actions {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.header-action {
+  position: relative;
+
+  width: 42px;
+  height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #2c2222;
+
+  font-size: 1.05rem;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.header-action:hover {
+  color: #b08d57;
+}
+
+
+/* ---------- Cart ---------- */
+
+.header-cart {
+  position: relative;
+}
+
+.header-cart-badge {
+  position: absolute;
+
+  top: 1px;
+  right: -1px;
+
+  min-width: 18px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 4px;
+
+  border-radius: 50%;
+
+  background: #2c2222 !important;
+
+  color: #fff;
+
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+
+/* ---------- Account ---------- */
+
+.header-account {
+  display: flex;
+  align-items: center;
+}
+
+.header-account .dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 8px 10px;
+
+  border: none !important;
+  background: transparent !important;
+
+  color: #2c2222 !important;
+
+  font-weight: 500;
+}
+
+.header-account .dropdown-toggle:hover {
+  color: #b08d57 !important;
+}
+
+.header-account .dropdown-menu {
+  min-width: 170px;
+
+  margin-top: 8px;
+
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.header-account .dropdown-item {
+  padding: 9px 16px;
+
+  color: #2c2222;
+}
+
+.header-account .dropdown-item:hover {
+  background: #faf7f1;
+  color: #b08d57;
+}
+
+
+/* ---------- Main Navigation ---------- */
+
+.header-navigation {
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.header-nav {
+  min-height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 42px;
+}
+
+.header-nav-link {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding: 18px 0;
+
+  color: #2c2222 !important;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+
+  transition: color 0.2s ease;
+}
+
+.header-nav-link:hover {
+  color: #b08d57 !important;
+}
+
+.header-nav-link::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 10px;
+
+  height: 1px;
+
+  background: #b08d57;
+
+  transform: scaleX(0);
+  transform-origin: center;
+
+  transition: transform 0.2s ease;
+}
+
+.header-nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+
+/* ---------- Category Dropdown ---------- */
+
+.header-category {
+  position: relative;
+}
+
+.header-category-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 18px 0;
+
+  border: none;
+  background: transparent;
+
+  color: #2c2222;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+
+  cursor: pointer;
+}
+
+.header-category-toggle:hover {
+  color: #b08d57;
+}
+
+.header-category-menu {
+  position: absolute;
+
+  top: calc(100% + 1px);
+  left: 50%;
+
+  min-width: 210px;
+
+  padding: 10px 0;
+
+  background: #fff;
+
+  border: 1px solid #f0f0f0;
+  border-radius: 0 0 12px 12px;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translate(-50%, -5px);
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+}
+
+.header-category:hover .header-category-menu {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translate(-50%, 0);
+}
+
+.header-category-item {
+  display: block;
+
+  padding: 10px 18px;
+
+  color: #2c2222 !important;
+
+  font-size: 0.9rem;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.header-category-item:hover {
+  background: #faf7f1;
+  color: #b08d57 !important;
+}
+
+
+/* =========================================
+   TABLET
+   768px - 1199.98px
+   ========================================= */
+
+@media (max-width: 1199.98px) and (min-width: 768px) {
+
+  /* ---------- Top Header ---------- */
+
+  .header-top-inner {
+    min-height: 82px;
+
+    justify-content: space-between;
+  }
+
+
+  /* ---------- Brand ---------- */
+
+  .header-brand {
+    font-size: 1.2rem;
+  }
+
+  .header-logo {
+    height: 40px;
+  }
+
+
+  /* ---------- Header Actions ---------- */
+
+  .header-actions {
+    gap: 2px;
+  }
+
+  .header-action {
+    width: 38px;
+    height: 38px;
+  }
+
+
+  /* ---------- Account ---------- */
+
+  .header-account .dropdown-toggle {
+    padding: 8px 6px;
+
+    font-size: 0.9rem;
+  }
+
+
+  /* ---------- Navigation ---------- */
+
+  .header-nav {
+    gap: 28px;
+  }
+
+  .header-nav-link,
+  .header-category-toggle {
+    font-size: 0.82rem;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+   Below 768px
+   ========================================= */
+
+@media (max-width: 767.98px) {
+
+  /* ---------- Desktop Header ---------- */
+
+  .desktop-header {
+    display: none;
+  }
+
+
+  /* ---------- Site Header ---------- */
+
+  .site-header {
+    border-bottom: 1px solid #f3f3f3;
+  }
+
+
+  /* ---------- Mobile Header ---------- */
+
+  .mobile-header {
+    display: block;
+  }
+
+  .mobile-header-inner {
+    min-height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 10px;
+  }
+
+
+  /* ---------- Mobile Header Sides ---------- */
+
+  .mobile-header-left {
+    display: flex;
+    align-items: center;
+
+    transform: translateX(-15px);
+  }
+
+  .mobile-header-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    transform: translateX(6px);
+  }
+
+
+  /* ---------- Mobile Brand ---------- */
+
+  .mobile-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #2c2222 !important;
+
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .mobile-logo {
+    width: auto;
+    height: 34px;
+
+    object-fit: contain;
+  }
+
+
+  /* ---------- Mobile Menu Button ---------- */
+
+  .mobile-menu-button {
+    width: 40px;
+    height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #2c2222;
+
+    font-size: 1.25rem;
+
+    cursor: pointer;
+  }
+
+
+  /* ---------- Mobile Drawer ---------- */
+
+  .mobile-drawer .offcanvas {
+    width: min(82vw, 360px);
+  }
+
+  .mobile-drawer .offcanvas-header {
+    padding: 20px;
+
+    border-bottom: 1px solid #f1f1f1;
+  }
+
+  .mobile-drawer .offcanvas-body {
+    padding: 10px 20px 30px;
+  }
+
+
+  /* ---------- Mobile Drawer Brand ---------- */
+
+  .mobile-drawer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #2c2222;
+
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .mobile-drawer-logo {
+    width: auto;
+    height: 36px;
+
+    object-fit: contain;
+  }
+
+
+  /* ---------- Mobile Navigation ---------- */
+
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-nav-link {
+    display: flex;
+    align-items: center;
+
+    padding: 15px 0;
+
+    color: #2c2222 !important;
+
+    font-size: 0.95rem;
+    font-weight: 500;
+
+    border-bottom: 1px solid #f1f1f1;
+  }
+
+  .mobile-nav-link:hover {
+    color: #b08d57 !important;
+  }
+
+  .mobile-nav-section {
+    padding: 18px 0 8px;
+
+    color: #999;
+
+    font-size: 0.72rem;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+
+  .mobile-category-link {
+    padding-left: 12px;
+
+    font-size: 0.9rem;
+  }
+
+
+  /* ---------- Mobile Account ---------- */
+
+  .mobile-account-section {
+    margin-top: 15px;
+  }
+
+  .mobile-logout {
+    width: 100%;
+
+    padding: 15px 0;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+
+    text-align: left;
+
+    cursor: pointer;
+  }
+
+  .mobile-logout:focus,
+  .mobile-logout:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+}

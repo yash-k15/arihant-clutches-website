@@ -592,79 +592,8 @@ table th {
 }
 
 /* Navbar CSS */
-.custom-navbar {
-  background: #fff;
-  padding: 14px 0;
-  border-bottom: 1px solid #f3f3f3;
-}
-
-.navbar-brand-custom {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #2c2222 !important;
-}
-
-.navbar-logo {
-  height: 45px;
-  width: auto;
-  object-fit: contain;
-}
-
-.nav-links .nav-link {
-  color: #2c2222 !important;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.nav-links .nav-link:hover {
-  color: #b08d57 !important;
-}
-
-.nav-icon-link {
-  display: flex !important;
-  align-items: center;
-  gap: 6px;
-}
-
-.nav-icon-link svg {
-  font-size: 1rem;
-}
 
 /* Search Bar CSS */
-.search-form {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.search-input {
-  border-radius: 999px !important;
-  border: 1px solid #ddd !important;
-  padding: 10px 18px !important;
-  min-width: 240px;
-  box-shadow: none !important;
-}
-
-.search-input:focus {
-  border-color: #b08d57 !important;
-}
-
-.search-btn {
-  background: #2c2222 !important;
-  border: none !important;
-  border-radius: 999px !important;
-  padding: 10px 18px !important;
-  font-weight: 500 !important;
-  transition: all 0.2s ease !important;
-}
-
-.search-btn:hover {
-  background: #b08d57 !important;
-  color: #000 !important;
-}
 
 /* Pagination CSS */
 .custom-pagination {
