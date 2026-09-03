@@ -251,33 +251,6 @@ table th {
   color: #2c2222;
 }
 
-.product-color-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-  margin-bottom: 10px;
-}
-
-.product-color-option {
-  background: #f3f4f6;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  padding: 4px 10px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.product-color-option:hover {
-  border-color: #222;
-}
-
-.product-color-option.active {
-  border-color: #222;
-  font-weight: 600;
-}
-
 .section-title {
   font-weight: 600;
   margin-bottom: 10px;
@@ -325,39 +298,6 @@ table th {
 .add-cart-btn:hover {
   background: #d4af37;
   color: #000;
-}
-
-.product-badges {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 2;
-
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  align-items: flex-start;
-}
-
-.badge-new,
-.badge-best {
-  padding: 6px 12px;
-  border-radius: 999px;
-
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-
-  color: #fff;
-}
-
-.badge-new {
-  background: #2c2222;
-}
-
-.badge-best {
-  background: #b08d57;
 }
 
 .variant-selector {
@@ -498,50 +438,6 @@ table th {
 }
 
 /* Home Page CSS */
-
-.product-card {
-  border: none;
-  border-radius: 14px;
-  overflow: hidden;
-  transition: all 0.25s ease;
-  background: #fff;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.product-image-wrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  background: #fff;
-}
-
-.product-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-}
-
-.product-card:hover .product-image {
-  transform: scale(1.04);
-}
-
-.product-title {
-  min-height: 48px;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
 @media (max-width: 767.98px) {
   .desktop-only {
     display: none !important;

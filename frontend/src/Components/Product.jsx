@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import Rating from './Rating';
 import { getCloudinaryImage } from '../utils/cloudinary';
 
+import '../assets/styles/components/Product.css';
+
 const Product = ({ product }) => {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
 
