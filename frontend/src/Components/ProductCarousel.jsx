@@ -5,6 +5,8 @@ import Message from './Message';
 import { useGetTopProductsQuery } from '../slices/productsApiSlice';
 import { getCloudinaryImage } from '../utils/cloudinary';
 
+import '../assets/styles/components/ProductCarousel.css';
+
 const ProductCarousel = () => {
   const { data: products, isLoading, error } = useGetTopProductsQuery();
 
@@ -28,7 +30,7 @@ const ProductCarousel = () => {
                 className='hero-image'
               />
               <div className='hero-overlay'></div>
-              <Carousel.Caption className='hero-caption ps-4'>
+              <Carousel.Caption className='hero-caption'>
                 <h2 className='hero-title'>{product.name}</h2>
                 <p className='hero-price'>
                   Starting at ₹{product.variants[0]?.price}

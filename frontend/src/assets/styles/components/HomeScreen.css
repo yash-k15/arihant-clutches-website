@@ -1,0 +1,100 @@
+/* =========================================
+   Home Screen
+   ========================================= */
+
+.home-header {
+  margin: 40px 0 30px;
+  text-align: center;
+}
+
+.home-subtitle {
+  margin-bottom: 10px;
+  color: #b08d57;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.home-title {
+  margin: 0;
+  color: #2c2222;
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+/* ---------- View All Products ---------- */
+
+.view-all-container {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0;
+}
+
+.view-all-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  background: #2c2222;
+  color: #fff !important;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 50px;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.view-all-btn:hover {
+  background: #b08d57 !important;
+  color: #000 !important;
+}
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 1199.98px) and (min-width: 768px) {
+  .home-header {
+    margin: 35px 0 28px;
+  }
+
+  .home-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .home-title {
+    font-size: 2.6rem;
+  }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 767.98px) {
+  .home-header {
+    margin: 28px 0 24px;
+    padding: 0 12px;
+  }
+
+  .home-subtitle {
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    letter-spacing: 1.4px;
+    line-height: 1.6;
+  }
+
+  .home-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .view-all-container {
+    margin: 2.25rem 0;
+    padding: 0 16px;
+  }
+
+  .view-all-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 12px 24px;
+    text-align: center;
+  }
+}

@@ -5,9 +5,10 @@ import Product from '../Components/Product';
 import { useGetProductsQuery } from '../slices/productsApiSlice.js';
 import Loader from '../Components/Loader.jsx';
 import Message from '../Components/Message.jsx';
-import Paginate from '../Components/Paginate.jsx';
 import ProductCarousel from '../Components/ProductCarousel.jsx';
 import BackButton from '../Components/BackButton.jsx';
+
+import '../assets/styles/components/HomeScreen.css';
 
 const HomeScreen = () => {
   const { pageNumber, keyword } = useParams();
