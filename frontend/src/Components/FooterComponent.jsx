@@ -1,6 +1,8 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
+import '../assets/styles/components/Footer.css';
+
 const FooterComponent = () => {
   return (
     <footer className='footer-section'>
