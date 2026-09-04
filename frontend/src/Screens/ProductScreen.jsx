@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -31,6 +31,7 @@ const ProductScreen = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [selectedImage, setSelectedImage] = useState('');
   const [qty, setQty] = useState(1);
@@ -71,13 +72,22 @@ const ProductScreen = () => {
   };
 
   useEffect(() => {
-    if (!product?.variants?.length) return;
+    if (product?.variants?.length > 0) {
+      const requestedVariantId = location.state?.variantId;
 
-    const firstVariant = product.variants[0];
+      const variantFromNavigation = requestedVariantId
+        ? product.variants.find((variant) => variant._id === requestedVariantId)
+        : null;
 
-    setSelectedVariant(firstVariant);
-    setSelectedImage(firstVariant.images?.[0] || '');
-  }, [product]);
+      const variantToSelect = variantFromNavigation || product.variants[0];
+
+      setSelectedVariant(variantToSelect);
+
+      if (variantToSelect.images?.length > 0) {
+        setSelectedImage(variantToSelect.images[0]);
+      }
+    }
+  }, [product, location.state]);
 
   const submitHandler = async (e) => {
     e.preventDefault();

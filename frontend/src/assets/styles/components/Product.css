@@ -3,28 +3,37 @@
    ========================================= */
 
 .product-card {
+  height: 100%;
   border: none;
-  border-radius: 14px;
+  border-radius: 10px;
   overflow: hidden;
+  background: #fff;
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease;
-  background: #fff;
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* ---------- Product Image ---------- */
+/* =========================================
+   Product Image
+   ========================================= */
 
 .product-image-wrapper {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #fff;
+  background: #f8f8f8;
+}
+
+.product-image-link {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .product-image {
@@ -32,36 +41,37 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
 .product-card:hover .product-image {
-  transform: scale(1.04);
+  transform: scale(1.035);
 }
 
-/* ---------- Product Badges ---------- */
+/* =========================================
+   Product Badges
+   ========================================= */
 
 .product-badges {
   position: absolute;
   top: 12px;
   left: 12px;
   z-index: 2;
-
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .badge-new,
 .badge-best {
-  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
   border-radius: 999px;
-
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.7px;
 }
 
 .badge-new {
@@ -72,63 +82,152 @@
   background: #b08d57;
 }
 
-/* ---------- Product Info ---------- */
+/* =========================================
+   Product Body
+   ========================================= */
 
-.product-title {
-  min-height: 48px;
-  margin-bottom: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
-
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-/* ---------- Color Options ---------- */
-
-.product-color-options {
+.product-card-body {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-
-  margin-top: 8px;
-  margin-bottom: 10px;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 4px 4px;
+  text-align: center;
 }
 
-.product-color-option {
-  padding: 4px 10px;
+/* =========================================
+   Variant Thumbnails
+   ========================================= */
 
-  background: #f3f4f6;
-  border: 1px solid #ddd;
-  border-radius: 20px;
+.product-variants {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  margin-bottom: 13px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
 
-  font-size: 0.85rem;
+.product-variants::-webkit-scrollbar {
+  display: none;
+}
+
+.product-variant {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 52px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: #f4f4f4;
   cursor: pointer;
-
   transition:
     border-color 0.2s ease,
-    background 0.2s ease;
+    opacity 0.2s ease;
 }
 
-.product-color-option:hover {
-  border-color: #222;
+.product-variant img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.product-color-option.active {
-  border-color: #222;
-  font-weight: 600;
+.product-variant:hover {
+  border-color: #999;
 }
 
-/* ---------- Product Price ---------- */
+.product-variant.active {
+  border-color: #2c2222;
+}
 
-.product-price {
-  margin-bottom: 0;
+.product-variant span {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  color: #555;
+  font-size: 0.55rem;
+  text-align: center;
+}
+
+/* =========================================
+   Product Name
+   ========================================= */
+
+.product-info-link {
+  display: block;
+  width: 100%;
+  color: inherit;
+}
+
+.product-title {
+  margin: 0 0 8px;
   color: #2c2222;
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-info-link:hover .product-title {
+  color: #b08d57;
+}
+
+/* =========================================
+   Price
+   ========================================= */
+
+.product-card .product-price {
+  margin: 0 0 8px;
+  color: #2c2222;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* =========================================
+   Rating
+   ========================================= */
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.product-rating .rating {
+  line-height: 1;
+}
+
+.product-rating .rating span {
+  margin: 0 1px;
+}
+
+.product-rating .rating svg {
+  font-size: 0.8rem;
+  color: #b08d57;
+}
+
+/* =========================================
+   Review Count
+   ========================================= */
+
+.product-reviews {
+  margin-top: 4px;
+  color: #888;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  text-align: center;
 }
 
 /* =========================================
@@ -139,31 +238,45 @@
   .product-badges {
     top: 10px;
     left: 10px;
-    gap: 6px;
   }
 
   .badge-new,
   .badge-best {
-    padding: 5px 10px;
-    font-size: 0.7rem;
+    padding: 4px 8px;
+    font-size: 0.6rem;
+  }
+
+  .product-card-body {
+    padding: 12px 3px 3px;
+  }
+
+  .product-variants {
+    gap: 6px;
+    margin-bottom: 11px;
+  }
+
+  .product-variant {
+    width: 38px;
+    height: 48px;
   }
 
   .product-title {
-    min-height: 44px;
-    font-size: 0.95rem;
+    margin-bottom: 7px;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
   }
 
-  .product-color-options {
-    gap: 6px;
+  .product-card .product-price {
+    margin-bottom: 7px;
+    font-size: 0.85rem;
   }
 
-  .product-color-option {
-    padding: 4px 9px;
-    font-size: 0.8rem;
+  .product-rating .rating svg {
+    font-size: 0.75rem;
   }
 
-  .product-price {
-    font-size: 1.05rem;
+  .product-reviews {
+    font-size: 0.68rem;
   }
 }
 
@@ -173,45 +286,64 @@
 
 @media (max-width: 767.98px) {
   .product-card {
-    border-radius: 12px;
+    border-radius: 8px;
   }
 
   .product-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.07);
   }
 
   .product-badges {
-    top: 8px;
-    left: 8px;
-    gap: 5px;
+    top: 7px;
+    left: 7px;
+    gap: 4px;
   }
 
   .badge-new,
   .badge-best {
-    padding: 4px 9px;
-    font-size: 0.65rem;
-    letter-spacing: 0.3px;
+    padding: 4px 7px;
+    font-size: 0.55rem;
+    letter-spacing: 0.5px;
+  }
+
+  .product-card-body {
+    padding: 10px 2px 2px;
+  }
+
+  .product-variants {
+    gap: 5px;
+    margin-bottom: 9px;
+  }
+
+  .product-variant {
+    width: 34px;
+    height: 43px;
   }
 
   .product-title {
-    min-height: 42px;
-    font-size: 0.9rem;
+    margin-bottom: 6px;
+    font-size: 0.72rem;
     line-height: 1.35;
+    letter-spacing: 0.8px;
   }
 
-  .product-color-options {
-    gap: 5px;
-    margin-top: 6px;
-    margin-bottom: 8px;
+  .product-card .product-price {
+    margin-bottom: 6px;
+    font-size: 0.78rem;
   }
 
-  .product-color-option {
-    padding: 3px 8px;
-    font-size: 0.75rem;
+  .product-rating .rating svg {
+    font-size: 0.68rem;
   }
 
-  .product-price {
-    font-size: 1rem;
+  .product-rating .rating span {
+    margin: 0;
+  }
+
+  .product-reviews {
+    margin-top: 3px;
+    font-size: 0.62rem;
   }
 }
 
@@ -221,27 +353,44 @@
 
 @media (max-width: 480px) {
   .product-badges {
-    top: 7px;
-    left: 7px;
+    top: 6px;
+    left: 6px;
   }
 
   .badge-new,
   .badge-best {
-    padding: 4px 8px;
-    font-size: 0.62rem;
+    padding: 4px 7px;
+    font-size: 0.5rem;
+  }
+
+  .product-card-body {
+    padding-top: 9px;
+  }
+
+  .product-variants {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .product-variant {
+    width: 31px;
+    height: 39px;
   }
 
   .product-title {
-    min-height: 40px;
-    font-size: 0.85rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.7px;
   }
 
-  .product-color-option {
-    padding: 3px 7px;
-    font-size: 0.7rem;
+  .product-card .product-price {
+    font-size: 0.75rem;
   }
 
-  .product-price {
-    font-size: 0.95rem;
+  .product-rating .rating svg {
+    font-size: 0.62rem;
+  }
+
+  .product-reviews {
+    font-size: 0.6rem;
   }
 }
