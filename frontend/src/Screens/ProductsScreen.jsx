@@ -1,4 +1,4 @@
-import { Row, Col, Button, ButtonGroup } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import Product from '../Components/Product';
@@ -6,12 +6,20 @@ import Loader from '../Components/Loader';
 import Message from '../Components/Message';
 import Paginate from '../Components/Paginate';
 import BackButton from '../Components/BackButton';
-import { BsGridFill, BsGrid3X3GapFill, BsList } from 'react-icons/bs';
+import {
+  BsGridFill,
+  BsGrid3X3GapFill,
+  BsGrid3X3,
+  BsFilter,
+  BsChevronDown,
+} from 'react-icons/bs';
 
 import { useGetProductsQuery } from '../slices/productsApiSlice';
 
+import '../assets/styles/components/ProductsScreen.css';
+
 const ProductsScreen = () => {
-  const [view, setView] = useState('grid4');
+  const [view, setView] = useState('medium');
   const { pageNumber, keyword } = useParams();
 
   const { data, isLoading, error } = useGetProductsQuery({
@@ -71,35 +79,59 @@ const ProductsScreen = () => {
             <h1 className='home-title'>All Products</h1>
           </div>
 
-          <ButtonGroup className='view-toggle'>
-            <Button
-              variant='light'
-              active={view === 'small'}
-              onClick={() => setView('small')}
-            >
-              <BsGridFill />
-            </Button>
+          <div className='products-toolbar'>
+            <div className='products-view-toggle'>
+              <button
+                type='button'
+                className={`products-view-btn ${
+                  view === 'small' ? 'active' : ''
+                }`}
+                onClick={() => setView('small')}
+                aria-label='3 products per row'
+              >
+                <BsGridFill />
+              </button>
 
-            <Button
-              variant='light'
-              active={view === 'medium'}
-              onClick={() => setView('medium')}
-            >
-              <BsGrid3X3GapFill />
-            </Button>
+              <button
+                type='button'
+                className={`products-view-btn ${
+                  view === 'medium' ? 'active' : ''
+                }`}
+                onClick={() => setView('medium')}
+                aria-label='4 products per row'
+              >
+                <BsGrid3X3GapFill />
+              </button>
 
-            <Button
-              variant='light'
-              className='desktop-only'
-              active={view === 'large'}
-              onClick={() => setView('large')}
-            >
-              <BsList />
-            </Button>
-          </ButtonGroup>
+              <button
+                type='button'
+                className={`products-view-btn products-view-large ${
+                  view === 'large' ? 'active' : ''
+                }`}
+                onClick={() => setView('large')}
+                aria-label='6 products per row'
+              >
+                <BsGrid3X3 />
+              </button>
+            </div>
+
+            <div className='products-toolbar-actions'>
+              <button type='button' className='products-filter-btn'>
+                <BsFilter />
+                <span>Filter</span>
+              </button>
+
+              <div className='products-sort'>
+                <button type='button' className='products-sort-btn'>
+                  <span>Sort By</span>
+                  <BsChevronDown />
+                </button>
+              </div>
+            </div>
+          </div>
           <Row className='g-4'>
             {data.products.map((product) => (
-              <Col key={product._id} sm={col.xs} md={col.md} lg={col.lg}>
+              <Col key={product._id} xs={col.xs} md={col.md} lg={col.lg}>
                 <Product product={product} />
               </Col>
             ))}
