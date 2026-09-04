@@ -5,7 +5,6 @@ import Product from '../Components/Product';
 import Loader from '../Components/Loader';
 import Message from '../Components/Message';
 import Paginate from '../Components/Paginate';
-import BackButton from '../Components/BackButton';
 import {
   BsGridFill,
   BsGrid3X3GapFill,
