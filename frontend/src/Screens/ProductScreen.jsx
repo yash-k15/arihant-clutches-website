@@ -10,6 +10,7 @@ import Rating from '../Components/Rating';
 import Loader from '../Components/Loader.jsx';
 import Message from '../Components/Message.jsx';
 import Meta from '../Components/Meta.jsx';
+import { useCartDrawer } from '../Components/CartDrawerContext.jsx';
 
 import {
   useGetProductDetailsQuery,
@@ -30,8 +31,9 @@ const ProductScreen = () => {
   const location = useLocation();
   const dispatch = useDispatch();
 
+  const { openCart } = useCartDrawer();
+
   const [selectedImage, setSelectedImage] = useState('');
-  const [qty, setQty] = useState(1);
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -113,8 +115,6 @@ const ProductScreen = () => {
     if (variant.images?.length > 0) {
       setSelectedImage(variant.images[0]);
     }
-
-    setQty(1);
   };
 
   /*
@@ -136,11 +136,11 @@ const ProductScreen = () => {
         image: selectedVariant.images?.[0],
         price: selectedVariant.price,
         countInStock: selectedVariant.countInStock,
-        qty,
+        qty: 1,
       }),
     );
 
-    navigate('/cart');
+    openCart();
   };
 
   /*
@@ -410,26 +410,6 @@ const ProductScreen = () => {
                     <span className='purchase-stock out-stock'>
                       Out of Stock
                     </span>
-                  )}
-
-                  {selectedVariant?.countInStock > 0 && (
-                    <div className='purchase-quantity'>
-                      <label htmlFor='qty'>Quantity</label>
-
-                      <Form.Select
-                        id='qty'
-                        value={qty}
-                        onChange={(event) => setQty(Number(event.target.value))}
-                      >
-                        {[...Array(selectedVariant.countInStock).keys()].map(
-                          (x) => (
-                            <option key={x + 1} value={x + 1}>
-                              {x + 1}
-                            </option>
-                          ),
-                        )}
-                      </Form.Select>
-                    </div>
                   )}
                 </div>
 

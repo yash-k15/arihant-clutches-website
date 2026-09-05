@@ -11,7 +11,7 @@ import { logout } from '../slices/authSlice.js';
 import SearchBox from './SearchBox.jsx';
 import logo from '../assets/logo.png';
 import AuthModal from './AuthModal.jsx';
-import CartDrawer from './CartDrawer.jsx';
+import { useCartDrawer } from './CartDrawerContext.jsx';
 
 import '../assets/styles/components/Header.css';
 import '../assets/styles/components/SearchBox.css';
@@ -21,12 +21,13 @@ const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
 
+  const { openCart } = useCartDrawer();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showCartDrawer, setShowCartDrawer] = useState(false);
 
   const [logoutApiCall] = useLogoutMutation();
 
@@ -82,7 +83,7 @@ const Header = () => {
                   type='button'
                   className='header-action header-cart'
                   aria-label='Shopping cart'
-                  onClick={() => setShowCartDrawer(true)}
+                  onClick={openCart}
                 >
                   <FaShoppingCart />
 
@@ -228,7 +229,7 @@ const Header = () => {
                 type='button'
                 className='header-action header-cart'
                 aria-label='Shopping cart'
-                onClick={() => setShowCartDrawer(true)}
+                onClick={openCart}
               >
                 <FaShoppingCart />
 
@@ -389,11 +390,6 @@ const Header = () => {
           </nav>
         </Offcanvas.Body>
       </Offcanvas>
-
-      <CartDrawer
-        show={showCartDrawer}
-        onHide={() => setShowCartDrawer(false)}
-      />
 
       <AuthModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
     </header>
