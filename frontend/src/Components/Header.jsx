@@ -11,6 +11,7 @@ import { logout } from '../slices/authSlice.js';
 import SearchBox from './SearchBox.jsx';
 import logo from '../assets/logo.png';
 import AuthModal from './AuthModal.jsx';
+import CartDrawer from './CartDrawer.jsx';
 
 import '../assets/styles/components/Header.css';
 import '../assets/styles/components/SearchBox.css';
@@ -25,6 +26,7 @@ const Header = () => {
 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showCartDrawer, setShowCartDrawer] = useState(false);
 
   const [logoutApiCall] = useLogoutMutation();
 
@@ -76,17 +78,18 @@ const Header = () => {
               <div className='header-actions'>
                 <SearchBox />
 
-                <Link
-                  to='/cart'
+                <button
+                  type='button'
                   className='header-action header-cart'
                   aria-label='Shopping cart'
+                  onClick={() => setShowCartDrawer(true)}
                 >
                   <FaShoppingCart />
 
                   {cartQuantity > 0 && (
                     <Badge className='header-cart-badge'>{cartQuantity}</Badge>
                   )}
-                </Link>
+                </button>
 
                 {userInfo ? (
                   <NavDropdown
@@ -221,17 +224,18 @@ const Header = () => {
             <div className='mobile-header-right'>
               <SearchBox />
 
-              <Link
-                to='/cart'
+              <button
+                type='button'
                 className='header-action header-cart'
                 aria-label='Shopping cart'
+                onClick={() => setShowCartDrawer(true)}
               >
                 <FaShoppingCart />
 
                 {cartQuantity > 0 && (
                   <Badge className='header-cart-badge'>{cartQuantity}</Badge>
                 )}
-              </Link>
+              </button>
             </div>
           </div>
         </Container>
@@ -385,6 +389,11 @@ const Header = () => {
           </nav>
         </Offcanvas.Body>
       </Offcanvas>
+
+      <CartDrawer
+        show={showCartDrawer}
+        onHide={() => setShowCartDrawer(false)}
+      />
 
       <AuthModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
     </header>
