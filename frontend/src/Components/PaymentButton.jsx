@@ -10,6 +10,8 @@ import { useCheckStockMutation } from '../slices/ordersApiSlice.js';
 import { clearCartItems } from '../slices/cartSlice.js';
 import { useCheckout } from './Checkout/CheckoutContext.jsx';
 
+import '../assets/styles/components/PaymentButton.css';
+
 const PaymentButton = ({ disabled }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
