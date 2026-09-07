@@ -8,12 +8,16 @@ import {
 } from '../slices/paymentApiSlice';
 import { useCheckStockMutation } from '../slices/ordersApiSlice.js';
 import { clearCartItems } from '../slices/cartSlice.js';
+import { useCheckout } from './Checkout/CheckoutContext.jsx';
 
 const PaymentButton = ({ disabled }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const cart = useSelector((state) => state.cart);
   const userInfo = useSelector((state) => state.auth);
+
+  const { closeCheckout } = useCheckout();
 
   const [checkStock] = useCheckStockMutation();
   const [createRazorpayOrder, { isLoading }] = useCreateRazorpayOrderMutation();
@@ -26,7 +30,7 @@ const PaymentButton = ({ disabled }) => {
       // CHECK STOCK BEFORE OPENING RAZORPAY
       await checkStock({
         orderItems: cart.cartItems.map((item) => ({
-          product: item.product,
+          product: item._id,
           name: item.name,
           color: item.color,
           variantId: item.variantId,
@@ -39,7 +43,7 @@ const PaymentButton = ({ disabled }) => {
         const res = await verifyPayment({
           orderData: {
             orderItems: cart.cartItems.map((item) => ({
-              product: item.product,
+              product: item._id,
               name: item.name,
               image: item.image,
               price: item.price,
@@ -60,7 +64,7 @@ const PaymentButton = ({ disabled }) => {
         }).unwrap();
 
         dispatch(clearCartItems());
-
+        closeCheckout();
         navigate(`/order/${res.order._id}`);
 
         return;
@@ -93,7 +97,7 @@ const PaymentButton = ({ disabled }) => {
               paymentData: response,
               orderData: {
                 orderItems: cart.cartItems.map((item) => ({
-                  product: item.product,
+                  product: item._id,
                   name: item.name,
                   image: item.image,
                   price: item.price,
@@ -113,7 +117,7 @@ const PaymentButton = ({ disabled }) => {
             // SUCCESS
             if (res.success) {
               dispatch(clearCartItems());
-
+              closeCheckout();
               navigate(`/order/${res.order._id}`);
             } else {
               alert('Payment verification failed');

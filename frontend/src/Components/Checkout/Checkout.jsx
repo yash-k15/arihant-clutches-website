@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCheckout } from './CheckoutContext.jsx';
 import CheckoutDelivery from './CheckoutDelivery.jsx';
 import CheckoutPayment from './CheckoutPayment.jsx';
+import CheckoutReview from './CheckoutReview.jsx';
 
 import '../../assets/styles/components/Checkout.css';
 
@@ -9,6 +10,12 @@ const Checkout = () => {
   const { showCheckout, closeCheckout } = useCheckout();
 
   const [currentStep, setCurrentStep] = useState(1);
+
+  useEffect(() => {
+    if (showCheckout) {
+      setCurrentStep(1);
+    }
+  }, [showCheckout]);
 
   if (!showCheckout) {
     return null;
@@ -85,7 +92,7 @@ const Checkout = () => {
         )}
 
         {currentStep === 3 && (
-          <div className='checkout-placeholder'>Review will go here.</div>
+          <CheckoutReview onBack={goToPayment} onEditDelivery={goToDelivery} />
         )}
       </div>
     </div>
