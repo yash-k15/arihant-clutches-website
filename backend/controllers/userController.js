@@ -324,7 +324,7 @@ const registerWithPhone = asyncHandler(async (req, res, next) => {
 
   const user = await User.create({
     name,
-    email,
+    email: email || undefined,
     phone,
     password: crypto.randomBytes(32).toString('hex'),
     phoneVerified: true,
