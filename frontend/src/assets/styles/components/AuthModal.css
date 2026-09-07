@@ -1,0 +1,140 @@
+/* ================================
+   Auth Modal
+================================ */
+
+.auth-modal .modal-dialog {
+  max-width: 430px;
+}
+
+.auth-modal .modal-content {
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.15);
+}
+
+/* Header */
+
+.auth-modal .modal-header {
+  border-bottom: 1px solid #f0ece7;
+  padding: 24px 28px 20px;
+}
+
+.auth-modal .modal-title {
+  color: #2c2222;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.auth-modal .btn-close {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.auth-modal .btn-close:hover {
+  opacity: 1;
+}
+
+/* Body */
+
+.auth-modal .modal-body {
+  padding: 28px;
+}
+
+/* Form */
+
+.auth-modal .form-label {
+  color: #2c2222;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.auth-modal .form-control {
+  height: 50px;
+  border: 1px solid #ddd6ce;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #2c2222;
+  box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.auth-modal .form-control::placeholder {
+  color: #aaa;
+}
+
+.auth-modal .form-control:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.12);
+}
+
+/* Primary buttons */
+
+.auth-modal .auth-submit-btn {
+  width: 100%;
+  height: 50px;
+  margin-top: 20px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #2c2222;
+  color: #fff;
+
+  font-weight: 600;
+  letter-spacing: 0.2px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.auth-modal .auth-submit-btn:hover:not(:disabled) {
+  background: #b08d57;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.auth-modal .auth-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-modal .auth-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+
+@media (max-width: 767.98px) {
+  .auth-modal .modal-dialog {
+    width: calc(100% - 24px);
+    max-width: none;
+    margin: 12px auto;
+  }
+
+  .auth-modal .modal-content {
+    border-radius: 16px;
+  }
+
+  .auth-modal .modal-header {
+    padding: 20px 20px 16px;
+  }
+
+  .auth-modal .modal-title {
+    font-size: 1.3rem;
+  }
+
+  .auth-modal .modal-body {
+    padding: 22px 20px 24px;
+  }
+
+  .auth-modal .form-control {
+    height: 48px;
+  }
+}

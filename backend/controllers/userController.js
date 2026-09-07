@@ -322,7 +322,8 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
 // @route       POST /api/users/register-phone
 // @access      Public
 const registerWithPhone = asyncHandler(async (req, res, next) => {
-  const { name, email } = req.body;
+  const { name } = req.body;
+  const email = req.body.email?.trim() || undefined;
   const phone = String(req.body.phone).trim();
 
   const existingUser = await User.findOne({ phone });

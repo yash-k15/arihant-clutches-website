@@ -9,6 +9,8 @@ import {
 import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 
+import '../assets/styles/components/AuthModal.css';
+
 const AuthModal = ({ show, onHide, onSuccess }) => {
   const dispatch = useDispatch();
 
@@ -105,9 +107,13 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleClose} centered className='auth-modal'>
       <Modal.Header closeButton>
-        <Modal.Title>{step === 'phone' ? 'Sign In' : 'Verify OTP'}</Modal.Title>
+        <Modal.Title>
+          {step === 'phone' && 'Sign In'}
+          {step === 'otp' && 'Verify OTP'}
+          {step === 'profile' && 'Complete Your Profile'}
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -123,7 +129,11 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
               />
             </Form.Group>
 
-            <Button type='submit' className='w-100 mt-3' disabled={sendingOtp}>
+            <Button
+              type='submit'
+              className='auth-submit-btn'
+              disabled={sendingOtp}
+            >
               {sendingOtp ? 'Sending...' : 'Send OTP'}
             </Button>
           </Form>
@@ -143,7 +153,7 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
 
             <Button
               type='submit'
-              className='w-100 mt-3'
+              className='auth-submit-btn'
               disabled={verifyingOtp}
             >
               Verify OTP
@@ -171,7 +181,11 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
               />
             </Form.Group>
 
-            <Button type='submit' className='w-100' disabled={registering}>
+            <Button
+              type='submit'
+              className='auth-submit-btn'
+              disabled={registering}
+            >
               Complete Registration
             </Button>
           </Form>
