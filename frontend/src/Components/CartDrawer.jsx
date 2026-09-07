@@ -6,6 +6,8 @@ import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 import { addToCart, removeFromCart } from '../slices/cartSlice.js';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
 
+import { useCheckout } from '../Components/Checkout/CheckoutContext.jsx';
+
 import '../assets/styles/components/CartDrawer.css';
 
 const CartDrawer = ({ show, onHide }) => {
@@ -14,6 +16,8 @@ const CartDrawer = ({ show, onHide }) => {
 
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
+
+  const { openCheckout } = useCheckout();
 
   const cartQuantity = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
@@ -57,7 +61,7 @@ const CartDrawer = ({ show, onHide }) => {
     }
 
     onHide();
-    navigate('/shipping');
+    openCheckout();
   };
 
   return (

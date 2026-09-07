@@ -8,6 +8,7 @@ import Message from '../Components/Message.jsx';
 import { addToCart, removeFromCart } from '../slices/cartSlice.js';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
 import AuthModal from '../Components/AuthModal.jsx';
+import { useCheckout } from '../Components/Checkout/CheckoutContext.jsx';
 
 import '../assets/styles/components/CartScreen.css';
 
@@ -17,6 +18,8 @@ const CartScreen = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
+
+  const { openCheckout } = useCheckout();
 
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -55,7 +58,7 @@ const CartScreen = () => {
       return;
     }
 
-    navigate('/shipping');
+    openCheckout();
   };
 
   const continueShoppingHandler = () => {
