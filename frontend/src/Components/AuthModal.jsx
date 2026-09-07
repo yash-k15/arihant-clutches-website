@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import {
@@ -18,6 +18,16 @@ const AuthModal = ({ show, onHide }) => {
   const [otp, setOtp] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    if (show) {
+      setPhone('');
+      setOtp('');
+      setName('');
+      setEmail('');
+      setStep('phone');
+    }
+  }, [show]);
 
   const [sendOtp, { isLoading: sendingOtp }] = useSendOtpMutation();
   const [verifyOtp, { isLoading: verifyingOtp }] = useVerifyOtpMutation();

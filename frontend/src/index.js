@@ -32,6 +32,7 @@ import UserEditScreen from './Screens/admin/UserEditScreen.jsx';
 import ForgotPasswordScreen from './Screens/ForgotPasswordScreen.jsx';
 import ResetPasswordScreen from './Screens/ResetPasswordScreen.jsx';
 import ProductCreateScreen from './Screens/admin/ProductCreateScreen.jsx';
+import AdminLoginScreen from './Screens/AdminLoginScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -51,6 +52,7 @@ const router = createBrowserRouter(
       <Route path='/register' element={<RegisterScreen />} />
       <Route path='/forgotpassword' element={<ForgotPasswordScreen />} />
       <Route path='/resetpassword/:token' element={<ResetPasswordScreen />} />
+      <Route path='/admin/login' element={<AdminLoginScreen />} />
 
       <Route path='' element={<PrivateRoute />}>
         <Route path='/order/:id' element={<OrderScreen />} />

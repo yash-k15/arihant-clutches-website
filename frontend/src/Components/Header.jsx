@@ -48,7 +48,7 @@ const Header = () => {
       dispatch(logout());
       closeMobileMenu();
       // dispatch(clearCartItems());
-      navigate('/login');
+      navigate('/');
     } catch (err) {
       console.log(err);
     }

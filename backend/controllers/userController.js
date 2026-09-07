@@ -24,6 +24,15 @@ const authUser = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid email or password'), 401);
   }
 
+  if (!user.isAdmin) {
+    return next(
+      new ErrorResponse(
+        'Email and password login is only available for administrators',
+        403,
+      ),
+    );
+  }
+
   generateToken(res, user._id);
 
   res.status(200).json({
