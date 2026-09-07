@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, Card, Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
+import Loader from '../Components/Loader.jsx';
 import { useLoginMutation } from '../slices/usersApiSlice.js';
 import { setCredentials } from '../slices/authSlice.js';
+
+import '../assets/styles/components/AdminLogin.css';
 
 const AdminLoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -56,44 +59,54 @@ const AdminLoginScreen = () => {
   };
 
   return (
-    <div className='d-flex justify-content-center align-items-center'>
-      <Card style={{ width: '100%', maxWidth: '450px' }}>
-        <Card.Body className='p-4'>
-          <h1 className='mb-2'>Admin Login</h1>
+    <div className='admin-login-page'>
+      <div className='admin-login-card'>
+        <p className='admin-login-subtitle'>ADMIN PORTAL</p>
 
-          <p className='text-muted mb-4'>
-            Sign in with your administrator credentials.
-          </p>
+        <h1 className='admin-login-title'>Admin Login</h1>
 
-          <Form onSubmit={submitHandler}>
-            <Form.Group className='mb-3' controlId='email'>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type='email'
-                placeholder='Enter admin email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </Form.Group>
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId='email' className='my-3'>
+            <Form.Label className='admin-login-label'>Email Address</Form.Label>
 
-            <Form.Group className='mb-3' controlId='password'>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type='password'
-                placeholder='Enter password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </Form.Group>
+            <Form.Control
+              type='email'
+              placeholder='Enter admin email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className='admin-login-input'
+              required
+            />
+          </Form.Group>
 
-            <Button type='submit' className='w-100' disabled={isLoading}>
-              {isLoading ? 'Signing In...' : 'Sign In'}
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
+          <Form.Group controlId='password' className='my-3'>
+            <Form.Label className='admin-login-label'>Password</Form.Label>
+
+            <Form.Control
+              type='password'
+              placeholder='Enter password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className='admin-login-input'
+              required
+            />
+          </Form.Group>
+
+          <Button
+            type='submit'
+            className='admin-login-btn mt-3'
+            disabled={isLoading}
+          >
+            {isLoading ? 'Signing In...' : 'Sign In'}
+          </Button>
+
+          {isLoading && (
+            <div className='admin-login-loader'>
+              <Loader />
+            </div>
+          )}
+        </Form>
+      </div>
     </div>
   );
 };
