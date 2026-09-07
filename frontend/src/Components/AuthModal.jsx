@@ -9,7 +9,7 @@ import {
 import { setCredentials } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 
-const AuthModal = ({ show, onHide }) => {
+const AuthModal = ({ show, onHide, onSuccess }) => {
   const dispatch = useDispatch();
 
   const [step, setStep] = useState('phone');
@@ -64,8 +64,8 @@ const AuthModal = ({ show, onHide }) => {
       dispatch(setCredentials(res));
 
       toast.success('Login successful');
-
-      onHide();
+      resetForm();
+      onSuccess();
     } catch (err) {
       toast.error(err?.data?.message || 'Invalid OTP');
     }
@@ -84,17 +84,23 @@ const AuthModal = ({ show, onHide }) => {
       dispatch(setCredentials(res));
 
       toast.success('Account created');
-
-      handleClose();
+      resetForm();
+      onSuccess();
     } catch (err) {
       toast.error(err?.data?.message || 'Registration failed');
     }
   };
 
-  const handleClose = () => {
+  const resetForm = () => {
     setPhone('');
     setOtp('');
+    setName('');
+    setEmail('');
     setStep('phone');
+  };
+
+  const handleClose = () => {
+    resetForm();
     onHide();
   };
 

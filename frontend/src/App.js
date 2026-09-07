@@ -7,21 +7,24 @@ import FooterComponent from './Components/FooterComponent';
 import { CartDrawerProvider } from './Components/CartDrawerContext.jsx';
 import { CheckoutProvider } from './Components/Checkout/CheckoutContext.jsx';
 import Checkout from './Components/Checkout/Checkout.jsx';
+import { AuthModalProvider } from './Components/AuthModalContext.jsx';
 
 const App = () => {
   return (
     <>
       <CheckoutProvider>
-        <CartDrawerProvider>
-          <Header />
-          <main className='py-3'>
-            <Container>
-              <Outlet />
-            </Container>
-          </main>
-          <FooterComponent />
-          <ToastContainer />
-        </CartDrawerProvider>
+        <AuthModalProvider>
+          <CartDrawerProvider>
+            <Header />
+            <main className='py-3'>
+              <Container>
+                <Outlet />
+              </Container>
+            </main>
+            <FooterComponent />
+            <ToastContainer />
+          </CartDrawerProvider>
+        </AuthModalProvider>
         <Checkout />
       </CheckoutProvider>
     </>

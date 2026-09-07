@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Image, Button } from 'react-bootstrap';
@@ -7,8 +6,8 @@ import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 import Message from '../Components/Message.jsx';
 import { addToCart, removeFromCart } from '../slices/cartSlice.js';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
-import AuthModal from '../Components/AuthModal.jsx';
 import { useCheckout } from '../Components/Checkout/CheckoutContext.jsx';
+import { useAuthModal } from '../Components/AuthModalContext.jsx';
 
 import '../assets/styles/components/CartScreen.css';
 
@@ -20,8 +19,7 @@ const CartScreen = () => {
   const { cartItems } = useSelector((state) => state.cart);
 
   const { openCheckout } = useCheckout();
-
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { openAuth } = useAuthModal();
 
   const cartQuantity = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
@@ -54,7 +52,7 @@ const CartScreen = () => {
 
   const checkoutHandler = () => {
     if (!userInfo) {
-      setShowAuthModal(true);
+      openAuth(openCheckout);
       return;
     }
 
@@ -206,8 +204,6 @@ const CartScreen = () => {
           </Row>
         )}
       </div>
-
-      <AuthModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
     </>
   );
 };

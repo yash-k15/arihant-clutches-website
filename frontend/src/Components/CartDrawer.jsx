@@ -7,6 +7,7 @@ import { addToCart, removeFromCart } from '../slices/cartSlice.js';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
 
 import { useCheckout } from '../Components/Checkout/CheckoutContext.jsx';
+import { useAuthModal } from './AuthModalContext.jsx';
 
 import '../assets/styles/components/CartDrawer.css';
 
@@ -18,6 +19,7 @@ const CartDrawer = ({ show, onHide }) => {
   const { userInfo } = useSelector((state) => state.auth);
 
   const { openCheckout } = useCheckout();
+  const { openAuth } = useAuthModal();
 
   const cartQuantity = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
@@ -56,7 +58,7 @@ const CartDrawer = ({ show, onHide }) => {
   const handleCheckout = () => {
     if (!userInfo) {
       onHide();
-      navigate('/login');
+      openAuth(openCheckout);
       return;
     }
 

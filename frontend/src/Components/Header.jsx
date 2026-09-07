@@ -10,8 +10,8 @@ import { logout } from '../slices/authSlice.js';
 
 import SearchBox from './SearchBox.jsx';
 import logo from '../assets/logo.png';
-import AuthModal from './AuthModal.jsx';
 import { useCartDrawer } from './CartDrawerContext.jsx';
+import { useAuthModal } from './AuthModalContext.jsx';
 
 import '../assets/styles/components/Header.css';
 import '../assets/styles/components/SearchBox.css';
@@ -22,11 +22,11 @@ const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   const { openCart } = useCartDrawer();
+  const { openAuth } = useAuthModal();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const [logoutApiCall] = useLogoutMutation();
@@ -39,7 +39,7 @@ const Header = () => {
 
   const openAuthModal = () => {
     closeMobileMenu();
-    setShowAuthModal(true);
+    openAuth();
   };
 
   const logoutHandler = async () => {
@@ -390,8 +390,6 @@ const Header = () => {
           </nav>
         </Offcanvas.Body>
       </Offcanvas>
-
-      <AuthModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
     </header>
   );
 };
