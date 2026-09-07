@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Card, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -92,10 +92,6 @@ const AdminLoginScreen = () => {
               {isLoading ? 'Signing In...' : 'Sign In'}
             </Button>
           </Form>
-
-          <div className='mt-3 text-center'>
-            <Link to='/admin/forgotpassword'>Forgot Password?</Link>
-          </div>
         </Card.Body>
       </Card>
     </div>
