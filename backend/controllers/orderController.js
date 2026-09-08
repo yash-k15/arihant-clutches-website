@@ -24,7 +24,8 @@ const addOrderItems = asyncHandler(async (req, res, next) => {
   const order = new Order({
     orderItems: orderItems.map((item) => ({
       product: item.product,
-      variant: item.variant,
+      slug: item.slug,
+      variantId: item.variantId,
       name: item.name,
       image: item.image,
       color: item.color,
@@ -64,7 +65,7 @@ const getMyOrders = asyncHandler(async (req, res, next) => {
 const getOrderById = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
     'user',
-    'name email',
+    'name email phone',
   );
 
   if (!order) {

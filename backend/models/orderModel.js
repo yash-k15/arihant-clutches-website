@@ -18,6 +18,10 @@ const orderSchema = new mongoose.Schema(
           required: true,
           ref: 'Product',
         },
+        slug: {
+          type: String,
+          required: true,
+        },
         variantId: { type: mongoose.Schema.Types.ObjectId, required: true },
         color: { type: String, required: true },
       },

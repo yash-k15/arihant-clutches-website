@@ -46,6 +46,7 @@ const PaymentButton = ({ disabled }) => {
           orderData: {
             orderItems: cart.cartItems.map((item) => ({
               product: item._id,
+              slug: item.slug,
               name: item.name,
               image: item.image,
               price: item.price,
@@ -67,7 +68,9 @@ const PaymentButton = ({ disabled }) => {
 
         dispatch(clearCartItems());
         closeCheckout();
-        navigate(`/order/${res.order._id}`);
+        navigate(`/order/${res.order._id}`, {
+          state: { justPlacedOrder: true },
+        });
 
         return;
       }
@@ -100,6 +103,7 @@ const PaymentButton = ({ disabled }) => {
               orderData: {
                 orderItems: cart.cartItems.map((item) => ({
                   product: item._id,
+                  slug: item.slug,
                   name: item.name,
                   image: item.image,
                   price: item.price,
@@ -120,7 +124,9 @@ const PaymentButton = ({ disabled }) => {
             if (res.success) {
               dispatch(clearCartItems());
               closeCheckout();
-              navigate(`/order/${res.order._id}`);
+              navigate(`/order/${res.order._id}`, {
+                state: { justPlacedOrder: true },
+              });
             } else {
               alert('Payment verification failed');
             }
