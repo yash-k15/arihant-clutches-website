@@ -189,11 +189,16 @@
   color: #2c2222;
 }
 
+.header-account .dropdown-item.active,
+.header-account .dropdown-item:active {
+  background-color: transparent;
+  color: #2c2222;
+}
+
 .header-account .dropdown-item:hover {
   background: #faf7f1;
   color: #b08d57;
 }
-
 
 /* ---------- Main Navigation ---------- */
 

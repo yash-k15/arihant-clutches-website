@@ -1,0 +1,899 @@
+.profile-page {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+  padding: 32px 0 72px;
+  color: #2c2222;
+}
+
+.profile-page-header {
+  margin-bottom: 34px;
+}
+
+.profile-page-header h1 {
+  margin: 0;
+  color: #2c2222;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.profile-page-header p {
+  margin: 8px 0 0;
+  color: #777;
+  font-size: 0.95rem;
+}
+
+.profile-security-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.profile-orders-section {
+  margin-top: 32px;
+}
+
+.profile-account-section,
+.profile-orders-section {
+  margin-bottom: 44px;
+}
+
+.profile-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.profile-section-heading h2 {
+  margin: 0;
+  color: #2c2222;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.profile-section-heading p {
+  margin: 5px 0 0;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.profile-account-card,
+.profile-order-card,
+.profile-empty-orders {
+  background: #fff;
+  border: 1px solid #ece7e1;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.045);
+}
+
+.profile-account-card {
+  padding: 28px 30px;
+}
+
+.profile-account-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee9e4;
+}
+
+.profile-user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 58px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #f4eee7;
+  color: #8b6b43;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.profile-user-info h3,
+.profile-edit-header h3,
+.profile-empty-orders h3 {
+  margin: 0;
+  color: #2c2222;
+  font-weight: 700;
+}
+
+.profile-user-info h3 {
+  font-size: 1.15rem;
+}
+
+.profile-user-info p,
+.profile-edit-header p {
+  margin: 4px 0 0;
+  color: #777;
+  font-size: 0.88rem;
+}
+
+.profile-edit-button,
+.profile-save-button,
+.profile-cancel-button {
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.profile-edit-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #d9d1c8;
+  background: #fff;
+  color: #2c2222;
+}
+
+.profile-edit-button:hover,
+.profile-edit-button:focus {
+  border-color: #b08d57;
+  background: #faf7f3;
+  color: #2c2222;
+}
+
+.profile-account-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding-top: 24px;
+}
+
+.profile-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.profile-detail-label {
+  color: #777;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.profile-detail-value {
+  overflow-wrap: anywhere;
+  color: #2c2222;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.profile-edit-form {
+  width: 100%;
+}
+
+.profile-edit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #eee9e4;
+}
+
+.profile-edit-header h3 {
+  font-size: 1.15rem;
+}
+
+.profile-close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #e1dbd4;
+  border-radius: 50%;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.profile-close-button:hover {
+  border-color: #b08d57;
+  background: #faf7f3;
+  color: #2c2222;
+}
+
+.profile-form-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  padding: 24px 0;
+}
+
+.profile-form-fields .form-group:last-child {
+  grid-column: 1 / -1;
+}
+
+.profile-form-fields .form-label {
+  margin-bottom: 7px;
+  color: #444;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.profile-form-fields .form-control {
+  min-height: 44px;
+  border: 1px solid #ddd6cf;
+  border-radius: 8px;
+  color: #2c2222;
+  box-shadow: none;
+}
+
+.profile-form-fields .form-control:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.12);
+}
+
+.profile-phone-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-phone-field .form-control {
+  flex: 1;
+}
+
+.profile-phone-change-button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid #d9d1c8;
+  border-radius: 8px;
+  background: #fff;
+  color: #8b6b43;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-phone-change-button:hover {
+  background: #faf7f3;
+  border-color: #b08d57;
+}
+
+.profile-form-fields .form-text {
+  display: block;
+  margin-top: 6px;
+  color: #888;
+  font-size: 0.78rem;
+}
+
+.profile-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #eee9e4;
+}
+
+.profile-cancel-button {
+  border: 1px solid #d9d1c8;
+  background: #fff;
+  color: #2c2222;
+}
+
+.profile-cancel-button:hover,
+.profile-cancel-button:focus {
+  border-color: #b08d57;
+  background: #faf7f3;
+  color: #2c2222;
+}
+
+.profile-save-button {
+  border-color: #2c2222;
+  background: #2c2222;
+  color: #fff;
+}
+
+.profile-save-button:hover,
+.profile-save-button:focus {
+  border-color: #8b6b43;
+  background: #8b6b43;
+  color: #fff;
+}
+
+.profile-order-count {
+  color: #777;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.profile-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.profile-order-card {
+  padding: 22px 24px;
+}
+
+.profile-order-header,
+.profile-order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.profile-order-header {
+  padding-bottom: 17px;
+  border-bottom: 1px solid #eee9e4;
+}
+
+.profile-order-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.profile-order-label {
+  color: #888;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.profile-order-id {
+  color: #2c2222;
+  font-size: 0.95rem;
+}
+
+.profile-order-id-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.profile-order-copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #777;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.profile-order-copy-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.profile-order-copy-button:hover {
+  color: #8b6b43;
+  background: #faf7f3;
+  border-color: #e5ddd4;
+}
+
+.profile-order-date {
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.profile-order-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  padding: 19px 0;
+}
+
+.profile-order-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-order-detail > span:first-child {
+  color: #888;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.profile-order-detail strong {
+  color: #2c2222;
+  font-size: 0.95rem;
+}
+
+.profile-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.profile-status svg {
+  width: 15px;
+  height: 15px;
+}
+
+.profile-status.is-success {
+  color: #527257;
+}
+
+.profile-status.is-pending {
+  color: #9a7545;
+}
+
+.profile-order-footer {
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #eee9e4;
+}
+
+.profile-view-order-button,
+.profile-shop-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #8b6b43;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-view-order-button:hover,
+.profile-shop-button:hover {
+  color: #2c2222;
+  text-decoration: none;
+}
+
+.profile-view-order-button:hover span {
+  transform: translateX(3px);
+}
+
+.profile-view-order-button span {
+  transition: transform 0.2s ease;
+}
+
+.profile-empty-orders {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 270px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.profile-empty-orders-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: #f5f0eb;
+  color: #8b6b43;
+}
+
+.profile-empty-orders-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.profile-empty-orders h3 {
+  font-size: 1.05rem;
+}
+
+.profile-empty-orders p {
+  max-width: 430px;
+  margin: 7px 0 18px;
+  color: #777;
+  font-size: 0.88rem;
+}
+
+.profile-shop-button {
+  min-height: 40px;
+  padding: 0 17px;
+  border: 1px solid #d9d1c8;
+  border-radius: 8px;
+}
+
+.profile-shop-button:hover {
+  border-color: #b08d57;
+  background: #faf7f3;
+}
+
+.profile-orders-loader {
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-orders-section .alert {
+  margin-bottom: 0;
+  border-radius: 12px;
+}
+
+.profile-phone-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.profile-change-phone-btn {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #b08d57;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-change-phone-btn:hover {
+  color: #2c2222;
+}
+
+.profile-phone-change {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-phone-input-row,
+.profile-phone-otp {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-phone-input-row input,
+.profile-phone-otp input {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-phone-action-btn {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  border: 1px solid #b08d57;
+  border-radius: 6px;
+  background: #b08d57;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-phone-action-btn:hover {
+  background: #967544;
+  border-color: #967544;
+}
+
+.profile-phone-action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.profile-phone-cancel-btn {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #777;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.profile-phone-cancel-btn:hover {
+  color: #2c2222;
+}
+
+.profile-security-section {
+  margin-top: 32px;
+}
+
+.profile-security-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e8e1d8;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(44, 34, 34, 0.04);
+}
+
+.profile-security-info h3 {
+  margin: 0 0 6px;
+  color: #2c2222;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.profile-security-info p {
+  margin: 0;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.profile-change-password-button {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border: 1px solid #b08d57;
+  border-radius: 6px;
+  background: #b08d57;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.profile-change-password-button:hover {
+  background: #967544;
+  border-color: #967544;
+}
+
+.profile-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.profile-password-otp {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.profile-password-otp .form-control {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-password-next-step {
+  color: #2c2222;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.profile-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.profile-password-form .form-control {
+  width: 100%;
+}
+
+.profile-password-form .profile-change-password-button {
+  align-self: flex-start;
+}
+
+.profile-password-cancel-button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #777;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.profile-password-cancel-button:hover {
+  color: #2c2222;
+}
+
+@media (max-width: 767.98px) {
+  .profile-page {
+    padding: 24px 0 50px;
+  }
+
+  .profile-page-header {
+    margin-bottom: 28px;
+  }
+
+  .profile-page-header h1 {
+    font-size: 1.65rem;
+  }
+
+  .profile-account-section,
+  .profile-orders-section {
+    margin-bottom: 36px;
+  }
+
+  .profile-section-heading {
+    align-items: flex-start;
+    margin-bottom: 13px;
+  }
+
+  .profile-section-heading h2 {
+    font-size: 1.2rem;
+  }
+
+  .profile-section-heading p {
+    font-size: 0.84rem;
+  }
+
+  .profile-account-card {
+    padding: 22px 18px;
+    border-radius: 14px;
+  }
+
+  .profile-account-top {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+    padding-bottom: 20px;
+  }
+
+  .profile-edit-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .profile-account-details {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding-top: 20px;
+  }
+
+  .profile-form-fields {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 20px 0;
+  }
+
+  .profile-form-fields .form-group:last-child {
+    grid-column: auto;
+  }
+
+  .profile-phone-field {
+    align-items: stretch;
+  }
+
+  .profile-phone-field .form-control {
+    min-width: 0;
+  }
+
+  .profile-phone-change-button {
+    padding: 0 12px;
+  }
+
+  .profile-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .profile-form-actions .btn {
+    width: 100%;
+  }
+
+  .profile-order-card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .profile-order-header {
+    align-items: flex-start;
+  }
+
+  .profile-order-details {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 14px;
+  }
+
+  .profile-order-detail:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .profile-order-footer {
+    justify-content: stretch;
+  }
+
+  .profile-view-order-button {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid #d9d1c8;
+    border-radius: 8px;
+  }
+
+  .profile-view-order-button:hover {
+    border-color: #b08d57;
+    background: #faf7f3;
+  }
+
+  .profile-phone-input-row,
+  .profile-phone-otp {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-phone-action-btn {
+    width: 100%;
+  }
+
+  .profile-security-card {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.profile-change-password-button {
+  width: 100%;
+}
+
+.profile-password-otp {
+  flex-direction: column;
+  align-items: stretch;
+  max-width: none;
+}
+
+.profile-password-form {
+  max-width: none;
+}
+
+.profile-password-form .profile-change-password-button {
+  align-self: stretch;
+}
+
+.profile-password-cancel-button {
+  align-self: flex-start;
+}
+
+.profile-security-actions {
+  width: 100%;
+}
+}

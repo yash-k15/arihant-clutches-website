@@ -5,6 +5,7 @@ import {
   logoutUser,
   getUserProfile,
   updateUserProfile,
+  changeUserPhone,
   getUsers,
   getUserById,
   deleteUser,
@@ -13,7 +14,11 @@ import {
   resetPassword,
   sendOTP,
   verifyOTP,
+  verifyPhoneChangeOTP,
   registerWithPhone,
+  sendPasswordChangeOTP,
+  verifyPasswordChangeOTP,
+  changeAdminPassword,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
@@ -31,6 +36,14 @@ router
   .route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+
+router.put('/change-phone', protect, changeUserPhone);
+
+router.post('/verify-phone-change-otp', protect, verifyPhoneChangeOTP);
+router.post('/send-password-change-otp', protect, sendPasswordChangeOTP);
+router.post('/verify-password-change-otp', protect, verifyPasswordChangeOTP);
+
+router.put('/change-password', protect, changeAdminPassword);
 
 router.post('/send-otp', sendOTP);
 router.post('/verify-otp', verifyOTP);

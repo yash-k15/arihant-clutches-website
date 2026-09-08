@@ -79,9 +79,40 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    sendPasswordChangeOtp: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/send-password-change-otp`,
+        method: 'POST',
+      }),
+    }),
+
+    verifyPasswordChangeOtp: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/verify-password-change-otp`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/change-password`,
+        method: 'PUT',
+        body: data,
+      }),
+    }),
+
     verifyOtp: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/verify-otp`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
+
+    verifyPhoneChangeOtp: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/verify-phone-change-otp`,
         method: 'POST',
         body: data,
       }),
@@ -109,6 +140,10 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useSendOtpMutation,
+  useSendPasswordChangeOtpMutation,
+  useVerifyPasswordChangeOtpMutation,
+  useChangePasswordMutation,
   useVerifyOtpMutation,
+  useVerifyPhoneChangeOtpMutation,
   useRegisterPhoneMutation,
 } = usersApiSlice;
