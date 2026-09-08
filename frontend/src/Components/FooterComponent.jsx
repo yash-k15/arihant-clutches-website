@@ -1,9 +1,23 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useAuthModal } from './AuthModalContext.jsx';
+import { logout } from '../slices/authSlice.js';
 
 import '../assets/styles/components/Footer.css';
 
 const FooterComponent = () => {
+  const { userInfo } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { openAuth } = useAuthModal();
+
+  const logoutHandler = () => {
+    dispatch(logout());
+    navigate('/');
+  };
+
   return (
     <footer className='footer-section'>
       <Container>
@@ -33,17 +47,51 @@ const FooterComponent = () => {
                 </Link>
               </li>
 
-              <li>
-                <Link to='/login' className='footer-link'>
-                  Login
-                </Link>
-              </li>
+              {!userInfo ? (
+                <>
+                  <li>
+                    <button
+                      type='button'
+                      className='footer-link footer-auth-btn'
+                      onClick={() => openAuth()}
+                    >
+                      Login
+                    </button>
+                  </li>
 
-              <li>
-                <Link to='/register' className='footer-link'>
-                  Register
-                </Link>
-              </li>
+                  <li>
+                    <button
+                      type='button'
+                      className='footer-link footer-auth-btn'
+                      onClick={() => openAuth()}
+                    >
+                      Register
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <button
+                      type='button'
+                      className='footer-link footer-auth-btn'
+                      onClick={() => navigate('/profile')}
+                    >
+                      My Account
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      type='button'
+                      className='footer-link footer-auth-btn'
+                      onClick={logoutHandler}
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </>
+              )}
             </ul>
           </Col>
 

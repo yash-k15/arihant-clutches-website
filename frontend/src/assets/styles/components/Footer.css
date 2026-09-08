@@ -42,6 +42,24 @@
   font-size: 0.9rem;
 }
 
+.footer-auth-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: #d6d6d6;
+  cursor: pointer;
+  text-align: left;
+  line-height: 2;
+  transition: color 0.2s ease;
+}
+
+.footer-auth-btn:hover {
+  color: #b08d57;
+}
+
 /* =========================================
    Tablet
    ========================================= */

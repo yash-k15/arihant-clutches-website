@@ -18,8 +18,6 @@ import HomeScreen from './Screens/HomeScreen';
 import ProductScreen from './Screens/ProductScreen';
 import ProductsScreen from './Screens/ProductsScreen.jsx';
 import CartScreen from './Screens/CartScreen.jsx';
-import LoginScreen from './Screens/LoginScreen.jsx';
-import RegisterScreen from './Screens/RegisterScreen.jsx';
 import OrderScreen from './Screens/OrderScreen.jsx';
 import ProfileScreen from './Screens/ProfileScreen.jsx';
 import PrivateRoute from './Components/PrivateRoute.jsx';
@@ -29,8 +27,6 @@ import ProductListScreen from './Screens/admin/ProductListScreen.jsx';
 import ProductEditScreen from './Screens/admin/ProductEditScreen.jsx';
 import UserListScreen from './Screens/admin/UserListScreen.jsx';
 import UserEditScreen from './Screens/admin/UserEditScreen.jsx';
-import ForgotPasswordScreen from './Screens/ForgotPasswordScreen.jsx';
-import ResetPasswordScreen from './Screens/ResetPasswordScreen.jsx';
 import ProductCreateScreen from './Screens/admin/ProductCreateScreen.jsx';
 import AdminLoginScreen from './Screens/AdminLoginScreen.jsx';
 
@@ -48,10 +44,6 @@ const router = createBrowserRouter(
         element={<ProductsScreen />}
       />
       <Route path='/cart' element={<CartScreen />} />
-      <Route path='/login' element={<LoginScreen />} />
-      <Route path='/register' element={<RegisterScreen />} />
-      <Route path='/forgotpassword' element={<ForgotPasswordScreen />} />
-      <Route path='/resetpassword/:token' element={<ResetPasswordScreen />} />
       <Route path='/admin/login' element={<AdminLoginScreen />} />
 
       <Route path='' element={<PrivateRoute />}>

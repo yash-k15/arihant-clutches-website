@@ -11,6 +11,7 @@ import Loader from '../Components/Loader.jsx';
 import Message from '../Components/Message.jsx';
 import Meta from '../Components/Meta.jsx';
 import { useCartDrawer } from '../Components/CartDrawerContext.jsx';
+import { useAuthModal } from '../Components/AuthModalContext.jsx';
 
 import {
   useGetProductDetailsQuery,
@@ -32,6 +33,7 @@ const ProductScreen = () => {
   const dispatch = useDispatch();
 
   const { openCart } = useCartDrawer();
+  const { openAuth } = useAuthModal();
 
   const [selectedImage, setSelectedImage] = useState('');
 
@@ -570,7 +572,15 @@ const ProductScreen = () => {
                   </Form>
                 ) : (
                   <Message>
-                    Please <Link to='/login'>log in</Link> to write a review.
+                    Please{' '}
+                    <button
+                      type='button'
+                      className='product-login-link'
+                      onClick={() => openAuth()}
+                    >
+                      log in
+                    </button>{' '}
+                    to write a review.
                   </Message>
                 )}
               </div>
