@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Card, Row, Col, Form, Button } from 'react-bootstrap';
 import { getCloudinaryImage } from '../utils/cloudinary';
 
+import '../assets/styles/components/AdminVariantManager.css';
+
 const AdminVariantManager = ({
   variants,
   setVariants,
