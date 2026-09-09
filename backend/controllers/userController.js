@@ -237,6 +237,7 @@ const updateUser = asyncHandler(async (req, res, next) => {
     _id: updatedUser._id,
     name: updatedUser.name,
     email: updatedUser.email,
+    phone: updatedUser.phone,
     isAdmin: updatedUser.isAdmin,
   });
 });
