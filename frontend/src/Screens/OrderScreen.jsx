@@ -8,6 +8,7 @@ import Message from '../Components/Message.jsx';
 import Loader from '../Components/Loader.jsx';
 import {
   useGetOrderDetailsQuery,
+  usePayOrderMutation,
   useDeliverOrderMutation,
 } from '../slices/ordersApiSlice';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
@@ -30,8 +31,20 @@ const OrderScreen = () => {
     error,
   } = useGetOrderDetailsQuery(orderId);
 
+  const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+
   const [deliverOrder, { isLoading: loadingDeliver }] =
     useDeliverOrderMutation();
+
+  const payOrderHandler = async () => {
+    try {
+      await payOrder(orderId).unwrap();
+      await refetch();
+      toast.success('Payment Received');
+    } catch (err) {
+      toast.error(err?.data?.message || err.message);
+    }
+  };
 
   const deliverOrderHandler = async () => {
     try {
@@ -64,6 +77,34 @@ const OrderScreen = () => {
     } catch (error) {
       toast.error('Unable to copy Order ID');
     }
+  };
+
+  const formatPrice = (price) =>
+    new Intl.NumberFormat('en-IN', {
+      maximumFractionDigits: 2,
+    }).format(price);
+
+  const formatDateWithOrdinal = (date) => {
+    const parsedDate = new Date(date);
+    const day = parsedDate.getDate();
+
+    const suffix =
+      day >= 11 && day <= 13
+        ? 'th'
+        : day % 10 === 1
+          ? 'st'
+          : day % 10 === 2
+            ? 'nd'
+            : day % 10 === 3
+              ? 'rd'
+              : 'th';
+
+    const monthYear = parsedDate.toLocaleDateString('en-GB', {
+      month: 'long',
+      year: 'numeric',
+    });
+
+    return `${day}${suffix} ${monthYear}`;
   };
 
   return (
@@ -121,23 +162,14 @@ const OrderScreen = () => {
             <button
               type='button'
               className='back-to-orders-btn'
-              onClick={() => navigate('/profile')}
+              onClick={() =>
+                navigate(userInfo?.isAdmin ? '/admin/orderlist' : '/profile')
+              }
             >
-              ← Back to My Orders
+              ← {userInfo?.isAdmin ? 'Back to Order List' : 'Back to My Orders'}
             </button>
           </div>
         </Col>
-
-        {userInfo?.isAdmin && (
-          <Col xs='auto' className='text-end'>
-            <Button
-              className='admin-create-btn'
-              onClick={() => navigate('/admin/orderlist')}
-            >
-              Order List
-            </Button>
-          </Col>
-        )}
       </Row>
 
       <Row className='order-content'>
@@ -183,8 +215,7 @@ const OrderScreen = () => {
               <div className='order-status'>
                 {order.isDelivered ? (
                   <Message variant='success'>
-                    Delivered on{' '}
-                    {new Date(order.deliveredAt).toLocaleDateString('en-GB')}
+                    Delivered on {formatDateWithOrdinal(order.deliveredAt)}
                   </Message>
                 ) : (
                   <Message variant='danger'>Not Delivered</Message>
@@ -207,8 +238,7 @@ const OrderScreen = () => {
 
               {order.isPaid ? (
                 <Message variant='success'>
-                  Payment received on{' '}
-                  {new Date(order.paidAt).toLocaleDateString('en-GB')}
+                  Payment received on {formatDateWithOrdinal(order.paidAt)}
                 </Message>
               ) : (
                 <Message variant='danger'>
@@ -263,10 +293,10 @@ const OrderScreen = () => {
 
                       <Col xs={12} sm={4} md={4} className='order-item-price'>
                         <span>
-                          {item.qty} × ₹{item.price}
+                          {item.qty} × ₹{formatPrice(item.price)}
                         </span>
 
-                        <strong>₹{item.qty * item.price}</strong>
+                        <strong>₹{formatPrice(item.qty * item.price)}</strong>
                       </Col>
                     </Row>
                   </ListGroup.Item>
@@ -291,41 +321,54 @@ const OrderScreen = () => {
               <ListGroup.Item className='order-summary-details'>
                 <div className='summary-row'>
                   <span>Items</span>
-                  <span>₹{order.itemsPrice}</span>
+                  <span>₹{formatPrice(order.itemsPrice)}</span>
                 </div>
 
                 <div className='summary-row'>
                   <span>Shipping</span>
-                  <span>₹{order.shippingPrice}</span>
+                  <span>₹{formatPrice(order.shippingPrice)}</span>
                 </div>
 
                 <div className='summary-row'>
                   <span>Tax</span>
-                  <span>₹{order.taxPrice}</span>
+                  <span>₹{formatPrice(order.taxPrice)}</span>
                 </div>
 
                 <div className='summary-row summary-total'>
                   <span>Total</span>
-                  <strong>₹{order.totalPrice}</strong>
+                  <strong>₹{formatPrice(order.totalPrice)}</strong>
                 </div>
               </ListGroup.Item>
 
-              {loadingDeliver && (
+              {(loadingPay || loadingDeliver) && (
                 <ListGroup.Item className='order-loading'>
                   <Loader />
                 </ListGroup.Item>
               )}
 
-              {userInfo?.isAdmin && order.isPaid && !order.isDelivered && (
+              {userInfo?.isAdmin && (!order.isPaid || !order.isDelivered) && (
                 <ListGroup.Item className='order-admin-action'>
-                  <Button
-                    type='button'
-                    className='admin-create-btn w-100'
-                    onClick={deliverOrderHandler}
-                    disabled={loadingDeliver}
-                  >
-                    Mark As Delivered
-                  </Button>
+                  {!order.isPaid && (
+                    <Button
+                      type='button'
+                      className='admin-create-btn w-100'
+                      onClick={payOrderHandler}
+                      disabled={loadingPay || loadingDeliver}
+                    >
+                      Mark As Paid
+                    </Button>
+                  )}
+
+                  {!order.isDelivered && (
+                    <Button
+                      type='button'
+                      className='admin-create-btn w-100'
+                      onClick={deliverOrderHandler}
+                      disabled={loadingPay || loadingDeliver}
+                    >
+                      Mark As Delivered
+                    </Button>
+                  )}
                 </ListGroup.Item>
               )}
             </ListGroup>

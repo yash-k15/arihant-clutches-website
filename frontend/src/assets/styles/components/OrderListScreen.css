@@ -477,6 +477,10 @@
     border-top: 1px solid #eee9e4;
   }
 
+  .admin-orders-payment {
+    align-items: flex-start;
+  }
+
   .admin-order-card-payment .admin-orders-payment {
     gap: 6px;
   }

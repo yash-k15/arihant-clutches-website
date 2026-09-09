@@ -314,6 +314,9 @@
 }
 
 .order-admin-action {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding: 20px 24px !important;
   border-top: 1px solid #f0ece7 !important;
 }
