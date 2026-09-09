@@ -66,10 +66,16 @@ const AdminVariantManager = ({
 
       updatedVariants[index] = {
         ...updatedVariants[index],
-        images: res.images,
+        images: [
+          ...(updatedVariants[index].images || []),
+          ...(res.images || []),
+        ],
       };
 
       setVariants(updatedVariants);
+
+      // Clear selected files
+      e.target.value = '';
 
       toast.success('Variant images uploaded');
     } catch (err) {
