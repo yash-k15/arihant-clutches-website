@@ -267,7 +267,7 @@ const ProductScreen = () => {
           <Button
             variant='light'
             className='product-edit-btn'
-            onClick={() => navigate(`/admin/product/${product._id}/edit`)}
+            onClick={() => navigate(`/admin/product/${product.slug}/edit`)}
           >
             <FaEdit />
             <span>Edit Product</span>

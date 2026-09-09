@@ -24,9 +24,8 @@ import PrivateRoute from './Components/PrivateRoute.jsx';
 import AdminRoute from './Components/AdminRoute.jsx';
 import OrderListScreen from './Screens/admin/OrderListScreen.jsx';
 import ProductListScreen from './Screens/admin/ProductListScreen.jsx';
-import ProductEditScreen from './Screens/admin/ProductEditScreen.jsx';
 import UserListScreen from './Screens/admin/UserListScreen.jsx';
-import ProductCreateScreen from './Screens/admin/ProductCreateScreen.jsx';
+import ProductFormScreen from './Screens/admin/ProductFormScreen.jsx';
 import AdminLoginScreen from './Screens/AdminLoginScreen.jsx';
 
 const router = createBrowserRouter(
@@ -57,9 +56,9 @@ const router = createBrowserRouter(
           path='/admin/productlist/:pageNumber'
           element={<ProductListScreen />}
         />
-        <Route path='/admin/product/:id/edit' element={<ProductEditScreen />} />
+        <Route path='/admin/product/:id/edit' element={<ProductFormScreen />} />
         <Route path='/admin/userlist' element={<UserListScreen />} />
-        <Route path='/admin/product/create' element={<ProductCreateScreen />} />
+        <Route path='/admin/product/create' element={<ProductFormScreen />} />
       </Route>
     </Route>,
   ),

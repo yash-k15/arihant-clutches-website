@@ -1,0 +1,274 @@
+/* =========================================
+   Product Form Screen
+========================================= */
+
+.admin-product-form-page {
+  width: 100%;
+  padding: 32px 0 56px;
+}
+
+.admin-product-form-card {
+  width: min(100%, 900px);
+  margin: 0 auto;
+  border: none;
+  border-radius: 20px;
+  padding: 36px;
+  background: #fff;
+  box-shadow: 0 6px 24px rgba(44, 34, 34, 0.06);
+}
+
+.admin-product-form-header {
+  margin-bottom: 32px;
+}
+
+.admin-product-form-subtitle {
+  margin: 0 0 8px;
+  color: #b08d57;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.admin-product-form-title {
+  margin: 0;
+  color: #2c2222;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.admin-product-form-description {
+  margin: 10px 0 0;
+  color: #706762;
+  font-size: 0.92rem;
+}
+
+
+/* =========================================
+   Sections
+========================================= */
+
+.admin-product-form-section {
+  margin: 0;
+}
+
+.admin-product-form-section-title {
+  margin: 0 0 20px;
+  color: #2c2222;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.admin-product-form-divider {
+  height: 1px;
+  margin: 30px 0;
+  background: #eee7e1;
+}
+
+
+/* =========================================
+   Form Fields
+========================================= */
+
+.admin-product-form-group {
+  margin-bottom: 20px;
+}
+
+.admin-product-form-group .form-label {
+  margin-bottom: 8px;
+  color: #3b3030;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.admin-product-form-group .form-control {
+  min-height: 46px;
+  border: 1px solid #ddd5ce;
+  border-radius: 10px;
+  padding: 10px 13px;
+  color: #2c2222;
+  background: #fff;
+  box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-product-form-group textarea.form-control {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.admin-product-form-group .form-control::placeholder {
+  color: #a29a94;
+}
+
+.admin-product-form-group .form-control:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.12);
+}
+
+
+/* =========================================
+   Visibility Switches
+========================================= */
+
+.admin-product-form-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-left: 0;
+}
+
+.admin-product-form-switch .form-check-input {
+  float: none;
+  width: 2.25em;
+  height: 1.2em;
+  margin: 0;
+  cursor: pointer;
+}
+
+.admin-product-form-switch .form-check-input:checked {
+  background-color: #b08d57;
+  border-color: #b08d57;
+}
+
+.admin-product-form-switch .form-check-label {
+  color: #4b4340;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+
+/* =========================================
+   Submit
+========================================= */
+
+.admin-product-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.admin-product-form-cancel {
+  min-width: 100px;
+  border: 1px solid #ddd5ce !important;
+  border-radius: 10px !important;
+  padding: 12px 18px !important;
+  background: #fff !important;
+  color: #5f5751 !important;
+  font-size: 0.95rem;
+  font-weight: 600 !important;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-product-form-cancel:hover:not(:disabled) {
+  border-color: #b08d57 !important;
+  background: #faf7f3 !important;
+  color: #8a663d !important;
+}
+
+.admin-product-form-submit {
+  min-width: 170px;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 13px 18px !important;
+  background: #2c2222 !important;
+  color: #fff !important;
+  font-size: 0.95rem;
+  font-weight: 600 !important;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-product-form-submit:hover:not(:disabled) {
+  background: #b08d57 !important;
+  transform: translateY(-1px);
+}
+
+.admin-product-form-submit:disabled,
+.admin-product-form-cancel:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+/* =========================================
+   Tablet
+========================================= */
+
+@media (max-width: 1199.98px) {
+  .admin-product-form-page {
+    padding: 28px 0 48px;
+  }
+
+  .admin-product-form-card {
+    width: min(100%, 820px);
+    padding: 30px;
+  }
+}
+
+
+/* =========================================
+   Mobile
+========================================= */
+
+@media (max-width: 767.98px) {
+  .admin-product-form-page {
+    padding: 20px 0 40px;
+  }
+
+  .admin-product-form-card {
+    width: 100%;
+    padding: 22px 18px;
+    border-radius: 16px;
+  }
+
+  .admin-product-form-header {
+    margin-bottom: 26px;
+  }
+
+  .admin-product-form-title {
+    font-size: 1.65rem;
+  }
+
+  .admin-product-form-description {
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  .admin-product-form-divider {
+    margin: 26px 0;
+  }
+
+  .admin-product-form-section-title {
+    margin-bottom: 18px;
+  }
+
+  .admin-product-form-group {
+    margin-bottom: 18px;
+  }
+
+  .admin-product-form-submit {
+    margin-top: 24px;
+  }
+
+  .admin-product-form-actions {
+  flex-direction: column-reverse;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.admin-product-form-cancel,
+.admin-product-form-submit {
+  width: 100%;
+}
+}
