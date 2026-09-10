@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Modal, Form } from 'react-bootstrap';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import Message from '../../Components/Message';
@@ -7,8 +8,11 @@ import Loader from '../../Components/Loader';
 import { toast } from 'react-toastify';
 import {
   useGetProductsQuery,
-  // useCreateProductMutation,
   useDeleteProductMutation,
+  useGetCategoriesQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
 } from '../../slices/productsApiSlice';
 import Paginate from '../../Components/Paginate';
 import { getCloudinaryImage } from '../../utils/cloudinary';
@@ -22,11 +26,93 @@ const ProductListScreen = () => {
     pageNumber,
   });
 
-  // const [createProduct, { isLoading: loadingCreate }] =
-  //   useCreateProductMutation();
+  const {
+    data: categories,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useGetCategoriesQuery();
+
+  const [createCategory, { isLoading: loadingCreateCategory }] =
+    useCreateCategoryMutation();
+
+  const [updateCategory, { isLoading: loadingUpdateCategory }] =
+    useUpdateCategoryMutation();
+
+  const [deleteCategory, { isLoading: loadingDeleteCategory }] =
+    useDeleteCategoryMutation();
 
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
+
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [categoryName, setCategoryName] = useState('');
+  const [editingCategory, setEditingCategory] = useState(null);
+
+  const openCategoryModal = () => {
+    setShowCategoryModal(true);
+    setCategoryName('');
+    setEditingCategory(null);
+  };
+
+  const closeCategoryModal = () => {
+    setShowCategoryModal(false);
+    setCategoryName('');
+    setEditingCategory(null);
+  };
+
+  const submitCategoryHandler = async (e) => {
+    e.preventDefault();
+
+    if (!categoryName.trim()) {
+      toast.error('Category name is required');
+      return;
+    }
+
+    try {
+      if (editingCategory) {
+        await updateCategory({
+          categoryId: editingCategory._id,
+          name: categoryName.trim(),
+        }).unwrap();
+
+        toast.success('Category updated');
+      } else {
+        await createCategory({
+          name: categoryName.trim(),
+        }).unwrap();
+
+        toast.success('Category added');
+      }
+
+      setCategoryName('');
+      setEditingCategory(null);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error || 'Something went wrong');
+    }
+  };
+
+  const editCategoryHandler = (category) => {
+    setEditingCategory(category);
+    setCategoryName(category.name);
+  };
+
+  const deleteCategoryHandler = async (category) => {
+    if (
+      !window.confirm(`Are you sure you want to delete "${category.name}"?`)
+    ) {
+      return;
+    }
+
+    try {
+      await deleteCategory(category._id).unwrap();
+
+      toast.success('Category deleted');
+    } catch (err) {
+      toast.error(
+        err?.data?.message || err.error || 'Unable to delete category',
+      );
+    }
+  };
 
   const deleteHandler = async (slug) => {
     if (window.confirm('Are you sure?')) {
@@ -57,12 +143,21 @@ const ProductListScreen = () => {
           </p>
         </div>
 
-        <Button
-          className='admin-products-create-btn'
-          onClick={createProductHandler}
-        >
-          + New Product
-        </Button>
+        <div className='admin-products-header-actions'>
+          <Button
+            className='admin-products-category-btn'
+            onClick={openCategoryModal}
+          >
+            Manage Categories
+          </Button>
+
+          <Button
+            className='admin-products-create-btn'
+            onClick={createProductHandler}
+          >
+            + New Product
+          </Button>
+        </div>
       </div>
 
       <div className='admin-products-toolbar'>
@@ -285,6 +380,103 @@ const ProductListScreen = () => {
           </>
         )}
       </div>
+      <Modal
+        show={showCategoryModal}
+        onHide={closeCategoryModal}
+        centered
+        className='admin-category-modal'
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Manage Categories</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form onSubmit={submitCategoryHandler}>
+            <Form.Group className='admin-category-form-group'>
+              <Form.Label>
+                {editingCategory ? 'Rename category' : 'Add category'}
+              </Form.Label>
+
+              <div className='admin-category-input-row'>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter category name'
+                  value={categoryName}
+                  onChange={(e) => setCategoryName(e.target.value)}
+                  disabled={loadingCreateCategory || loadingUpdateCategory}
+                />
+
+                <Button
+                  type='submit'
+                  className='admin-category-submit-btn'
+                  disabled={loadingCreateCategory || loadingUpdateCategory}
+                >
+                  {editingCategory ? 'Save' : 'Add'}
+                </Button>
+              </div>
+            </Form.Group>
+          </Form>
+
+          <div className='admin-category-list'>
+            <h6>Categories</h6>
+
+            {categoriesLoading ? (
+              <Loader />
+            ) : categoriesError ? (
+              <Message variant='danger'>
+                {categoriesError?.data?.message || 'Unable to load categories'}
+              </Message>
+            ) : categories?.length === 0 ? (
+              <p className='admin-category-empty'>No categories found.</p>
+            ) : (
+              categories.map((category) => (
+                <div className='admin-category-item' key={category._id}>
+                  <span>{category.name}</span>
+
+                  <div className='admin-category-actions'>
+                    <Button
+                      className='admin-category-edit-btn'
+                      onClick={() => editCategoryHandler(category)}
+                      disabled={
+                        loadingCreateCategory ||
+                        loadingUpdateCategory ||
+                        loadingDeleteCategory
+                      }
+                      aria-label={`Edit ${category.name}`}
+                      title='Edit category'
+                    >
+                      <FaEdit />
+                    </Button>
+
+                    <Button
+                      className='admin-category-delete-btn'
+                      onClick={() => deleteCategoryHandler(category)}
+                      disabled={
+                        loadingCreateCategory ||
+                        loadingUpdateCategory ||
+                        loadingDeleteCategory
+                      }
+                      aria-label={`Delete ${category.name}`}
+                      title='Delete category'
+                    >
+                      <FaTrash />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            className='admin-category-close-btn'
+            onClick={closeCategoryModal}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

@@ -7,6 +7,10 @@ import {
   createProductReview,
   getTopProducts,
   getProductBySlug,
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
@@ -16,6 +20,17 @@ router.route('/').get(getProducts).post(protect, admin, createProduct);
 
 router.get('/top', getTopProducts);
 
+// Category routes
+router
+  .route('/categories')
+  .get(getCategories)
+  .post(protect, admin, createCategory);
+
+router
+  .route('/categories/:id')
+  .put(protect, admin, updateCategory)
+  .delete(protect, admin, deleteCategory);
+
 router
   .route('/:slug')
   .get(getProductBySlug)
@@ -23,4 +38,5 @@ router
   .delete(protect, admin, deleteProduct);
 
 router.route('/:slug/reviews').post(protect, createProductReview);
+
 export default router;

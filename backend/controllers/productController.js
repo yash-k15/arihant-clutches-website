@@ -1,6 +1,7 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
-import Product from '../models/productModel.js';
+import Product, { Category } from '../models/productModel.js';
+import slugify from 'slugify';
 
 // @desc    Get all Products
 // @route   GET /api/products
@@ -176,6 +177,125 @@ const getTopProducts = asyncHandler(async (req, res) => {
   res.status(200).json(products);
 });
 
+// @desc    Get all categories
+// @route   GET /api/products/categories
+// @access  Public
+const getCategories = asyncHandler(async (req, res) => {
+  const categories = await Category.find({}).sort({ name: 1 });
+
+  res.status(200).json(categories);
+});
+
+// @desc    Create a category
+// @route   POST /api/products/categories
+// @access  Private/Admin
+const createCategory = asyncHandler(async (req, res) => {
+  const { name } = req.body;
+
+  if (!name?.trim()) {
+    res.status(400);
+    throw new Error('Category name is required');
+  }
+
+  const trimmedName = name.trim();
+
+  const existingCategory = await Category.findOne({
+    name: { $regex: `^${trimmedName}$`, $options: 'i' },
+  });
+
+  if (existingCategory) {
+    res.status(400);
+    throw new Error('Category already exists');
+  }
+
+  const category = await Category.create({
+    name: trimmedName,
+    slug: slugify(trimmedName, {
+      lower: true,
+      strict: true,
+    }),
+  });
+
+  res.status(201).json(category);
+});
+
+// @desc    Update a category
+// @route   PUT /api/products/categories/:id
+// @access  Private/Admin
+const updateCategory = asyncHandler(async (req, res, next) => {
+  const { name } = req.body;
+
+  if (!name?.trim()) {
+    res.status(400);
+    throw new Error('Category name is required');
+  }
+
+  const category = await Category.findById(req.params.id);
+
+  if (!category) {
+    return next(new ErrorResponse('Category not found', 404));
+  }
+
+  const trimmedName = name.trim();
+
+  const existingCategory = await Category.findOne({
+    name: { $regex: `^${trimmedName}$`, $options: 'i' },
+    _id: { $ne: category._id },
+  });
+
+  if (existingCategory) {
+    res.status(400);
+    throw new Error('Category already exists');
+  }
+
+  const oldName = category.name;
+
+  category.name = trimmedName;
+  category.slug = slugify(trimmedName, {
+    lower: true,
+    strict: true,
+  });
+
+  const updatedCategory = await category.save();
+
+  // Keep existing products in sync with the renamed category.
+  await Product.updateMany(
+    { category: oldName },
+    { $set: { category: updatedCategory.name } },
+  );
+
+  res.status(200).json(updatedCategory);
+});
+
+// @desc    Delete a category
+// @route   DELETE /api/products/categories/:id
+// @access  Private/Admin
+const deleteCategory = asyncHandler(async (req, res, next) => {
+  const category = await Category.findById(req.params.id);
+
+  if (!category) {
+    return next(new ErrorResponse('Category not found', 404));
+  }
+
+  // Do not allow deletion while products still use this category.
+  const productsUsingCategory = await Product.exists({
+    category: category.name,
+  });
+
+  if (productsUsingCategory) {
+    res.status(400);
+    throw new Error(
+      `Cannot delete "${category.name}" because products are using this category`,
+    );
+  }
+
+  await Category.deleteOne({ _id: category._id });
+
+  res.status(200).json({
+    message: 'Category deleted',
+  });
+});
+
 export {
   getProducts,
   createProduct,
@@ -184,4 +304,8 @@ export {
   createProductReview,
   getTopProducts,
   getProductBySlug,
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
 };

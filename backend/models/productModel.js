@@ -129,6 +129,29 @@ productSchema.pre('save', function (next) {
   next();
 });
 
-const Product = mongoose.model('Product', productSchema);
+const categorySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
+const Product = mongoose.model('Product', productSchema);
+const Category = mongoose.model('Category', categorySchema);
+
+export { Category };
 export default Product;
