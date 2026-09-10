@@ -6,6 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { useLogoutMutation } from '../slices/usersApiSlice.js';
+import { useGetCategoriesQuery } from '../slices/productsApiSlice.js';
 import { logout } from '../slices/authSlice.js';
 
 import SearchBox from './SearchBox.jsx';
@@ -20,6 +21,8 @@ import '../assets/styles/components/SearchBox.css';
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
+
+  const { data: categories = [] } = useGetCategoriesQuery();
 
   const { openCart } = useCartDrawer();
   const { openAuth } = useAuthModal();
@@ -163,34 +166,15 @@ const Header = () => {
                 </button>
 
                 <div className='header-category-menu'>
-                  {/* Dummy categories for now */}
-                  <Link
-                    to='/products/category/clutches'
-                    className='header-category-item'
-                  >
-                    Clutches
-                  </Link>
-
-                  <Link
-                    to='/products/category/handbags'
-                    className='header-category-item'
-                  >
-                    Handbags
-                  </Link>
-
-                  <Link
-                    to='/products/category/wallets'
-                    className='header-category-item'
-                  >
-                    Wallets
-                  </Link>
-
-                  <Link
-                    to='/products/category/accessories'
-                    className='header-category-item'
-                  >
-                    Fashion Accessories
-                  </Link>
+                  {categories.map((category) => (
+                    <Link
+                      key={category._id}
+                      to={`/products/category/${encodeURIComponent(category.name)}`}
+                      className='header-category-item'
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
                 </div>
               </div>
             </nav>
@@ -292,38 +276,16 @@ const Header = () => {
 
             <div className='mobile-nav-section'>Shop by Category</div>
 
-            {/* Dummy categories for now */}
-            <Link
-              to='/products/category/clutches'
-              className='mobile-nav-link mobile-category-link'
-              onClick={closeMobileMenu}
-            >
-              Clutches
-            </Link>
-
-            <Link
-              to='/products/category/handbags'
-              className='mobile-nav-link mobile-category-link'
-              onClick={closeMobileMenu}
-            >
-              Handbags
-            </Link>
-
-            <Link
-              to='/products/category/wallets'
-              className='mobile-nav-link mobile-category-link'
-              onClick={closeMobileMenu}
-            >
-              Wallets
-            </Link>
-
-            <Link
-              to='/products/category/accessories'
-              className='mobile-nav-link mobile-category-link'
-              onClick={closeMobileMenu}
-            >
-              Fashion Accessories
-            </Link>
+            {categories.map((category) => (
+              <Link
+                key={category._id}
+                to={`/products/category/${encodeURIComponent(category.name)}`}
+                className='mobile-nav-link mobile-category-link'
+                onClick={closeMobileMenu}
+              >
+                {category.name}
+              </Link>
+            ))}
 
             <div className='mobile-account-section'>
               <div className='mobile-nav-section'>Account</div>
