@@ -14,6 +14,7 @@ import {
   useGetProductDetailsQuery,
   useUploadProductImageMutation,
   useDeleteProductImageMutation,
+  useGetCategoriesQuery,
 } from '../../slices/productsApiSlice';
 
 import '../../assets/styles/components/ProductFormScreen.css';
@@ -45,6 +46,12 @@ const ProductFormScreen = () => {
   } = useGetProductDetailsQuery(productId, {
     skip: !isEditMode,
   });
+
+  const {
+    data: categories,
+    isLoading: isLoadingCategories,
+    error: categoriesError,
+  } = useGetCategoriesQuery();
 
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation();
@@ -204,12 +211,31 @@ const ProductFormScreen = () => {
                   className='admin-product-form-group'
                 >
                   <Form.Label>Category</Form.Label>
-                  <Form.Control
-                    type='text'
-                    placeholder='Enter category'
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
+
+                  {isLoadingCategories ? (
+                    <Loader />
+                  ) : categoriesError ? (
+                    <Message variant='danger'>
+                      {categoriesError?.data?.message || categoriesError.error}
+                    </Message>
+                  ) : (
+                    <Form.Select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      disabled={isSubmitting}
+                    >
+                      <option value=''>Select category</option>
+
+                      {categories?.map((categoryItem) => (
+                        <option
+                          key={categoryItem._id}
+                          value={categoryItem.name}
+                        >
+                          {categoryItem.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  )}
                 </Form.Group>
 
                 <Form.Group
