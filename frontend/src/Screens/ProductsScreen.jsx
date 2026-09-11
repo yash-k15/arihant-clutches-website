@@ -1,5 +1,5 @@
 import { Row, Col } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import Product from '../Components/Product';
 import Loader from '../Components/Loader';
@@ -19,11 +19,22 @@ import '../assets/styles/components/ProductsScreen.css';
 
 const ProductsScreen = () => {
   const [view, setView] = useState('medium');
-  const { pageNumber, keyword } = useParams();
+
+  const { pageNumber, keyword, category } = useParams();
+
+  const location = useLocation();
+
+  const isNewArrivals = location.pathname.startsWith('/products/new-arrivals');
+  const isBestSellers = location.pathname.startsWith('/products/best-sellers');
+  const isFeatured = location.pathname.startsWith('/products/featured');
 
   const { data, isLoading, error } = useGetProductsQuery({
     keyword,
     pageNumber,
+    category,
+    isNewArrival: isNewArrivals,
+    isBestSeller: isBestSellers,
+    isFeatured,
   });
 
   const getColumnSizes = () => {
@@ -70,14 +81,6 @@ const ProductsScreen = () => {
         </Message>
       ) : (
         <>
-          <div className='home-header'>
-            <p className='home-subtitle'>
-              Browse our complete collection of handbags, clutches, wallets and
-              fashion accessories.
-            </p>
-            <h1 className='home-title'>All Products</h1>
-          </div>
-
           <div className='products-toolbar'>
             <div className='products-view-toggle'>
               <button
@@ -136,7 +139,20 @@ const ProductsScreen = () => {
             ))}
           </Row>
 
-          <Paginate pages={data.pages} page={data.page} isProductsPage={true} />
+          <Paginate
+            pages={data.pages}
+            page={data.page}
+            collection={
+              isNewArrivals
+                ? 'new-arrivals'
+                : isBestSellers
+                  ? 'best-sellers'
+                  : isFeatured
+                    ? 'featured'
+                    : ''
+            }
+            category={category}
+          />
         </>
       )}
     </>

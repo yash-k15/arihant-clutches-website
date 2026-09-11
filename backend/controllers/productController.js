@@ -10,16 +10,52 @@ const getProducts = asyncHandler(async (req, res, next) => {
   const pageSize = process.env.PAGINATION_LIMIT;
   const page = Number(req.query.pageNumber) || 1;
 
-  const keyword = req.query.keyword
-    ? { name: { $regex: req.query.keyword, $options: 'i' } } // Case Insensitive - $option: 'i'
-    : {};
+  const filters = {};
 
-  const count = await Product.countDocuments({ ...keyword });
+  if (req.query.keyword) {
+    filters.name = {
+      $regex: req.query.keyword,
+      $options: 'i',
+    };
+  }
 
-  const products = await Product.find({ ...keyword })
+  if (req.query.category) {
+    const category = await Category.findOne({
+      slug: req.query.category,
+    });
+
+    if (!category) {
+      res.status(404);
+      throw new Error('Category not found');
+    }
+
+    filters.category = category.name;
+  }
+
+  if (req.query.isFeatured === 'true') {
+    filters.isFeatured = true;
+  }
+
+  if (req.query.isNewArrival === 'true') {
+    filters.isNewArrival = true;
+  }
+
+  if (req.query.isBestSeller === 'true') {
+    filters.isBestSeller = true;
+  }
+
+  const count = await Product.countDocuments(filters);
+
+  const products = await Product.find(filters)
+    .sort({ createdAt: -1 })
     .limit(pageSize)
     .skip(pageSize * (page - 1));
-  res.json({ products, page, pages: Math.ceil(count / pageSize) });
+
+  res.json({
+    products,
+    page,
+    pages: Math.ceil(count / pageSize),
+  });
 });
 
 // @desc    Get Single Products

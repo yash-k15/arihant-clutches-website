@@ -169,7 +169,7 @@ const Header = () => {
                   {categories.map((category) => (
                     <Link
                       key={category._id}
-                      to={`/products/category/${encodeURIComponent(category.name)}`}
+                      to={`/products/category/${category.slug}`}
                       className='header-category-item'
                     >
                       {category.name}
@@ -279,7 +279,7 @@ const Header = () => {
             {categories.map((category) => (
               <Link
                 key={category._id}
-                to={`/products/category/${encodeURIComponent(category.name)}`}
+                to={`/products/category/${category.slug}`}
                 className='mobile-nav-link mobile-category-link'
                 onClick={closeMobileMenu}
               >
