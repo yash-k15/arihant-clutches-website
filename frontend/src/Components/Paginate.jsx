@@ -1,5 +1,6 @@
 import { Pagination } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { useLocation } from 'react-router-dom';
 
 const Paginate = ({
   pages,
@@ -10,7 +11,9 @@ const Paginate = ({
   category = '',
   sort = 'latest',
 }) => {
-  const sortSearch = sort !== 'latest' ? `?sort=${sort}` : '';
+  const location = useLocation();
+
+  const search = location.search;
 
   return (
     pages > 1 && (
@@ -23,31 +26,31 @@ const Paginate = ({
                 ? keyword
                   ? {
                       pathname: `/products/search/${keyword}/page/${x + 1}`,
-                      search: sortSearch,
+                      search,
                     }
                   : collection === 'new-arrivals'
                     ? {
                         pathname: `/products/new-arrivals/page/${x + 1}`,
-                        search: sortSearch,
+                        search,
                       }
                     : collection === 'best-sellers'
                       ? {
                           pathname: `/products/best-sellers/page/${x + 1}`,
-                          search: sortSearch,
+                          search,
                         }
                       : collection === 'featured'
                         ? {
                             pathname: `/products/featured/page/${x + 1}`,
-                            search: sortSearch,
+                            search,
                           }
                         : category
                           ? {
                               pathname: `/products/category/${category}/page/${x + 1}`,
-                              search: sortSearch,
+                              search,
                             }
                           : {
                               pathname: `/products/page/${x + 1}`,
-                              search: sortSearch,
+                              search,
                             }
                 : `/admin/productlist/${x + 1}`
             }

@@ -44,6 +44,43 @@ const getProducts = asyncHandler(async (req, res, next) => {
     filters.isBestSeller = true;
   }
 
+  // Availability filter
+  if (req.query['filter.v.availability'] === '1') {
+    filters.variants = {
+      $elemMatch: {
+        countInStock: { $gt: 0 },
+      },
+    };
+  }
+
+  // Price filter
+  const priceFilter = {};
+
+  if (req.query['filter.v.price.gte'] !== undefined) {
+    priceFilter.$gte = Number(req.query['filter.v.price.gte']);
+  }
+
+  if (req.query['filter.v.price.lte'] !== undefined) {
+    priceFilter.$lte = Number(req.query['filter.v.price.lte']);
+  }
+
+  if (Object.keys(priceFilter).length > 0) {
+    filters['variants.0.price'] = priceFilter;
+  }
+
+  // Product Type filter
+  const productTypes = req.query['filter.p.product_type'];
+
+  if (productTypes) {
+    const selectedProductTypes = Array.isArray(productTypes)
+      ? productTypes
+      : [productTypes];
+
+    filters.category = {
+      $in: selectedProductTypes,
+    };
+  }
+
   const count = await Product.countDocuments(filters);
 
   let sortOption = { createdAt: -1 };
@@ -254,6 +291,87 @@ const getCategories = asyncHandler(async (req, res) => {
   res.status(200).json(categories);
 });
 
+// @desc    Get product counts for each category
+// @route   GET /api/products/category-counts
+// @access  Public
+const getCategoryCounts = asyncHandler(async (req, res) => {
+  const filters = {};
+
+  if (req.query.keyword) {
+    filters.name = {
+      $regex: req.query.keyword,
+      $options: 'i',
+    };
+  }
+
+  if (req.query.category) {
+    const category = await Category.findOne({
+      slug: req.query.category,
+    });
+
+    if (!category) {
+      res.status(404);
+      throw new Error('Category not found');
+    }
+
+    filters.category = category.name;
+  }
+
+  if (req.query.isFeatured === 'true') {
+    filters.isFeatured = true;
+  }
+
+  if (req.query.isNewArrival === 'true') {
+    filters.isNewArrival = true;
+  }
+
+  if (req.query.isBestSeller === 'true') {
+    filters.isBestSeller = true;
+  }
+
+  if (req.query.availability === '1') {
+    filters.variants = {
+      $elemMatch: {
+        countInStock: { $gt: 0 },
+      },
+    };
+  }
+
+  if (req.query.priceGte !== undefined || req.query.priceLte !== undefined) {
+    const priceFilter = {};
+
+    if (req.query.priceGte !== undefined) {
+      priceFilter.$gte = Number(req.query.priceGte);
+    }
+
+    if (req.query.priceLte !== undefined) {
+      priceFilter.$lte = Number(req.query.priceLte);
+    }
+
+    filters['variants.0.price'] = priceFilter;
+  }
+
+  const counts = await Product.aggregate([
+    {
+      $match: filters,
+    },
+    {
+      $group: {
+        _id: '$category',
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const categoryCounts = {};
+
+  counts.forEach((item) => {
+    categoryCounts[item._id] = item.count;
+  });
+
+  res.status(200).json(categoryCounts);
+});
+
 // @desc    Create a category
 // @route   POST /api/products/categories
 // @access  Private/Admin
@@ -373,6 +491,7 @@ export {
   getTopProducts,
   getProductBySlug,
   getCategories,
+  getCategoryCounts,
   createCategory,
   updateCategory,
   deleteCategory,

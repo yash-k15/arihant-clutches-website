@@ -12,6 +12,10 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         isNewArrival,
         isBestSeller,
         sort,
+        availability,
+        priceGte,
+        priceLte,
+        productTypes,
       }) => ({
         url: PRODUCTS_URL,
         params: {
@@ -22,6 +26,21 @@ export const productsApiSlice = apiSlice.injectEndpoints({
           isNewArrival,
           isBestSeller,
           sort,
+          ...(availability && {
+            'filter.v.availability': availability,
+          }),
+
+          ...(priceGte && {
+            'filter.v.price.gte': priceGte,
+          }),
+
+          ...(priceLte && {
+            'filter.v.price.lte': priceLte,
+          }),
+
+          ...(productTypes?.length > 0 && {
+            'filter.p.product_type': productTypes,
+          }),
         },
       }),
       providesTags: ['Products'],
@@ -90,7 +109,31 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       providesTags: ['Categories'],
       keepUnusedDataFor: 5,
     }),
-
+    getCategoryCounts: builder.query({
+      query: ({
+        keyword,
+        category,
+        isFeatured,
+        isNewArrival,
+        isBestSeller,
+        availability,
+        priceGte,
+        priceLte,
+      }) => ({
+        url: `${PRODUCTS_URL}/category-counts`,
+        params: {
+          keyword,
+          category,
+          isFeatured,
+          isNewArrival,
+          isBestSeller,
+          availability,
+          priceGte,
+          priceLte,
+        },
+      }),
+      keepUnusedDataFor: 5,
+    }),
     createCategory: builder.mutation({
       query: (data) => ({
         url: `${PRODUCTS_URL}/categories`,
@@ -132,6 +175,7 @@ export const {
   useCreateReviewMutation,
   useGetTopProductsQuery,
   useGetCategoriesQuery,
+  useGetCategoryCountsQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,

@@ -8,6 +8,7 @@ import {
   getTopProducts,
   getProductBySlug,
   getCategories,
+  getCategoryCounts,
   createCategory,
   updateCategory,
   deleteCategory,
@@ -25,6 +26,8 @@ router
   .route('/categories')
   .get(getCategories)
   .post(protect, admin, createCategory);
+
+router.get('/category-counts', getCategoryCounts);
 
 router
   .route('/categories/:id')

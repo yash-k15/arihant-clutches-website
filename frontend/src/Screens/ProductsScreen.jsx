@@ -47,7 +47,16 @@ const ProductsScreen = () => {
   const navigate = useNavigate();
 
   const searchParams = new URLSearchParams(location.search);
+
   const sort = searchParams.get('sort') || 'latest';
+
+  const availability = searchParams.get('filter.v.availability');
+
+  const priceGte = searchParams.get('filter.v.price.gte');
+
+  const priceLte = searchParams.get('filter.v.price.lte');
+
+  const productTypes = searchParams.getAll('filter.p.product_type');
 
   const sortOptions = [
     { value: 'latest', label: 'Latest' },
@@ -68,6 +77,10 @@ const ProductsScreen = () => {
     isBestSeller: isBestSellers,
     isFeatured,
     sort,
+    availability,
+    priceGte,
+    priceLte,
+    productTypes: category ? [] : productTypes,
   });
 
   const getColumnSizes = () => {
@@ -239,6 +252,11 @@ const ProductsScreen = () => {
           <ProductFilters
             show={isFilterOpen}
             onHide={() => setIsFilterOpen(false)}
+            keyword={keyword}
+            category={category}
+            isNewArrival={isNewArrivals}
+            isBestSeller={isBestSellers}
+            isFeatured={isFeatured}
           />
 
           <Row className='g-4'>

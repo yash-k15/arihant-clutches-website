@@ -1,21 +1,88 @@
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Offcanvas } from 'react-bootstrap';
 
-import { useGetCategoriesQuery } from '../slices/productsApiSlice';
+import {
+  useGetCategoriesQuery,
+  useGetCategoryCountsQuery,
+} from '../slices/productsApiSlice';
 
 import '../assets/styles/components/ProductFilters.css';
 
-const ProductFilters = ({ show, onHide }) => {
+const ProductFilters = ({
+  show,
+  onHide,
+  keyword,
+  category: categorySlug,
+  isNewArrival,
+  isBestSeller,
+  isFeatured,
+}) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [availabilityFilter, setAvailabilityFilter] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-
-  const { data: categories = [], isLoading: isCategoriesLoading } =
-    useGetCategoriesQuery();
 
   const [priceRange, setPriceRange] = useState({
     min: 0,
     max: 5000,
   });
+
+  const { data: categories = [], isLoading: isCategoriesLoading } =
+    useGetCategoriesQuery();
+
+  const displayedCategories = categorySlug
+    ? categories.filter((item) => item.slug === categorySlug)
+    : categories;
+
+  const { data: categoryCounts = {} } = useGetCategoryCountsQuery({
+    keyword,
+    category: categorySlug,
+    isNewArrival,
+    isBestSeller,
+    isFeatured,
+    availability: availabilityFilter ? '1' : undefined,
+    priceGte: priceRange.min,
+    priceLte: priceRange.max,
+  });
+
+  const handleApplyFilters = () => {
+    const params = new URLSearchParams(location.search);
+
+    // Availability
+    if (availabilityFilter) {
+      params.set('filter.v.availability', '1');
+    } else {
+      params.delete('filter.v.availability');
+    }
+
+    // Price
+    if (priceRange.min > 0) {
+      params.set('filter.v.price.gte', priceRange.min);
+    } else {
+      params.delete('filter.v.price.gte');
+    }
+
+    if (priceRange.max < 5000) {
+      params.set('filter.v.price.lte', priceRange.max);
+    } else {
+      params.delete('filter.v.price.lte');
+    }
+
+    // Product Type
+    params.delete('filter.p.product_type');
+
+    selectedCategories.forEach((categoryName) => {
+      params.append('filter.p.product_type', categoryName);
+    });
+
+    const queryString = params.toString();
+
+    navigate(`${location.pathname}${queryString ? `?${queryString}` : ''}`);
+
+    onHide();
+  };
 
   return (
     <Offcanvas
@@ -168,8 +235,10 @@ const ProductFilters = ({ show, onHide }) => {
             {isCategoriesLoading ? (
               <div className='products-filter-category-loading'>Loading...</div>
             ) : (
-              categories.map((category) => {
-                const isSelected = selectedCategories.includes(category.name);
+              displayedCategories.map((category) => {
+                const isSelected = categorySlug
+                  ? category.slug === categorySlug
+                  : selectedCategories.includes(category.name);
 
                 return (
                   <label
@@ -182,6 +251,10 @@ const ProductFilters = ({ show, onHide }) => {
                       type='checkbox'
                       checked={isSelected}
                       onChange={() => {
+                        if (categorySlug) {
+                          return;
+                        }
+
                         setSelectedCategories((prev) =>
                           isSelected
                             ? prev.filter((name) => name !== category.name)
@@ -194,7 +267,9 @@ const ProductFilters = ({ show, onHide }) => {
                       {category.name}
                     </span>
 
-                    <span className='products-filter-category-count'>(0)</span>
+                    <span className='products-filter-category-count'>
+                      ({categoryCounts[category.name] || 0})
+                    </span>
                   </label>
                 );
               })
@@ -206,7 +281,7 @@ const ProductFilters = ({ show, onHide }) => {
           <button
             type='button'
             className='products-filter-results-btn'
-            onClick={onHide}
+            onClick={handleApplyFilters}
           >
             View Results
           </button>
