@@ -95,6 +95,95 @@
   font-size: 0.75rem;
 }
 
+/* =========================================
+   Sort Dropdown
+   ========================================= */
+
+.products-sort {
+  position: relative;
+}
+
+.products-sort-btn {
+  width: 170px;
+}
+
+.products-sort-btn.open {
+  background: #faf7f1;
+  color: #2c2222;
+}
+
+.products-sort-overlay {
+  position: static;
+}
+
+.products-sort-menu {
+  position: absolute;
+  top: calc(100% + 1px);
+  right: 0;
+
+  width: 170px;
+
+  background: #fff;
+  border: 1px solid #e8e8e8;
+
+  box-shadow: 0 8px 20px rgba(44, 34, 34, 0.08);
+
+  overflow: hidden;
+}
+
+.products-sort-menu-header {
+  display: none;
+}
+
+.products-sort-options {
+  width: 100%;
+}
+
+.products-sort-option {
+  display: block;
+  width: 100%;
+  padding: 13px 18px;
+
+  border: none;
+  background: #fff;
+
+  color: #777;
+  text-align: left;
+
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.products-sort-option:hover {
+  background: #faf7f1;
+  color: #2c2222;
+}
+
+.products-sort-option.active {
+  background: #faf7f1;
+  color: #b08d57;
+}
+
+.products-sort-close {
+  border: none;
+  background: transparent;
+  padding: 0;
+
+  color: #777;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
 .custom-pagination {
   display: flex;
   justify-content: center;
@@ -149,6 +238,15 @@
     padding: 0 18px;
     font-size: 0.74rem;
   }
+
+  .products-sort-btn {
+    width: 170px;
+  }
+
+  .products-sort-menu {
+    width: 170px;
+  }
+
   .custom-pagination {
     margin-top: 28px;
     gap: 6px;
@@ -221,6 +319,126 @@
 
   .products-sort-btn {
     width: 100%;
+  }
+
+  .products-sort-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    z-index: 2000;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .products-sort-menu {
+    position: relative;
+
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+
+    width: 100%;
+    min-width: 0;
+
+    max-height: 80vh;
+
+    background: #fff;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: 0 -4px 20px rgba(44, 34, 34, 0.08);
+
+    overflow-y: auto;
+  }
+
+  .products-sort-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    height: 58px;
+
+    border-bottom: 1px solid #e8e8e8;
+
+    color: #555;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+
+    flex-shrink: 0;
+  }
+
+    .products-sort-close {
+    position: absolute;
+
+    top: 50%;
+    right: 24px;
+
+    transform: translateY(-50%);
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #777;
+
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+
+    cursor: pointer;
+  }
+
+  .products-sort-close:hover {
+    color: #2c2222;
+  }
+
+  .products-sort-close:hover {
+    color: #2c2222;
+  }
+
+    .products-sort-options {
+    width: 100%;
+    padding: 18px 0 24px;
+  }
+
+  .products-sort-option {
+    padding: 12px 32px;
+
+    font-size: 0.88rem;
+    font-weight: 400;
+    letter-spacing: 0.1px;
+  }
+
+  .products-sort-option:hover {
+    background: #fff;
+    color: #2c2222;
+  }
+
+  .products-sort-option.active {
+    background: #fff;
+    color: #2c2222;
+    font-weight: 500;
   }
 
   .products-filter-btn svg {

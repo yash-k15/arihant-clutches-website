@@ -11,6 +11,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         isFeatured,
         isNewArrival,
         isBestSeller,
+        sort,
       }) => ({
         url: PRODUCTS_URL,
         params: {
@@ -20,6 +21,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
           isFeatured,
           isNewArrival,
           isBestSeller,
+          sort,
         },
       }),
       providesTags: ['Products'],

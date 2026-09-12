@@ -8,7 +8,10 @@ const Paginate = ({
   keyword = '',
   collection = '',
   category = '',
+  sort = 'latest',
 }) => {
+  const sortSearch = sort !== 'latest' ? `?sort=${sort}` : '';
+
   return (
     pages > 1 && (
       <Pagination className='custom-pagination'>
@@ -18,16 +21,34 @@ const Paginate = ({
             to={
               !isAdmin
                 ? keyword
-                  ? `/products/search/${keyword}/page/${x + 1}`
+                  ? {
+                      pathname: `/products/search/${keyword}/page/${x + 1}`,
+                      search: sortSearch,
+                    }
                   : collection === 'new-arrivals'
-                    ? `/products/new-arrivals/page/${x + 1}`
+                    ? {
+                        pathname: `/products/new-arrivals/page/${x + 1}`,
+                        search: sortSearch,
+                      }
                     : collection === 'best-sellers'
-                      ? `/products/best-sellers/page/${x + 1}`
+                      ? {
+                          pathname: `/products/best-sellers/page/${x + 1}`,
+                          search: sortSearch,
+                        }
                       : collection === 'featured'
-                        ? `/products/featured/page/${x + 1}`
+                        ? {
+                            pathname: `/products/featured/page/${x + 1}`,
+                            search: sortSearch,
+                          }
                         : category
-                          ? `/products/category/${category}/page/${x + 1}`
-                          : `/products/page/${x + 1}`
+                          ? {
+                              pathname: `/products/category/${category}/page/${x + 1}`,
+                              search: sortSearch,
+                            }
+                          : {
+                              pathname: `/products/page/${x + 1}`,
+                              search: sortSearch,
+                            }
                 : `/admin/productlist/${x + 1}`
             }
           >

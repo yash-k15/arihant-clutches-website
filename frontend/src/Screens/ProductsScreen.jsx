@@ -1,6 +1,6 @@
 import { Row, Col } from 'react-bootstrap';
-import { useParams, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import Product from '../Components/Product';
 import Loader from '../Components/Loader';
 import Message from '../Components/Message';
@@ -11,6 +11,7 @@ import {
   BsGrid3X3,
   BsFilter,
   BsChevronDown,
+  BsChevronUp,
 } from 'react-icons/bs';
 
 import { useGetProductsQuery } from '../slices/productsApiSlice';
@@ -19,10 +20,38 @@ import '../assets/styles/components/ProductsScreen.css';
 
 const ProductsScreen = () => {
   const [view, setView] = useState('medium');
+  const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const sortRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sortRef.current && !sortRef.current.contains(event.target)) {
+        setIsSortOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const { pageNumber, keyword, category } = useParams();
 
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const searchParams = new URLSearchParams(location.search);
+  const sort = searchParams.get('sort') || 'latest';
+
+  const sortOptions = [
+    { value: 'latest', label: 'Latest' },
+    { value: 'price-asc', label: 'Price, low to high' },
+    { value: 'price-desc', label: 'Price, high to low' },
+    { value: 'rating', label: 'Average rating' },
+  ];
 
   const isNewArrivals = location.pathname.startsWith('/products/new-arrivals');
   const isBestSellers = location.pathname.startsWith('/products/best-sellers');
@@ -35,6 +64,7 @@ const ProductsScreen = () => {
     isNewArrival: isNewArrivals,
     isBestSeller: isBestSellers,
     isFeatured,
+    sort,
   });
 
   const getColumnSizes = () => {
@@ -123,11 +153,78 @@ const ProductsScreen = () => {
                 <span>Filter</span>
               </button>
 
-              <div className='products-sort'>
-                <button type='button' className='products-sort-btn'>
+              <div className='products-sort' ref={sortRef}>
+                <button
+                  type='button'
+                  className={`products-sort-btn ${isSortOpen ? 'open' : ''}`}
+                  onClick={() => setIsSortOpen((prev) => !prev)}
+                  aria-expanded={isSortOpen}
+                  aria-haspopup='listbox'
+                >
                   <span>Sort By</span>
-                  <BsChevronDown />
+                  {isSortOpen ? <BsChevronUp /> : <BsChevronDown />}
                 </button>
+
+                {isSortOpen && (
+                  <div
+                    className='products-sort-overlay'
+                    onClick={() => setIsSortOpen(false)}
+                  >
+                    <div
+                      className='products-sort-menu'
+                      role='listbox'
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <div className='products-sort-menu-header'>
+                        <span>SORT BY</span>
+
+                        <button
+                          type='button'
+                          className='products-sort-close'
+                          onClick={() => setIsSortOpen(false)}
+                          aria-label='Close sort menu'
+                        >
+                          ×
+                        </button>
+                      </div>
+
+                      <div className='products-sort-options'>
+                        {sortOptions.map((option) => (
+                          <button
+                            key={option.value}
+                            type='button'
+                            className={`products-sort-option ${
+                              sort === option.value ? 'active' : ''
+                            }`}
+                            onClick={() => {
+                              const params = new URLSearchParams(
+                                location.search,
+                              );
+
+                              if (option.value === 'latest') {
+                                params.delete('sort');
+                              } else {
+                                params.set('sort', option.value);
+                              }
+
+                              const queryString = params.toString();
+
+                              navigate(
+                                `${location.pathname}${
+                                  queryString ? `?${queryString}` : ''
+                                }`,
+                              );
+
+                              setIsSortOpen(false);
+                            }}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -152,6 +249,7 @@ const ProductsScreen = () => {
                     : ''
             }
             category={category}
+            sort={sort}
           />
         </>
       )}

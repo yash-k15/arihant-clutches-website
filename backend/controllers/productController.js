@@ -46,8 +46,40 @@ const getProducts = asyncHandler(async (req, res, next) => {
 
   const count = await Product.countDocuments(filters);
 
+  let sortOption = { createdAt: -1 };
+
+  switch (req.query.sort) {
+    case 'price-asc':
+      sortOption = {
+        'variants.0.price': 1,
+        createdAt: -1,
+      };
+      break;
+
+    case 'price-desc':
+      sortOption = {
+        'variants.0.price': -1,
+        createdAt: -1,
+      };
+      break;
+
+    case 'rating':
+      sortOption = {
+        rating: -1,
+        createdAt: -1,
+      };
+      break;
+
+    case 'latest':
+    default:
+      sortOption = {
+        createdAt: -1,
+      };
+      break;
+  }
+
   const products = await Product.find(filters)
-    .sort({ createdAt: -1 })
+    .sort(sortOption)
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
