@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Offcanvas } from 'react-bootstrap';
 
@@ -28,6 +28,33 @@ const ProductFilters = ({
     min: 0,
     max: 5000,
   });
+
+  useEffect(() => {
+    if (!show) {
+      return;
+    }
+
+    const params = new URLSearchParams(location.search);
+
+    // Availability
+    setAvailabilityFilter(params.get('filter.v.availability') === '1');
+
+    // Price
+    const urlMin = params.get('filter.v.price.gte');
+    const urlMax = params.get('filter.v.price.lte');
+
+    setPriceRange({
+      min: urlMin !== null ? Number(urlMin) : 0,
+      max: urlMax !== null ? Number(urlMax) : 5000,
+    });
+
+    // Product Type
+    if (categorySlug) {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories(params.getAll('filter.p.product_type'));
+    }
+  }, [show]);
 
   const { data: categories = [], isLoading: isCategoriesLoading } =
     useGetCategoriesQuery();

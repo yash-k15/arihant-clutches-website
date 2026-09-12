@@ -17,6 +17,7 @@ import {
 import { useGetProductsQuery } from '../slices/productsApiSlice';
 
 import ProductFilters from '../Components/ProductFilters';
+import AppliedFilters from '../Components/AppliedFilters';
 
 import '../assets/styles/components/ProductsScreen.css';
 
@@ -57,6 +58,13 @@ const ProductsScreen = () => {
   const priceLte = searchParams.get('filter.v.price.lte');
 
   const productTypes = searchParams.getAll('filter.p.product_type');
+
+  const hasPriceFilter = priceGte !== null || priceLte !== null;
+
+  const filterCount =
+    (availability === '1' ? 1 : 0) +
+    (hasPriceFilter ? 1 : 0) +
+    productTypes.length;
 
   const sortOptions = [
     { value: 'latest', label: 'Latest' },
@@ -170,7 +178,7 @@ const ProductsScreen = () => {
                 onClick={() => setIsFilterOpen(true)}
               >
                 <BsFilter />
-                <span>Filter</span>
+                <span>Filter{filterCount > 0 ? ` (${filterCount})` : ''}</span>
               </button>
 
               <div className='products-sort' ref={sortRef}>
@@ -258,6 +266,8 @@ const ProductsScreen = () => {
             isBestSeller={isBestSellers}
             isFeatured={isFeatured}
           />
+
+          <AppliedFilters />
 
           <Row className='g-4'>
             {data.products.map((product) => (

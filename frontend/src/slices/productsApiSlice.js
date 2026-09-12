@@ -16,33 +16,58 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         priceGte,
         priceLte,
         productTypes,
-      }) => ({
-        url: PRODUCTS_URL,
-        params: {
-          keyword,
-          pageNumber,
-          category,
-          isFeatured,
-          isNewArrival,
-          isBestSeller,
-          sort,
-          ...(availability && {
-            'filter.v.availability': availability,
-          }),
+      }) => {
+        const params = new URLSearchParams();
 
-          ...(priceGte && {
-            'filter.v.price.gte': priceGte,
-          }),
+        if (keyword) {
+          params.set('keyword', keyword);
+        }
 
-          ...(priceLte && {
-            'filter.v.price.lte': priceLte,
-          }),
+        if (pageNumber) {
+          params.set('pageNumber', pageNumber);
+        }
 
-          ...(productTypes?.length > 0 && {
-            'filter.p.product_type': productTypes,
-          }),
-        },
-      }),
+        if (category) {
+          params.set('category', category);
+        }
+
+        if (isFeatured) {
+          params.set('isFeatured', isFeatured);
+        }
+
+        if (isNewArrival) {
+          params.set('isNewArrival', isNewArrival);
+        }
+
+        if (isBestSeller) {
+          params.set('isBestSeller', isBestSeller);
+        }
+
+        if (sort) {
+          params.set('sort', sort);
+        }
+
+        if (availability) {
+          params.set('filter.v.availability', availability);
+        }
+
+        if (priceGte) {
+          params.set('filter.v.price.gte', priceGte);
+        }
+
+        if (priceLte) {
+          params.set('filter.v.price.lte', priceLte);
+        }
+
+        productTypes?.forEach((productType) => {
+          params.append('filter.p.product_type', productType);
+        });
+
+        return {
+          url: PRODUCTS_URL,
+          params,
+        };
+      },
       providesTags: ['Products'],
       keepUnusedDataFor: 5,
     }),
