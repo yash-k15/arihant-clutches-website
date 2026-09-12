@@ -16,11 +16,14 @@ import {
 
 import { useGetProductsQuery } from '../slices/productsApiSlice';
 
+import ProductFilters from '../Components/ProductFilters';
+
 import '../assets/styles/components/ProductsScreen.css';
 
 const ProductsScreen = () => {
   const [view, setView] = useState('medium');
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const sortRef = useRef(null);
 
@@ -148,7 +151,11 @@ const ProductsScreen = () => {
             </div>
 
             <div className='products-toolbar-actions'>
-              <button type='button' className='products-filter-btn'>
+              <button
+                type='button'
+                className='products-filter-btn'
+                onClick={() => setIsFilterOpen(true)}
+              >
                 <BsFilter />
                 <span>Filter</span>
               </button>
@@ -228,6 +235,12 @@ const ProductsScreen = () => {
               </div>
             </div>
           </div>
+
+          <ProductFilters
+            show={isFilterOpen}
+            onHide={() => setIsFilterOpen(false)}
+          />
+
           <Row className='g-4'>
             {data.products.map((product) => (
               <Col key={product._id} xs={col.xs} md={col.md} lg={col.lg}>
