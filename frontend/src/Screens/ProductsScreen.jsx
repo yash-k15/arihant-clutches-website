@@ -237,8 +237,13 @@ const ProductsScreen = () => {
 
                               const queryString = params.toString();
 
+                              const pageOnePath = location.pathname.replace(
+                                /\/page\/\d+$/,
+                                '',
+                              );
+
                               navigate(
-                                `${location.pathname}${
+                                `${pageOnePath}${
                                   queryString ? `?${queryString}` : ''
                                 }`,
                               );
