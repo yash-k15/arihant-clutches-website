@@ -49,6 +49,13 @@
   overflow: hidden;
 }
 
+.products-filter-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .products-filter-section {
   border-bottom: 1px solid #e8e8e8;
 }
@@ -79,13 +86,33 @@
   color: #2c2222;
 }
 
-.products-filter-section-header span:last-child {
-  font-size: 1rem;
-  letter-spacing: 0;
-}
-
 .products-filter-section-content {
   padding: 0 28px 18px;
+}
+
+.products-filter-section-content-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.2s ease;
+  opacity: 0;
+}
+
+.products-filter-section-content-wrapper.open {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.products-filter-section-arrow {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  transition: transform 0.3s ease;
+}
+
+.products-filter-section-arrow.open {
+  transform: rotate(180deg);
 }
 
 .products-filter-toggle-row {
