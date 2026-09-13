@@ -31,6 +31,10 @@ const AppliedFilters = () => {
     return null;
   }
 
+  const getPageOnePath = () => {
+    return location.pathname.replace(/\/page\/\d+$/, '');
+  };
+
   const removeFilter = (filterType, value = null) => {
     const params = new URLSearchParams(location.search);
 
@@ -64,7 +68,9 @@ const AppliedFilters = () => {
 
     const queryString = params.toString();
 
-    navigate(`${location.pathname}${queryString ? `?${queryString}` : ''}`);
+    const pageOnePath = getPageOnePath();
+
+    navigate(`${pageOnePath}${queryString ? `?${queryString}` : ''}`);
   };
 
   const clearAll = () => {
@@ -77,7 +83,9 @@ const AppliedFilters = () => {
 
     const queryString = params.toString();
 
-    navigate(`${location.pathname}${queryString ? `?${queryString}` : ''}`);
+    const pageOnePath = getPageOnePath();
+
+    navigate(`${pageOnePath}${queryString ? `?${queryString}` : ''}`);
   };
 
   const getCategoryName = (slugOrName) => {

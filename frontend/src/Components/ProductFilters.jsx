@@ -74,6 +74,12 @@ const ProductFilters = ({
     priceLte: priceRange.max,
   });
 
+  const getPageOnePath = () => {
+    return location.pathname
+      .replace(/\/page\/\d+$/, '')
+      .replace(/\/page\/\d+$/, '');
+  };
+
   const handleApplyFilters = () => {
     const params = new URLSearchParams(location.search);
 
@@ -106,7 +112,9 @@ const ProductFilters = ({
 
     const queryString = params.toString();
 
-    navigate(`${location.pathname}${queryString ? `?${queryString}` : ''}`);
+    const pageOnePath = getPageOnePath();
+
+    navigate(`${pageOnePath}${queryString ? `?${queryString}` : ''}`);
 
     onHide();
   };
