@@ -10,6 +10,7 @@ import {
   addToSharedWishlist,
   removeFromSharedWishlist,
   clearSharedWishlist,
+  mergeWishlist,
 } from '../controllers/wishlistController.js';
 
 import { protect } from '../middleware/authMiddleware.js';
@@ -25,6 +26,8 @@ router
 
 // Create/retrieve share link for logged-in user's wishlist
 router.post('/share', protect, createWishlistShare);
+
+router.post('/merge', protect, mergeWishlist);
 
 // Shared wishlist
 router

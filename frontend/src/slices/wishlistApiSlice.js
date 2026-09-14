@@ -46,6 +46,17 @@ export const wishlistApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    mergeWishlist: builder.mutation({
+      query: (items) => ({
+        url: `${WISHLIST_URL}/merge`,
+        method: 'POST',
+        body: {
+          items,
+        },
+      }),
+      invalidatesTags: ['Wishlist'],
+    }),
+
     getSharedWishlist: builder.query({
       query: (shareToken) => ({
         url: `${WISHLIST_URL}/shared/${shareToken}`,
@@ -90,6 +101,7 @@ export const {
   useRemoveFromWishlistMutation,
   useClearWishlistMutation,
   useCreateWishlistShareMutation,
+  useMergeWishlistMutation,
   useGetSharedWishlistQuery,
   useAddToSharedWishlistMutation,
   useRemoveFromSharedWishlistMutation,

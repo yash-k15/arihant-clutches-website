@@ -308,6 +308,70 @@ const clearSharedWishlist = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc    Merge guest wishlist into user's wishlist
+// @route   POST /api/wishlist/merge
+// @access  Private
+const mergeWishlist = asyncHandler(async (req, res, next) => {
+  const { items } = req.body;
+
+  if (!Array.isArray(items)) {
+    return next(new ErrorResponse('Wishlist items must be an array', 400));
+  }
+
+  let wishlist = await Wishlist.findOne({
+    owner: req.user._id,
+  });
+
+  if (!wishlist) {
+    wishlist = await Wishlist.create({
+      owner: req.user._id,
+      items: [],
+    });
+  }
+
+  for (const item of items) {
+    const { productId, variantId } = item;
+
+    if (!productId || !variantId) {
+      continue;
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      continue;
+    }
+
+    const variant = product.variants.id(variantId);
+
+    if (!variant) {
+      continue;
+    }
+
+    const alreadyExists = wishlist.items.some(
+      (wishlistItem) =>
+        wishlistItem.product.toString() === productId &&
+        wishlistItem.variant.toString() === variantId,
+    );
+
+    if (!alreadyExists) {
+      wishlist.items.push({
+        product: productId,
+        variant: variantId,
+      });
+    }
+  }
+
+  await wishlist.save();
+
+  await wishlist.populate({
+    path: 'items.product',
+    select: 'name slug image images variants',
+  });
+
+  res.status(200).json(wishlist);
+});
+
 export {
   getWishlist,
   addToWishlist,
@@ -318,4 +382,5 @@ export {
   addToSharedWishlist,
   removeFromSharedWishlist,
   clearSharedWishlist,
+  mergeWishlist,
 };

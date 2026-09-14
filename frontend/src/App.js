@@ -8,8 +8,11 @@ import { CartDrawerProvider } from './Components/CartDrawerContext.jsx';
 import { CheckoutProvider } from './Components/Checkout/CheckoutContext.jsx';
 import Checkout from './Components/Checkout/Checkout.jsx';
 import { AuthModalProvider } from './Components/AuthModalContext.jsx';
+import useWishlistMerge from './hooks/useWishlistMerge.js';
 
 const App = () => {
+  useWishlistMerge();
+
   return (
     <>
       <CheckoutProvider>
