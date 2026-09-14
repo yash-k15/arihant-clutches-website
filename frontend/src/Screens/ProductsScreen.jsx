@@ -18,6 +18,7 @@ import { useGetProductsQuery } from '../slices/productsApiSlice';
 
 import ProductFilters from '../Components/ProductFilters';
 import AppliedFilters from '../Components/AppliedFilters';
+import NoProductsFound from '../Components/NoProductsFound';
 
 import '../assets/styles/components/ProductsScreen.css';
 
@@ -274,13 +275,17 @@ const ProductsScreen = () => {
 
           <AppliedFilters />
 
-          <Row className='g-4'>
-            {data.products.map((product) => (
-              <Col key={product._id} xs={col.xs} md={col.md} lg={col.lg}>
-                <Product product={product} />
-              </Col>
-            ))}
-          </Row>
+          {data.products.length === 0 ? (
+            <NoProductsFound />
+          ) : (
+            <Row className='g-4'>
+              {data.products.map((product) => (
+                <Col key={product._id} xs={col.xs} md={col.md} lg={col.lg}>
+                  <Product product={product} />
+                </Col>
+              ))}
+            </Row>
+          )}
 
           <Paginate
             pages={data.pages}
