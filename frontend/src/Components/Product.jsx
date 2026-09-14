@@ -48,7 +48,7 @@ const Product = ({ product }) => {
       : userInfo
         ? wishlist?.items?.some(
             (item) =>
-              String(item.product) === String(product._id) &&
+              String(item.product?._id) === String(product._id) &&
               String(item.variant) === String(selectedVariant._id),
           )
         : isGuestWishlistItem(product._id, selectedVariant._id)

@@ -29,6 +29,11 @@ const getOrCreateWishlist = async (ownerId) => {
 const getWishlist = asyncHandler(async (req, res, next) => {
   const wishlist = await getOrCreateWishlist(req.user._id);
 
+  await wishlist.populate({
+    path: 'items.product',
+    select: 'name slug image images variants',
+  });
+
   res.status(200).json(wishlist);
 });
 
