@@ -10,6 +10,7 @@ import userRoutes from './routes/userRoute.js';
 import orderRoutes from './routes/orderRoute.js';
 import uploadRoutes from './routes/uploadRoute.js';
 import paymentRoutes from './routes/paymentRoute.js';
+import wishlistRoutes from './routes/wishlistRoute.js';
 
 const port = process.env.PORT || 4000;
 
@@ -36,6 +37,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 
 // const __dirname = path.resolve(); // Set __dirname to current directory
 // app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
