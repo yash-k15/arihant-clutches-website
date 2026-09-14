@@ -140,7 +140,7 @@
 }
 
 .products-filter-toggle.active {
-  background: #2c2222;
+  background: #4a3732;
 }
 
 .products-filter-toggle-knob {
@@ -172,7 +172,7 @@
 .products-filter-price-range {
   position: absolute;
   top: 50%;
-  height: 3px;
+  height: 4px;
   border-radius: 999px;
   transform: translateY(-50%);
 }
@@ -184,7 +184,7 @@
 }
 
 .products-filter-price-range {
-  background: #666;
+  background: #4a3732;
 }
 
 .products-filter-price-input {
@@ -215,7 +215,7 @@
   margin-top: -8px;
   border: none;
   border-radius: 50%;
-  background: #666;
+  background: #4a3732;
   appearance: none;
   pointer-events: auto;
   cursor: pointer;
@@ -226,7 +226,7 @@
   height: 16px;
   border: none;
   border-radius: 50%;
-  background: #666;
+  background: #4a3732;
   pointer-events: auto;
   cursor: pointer;
 }
