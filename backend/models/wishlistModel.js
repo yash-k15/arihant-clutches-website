@@ -22,6 +22,8 @@ const wishlistSchema = new mongoose.Schema(
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      unique: true,
+      sparse: true,
       default: null,
     },
 

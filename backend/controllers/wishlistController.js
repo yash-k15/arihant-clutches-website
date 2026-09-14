@@ -6,23 +6,28 @@ import ErrorResponse from '../utils/errorResponse.js';
 import Wishlist from '../models/wishlistModel.js';
 import Product from '../models/productModel.js';
 
+const getOrCreateWishlist = async (ownerId) => {
+  return Wishlist.findOneAndUpdate(
+    { owner: ownerId },
+    {
+      $setOnInsert: {
+        owner: ownerId,
+        items: [],
+      },
+    },
+    {
+      new: true,
+      upsert: true,
+      setDefaultsOnInsert: true,
+    },
+  );
+};
+
 // @desc    Get logged-in user's wishlist
 // @route   GET /api/wishlist
 // @access  Private
 const getWishlist = asyncHandler(async (req, res, next) => {
-  let wishlist = await Wishlist.findOne({
-    owner: req.user._id,
-  }).populate({
-    path: 'items.product',
-    select: 'name slug image images variants',
-  });
-
-  if (!wishlist) {
-    wishlist = await Wishlist.create({
-      owner: req.user._id,
-      items: [],
-    });
-  }
+  const wishlist = await getOrCreateWishlist(req.user._id);
 
   res.status(200).json(wishlist);
 });
@@ -49,16 +54,7 @@ const addToWishlist = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Variant not found', 404));
   }
 
-  let wishlist = await Wishlist.findOne({
-    owner: req.user._id,
-  });
-
-  if (!wishlist) {
-    wishlist = await Wishlist.create({
-      owner: req.user._id,
-      items: [],
-    });
-  }
+  const wishlist = await getOrCreateWishlist(req.user._id);
 
   const existingItem = wishlist.items.find(
     (item) =>
@@ -155,16 +151,7 @@ const clearWishlist = asyncHandler(async (req, res, next) => {
 // @route   POST /api/wishlist/share
 // @access  Private
 const createWishlistShare = asyncHandler(async (req, res, next) => {
-  let wishlist = await Wishlist.findOne({
-    owner: req.user._id,
-  });
-
-  if (!wishlist) {
-    wishlist = await Wishlist.create({
-      owner: req.user._id,
-      items: [],
-    });
-  }
+  const wishlist = await getOrCreateWishlist(req.user._id);
 
   if (!wishlist.shareToken) {
     wishlist.shareToken = crypto.randomBytes(32).toString('hex');
@@ -318,16 +305,7 @@ const mergeWishlist = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Wishlist items must be an array', 400));
   }
 
-  let wishlist = await Wishlist.findOne({
-    owner: req.user._id,
-  });
-
-  if (!wishlist) {
-    wishlist = await Wishlist.create({
-      owner: req.user._id,
-      items: [],
-    });
-  }
+  const wishlist = await getOrCreateWishlist(req.user._id);
 
   for (const item of items) {
     const { productId, variantId } = item;
