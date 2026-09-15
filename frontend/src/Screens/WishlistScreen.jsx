@@ -1,5 +1,5 @@
 import { Row, Col } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import Loader from '../Components/Loader';
@@ -9,9 +9,16 @@ import { IoShareOutline, IoCloseSharp } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 
 import {
+  getGuestWishlist,
+  removeGuestWishlistItem,
+  clearGuestWishlist,
+} from '../utils/wishlistUtils.js';
+
+import {
   useGetWishlistQuery,
   useRemoveFromWishlistMutation,
   useClearWishlistMutation,
+  useGetGuestWishlistProductsMutation,
 } from '../slices/wishlistApiSlice.js';
 
 import Paginate from '../Components/Paginate.jsx';
@@ -21,6 +28,12 @@ import '../assets/styles/components/WishlistScreen.css';
 const WishlistScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [page, setPage] = useState(1);
+
+  const [guestWishlist, setGuestWishlist] = useState([]);
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
+  const [guestError, setGuestError] = useState(null);
+
+  const guestWishlistLoaded = useRef(false);
 
   const ITEMS_PER_PAGE = 8;
 
@@ -37,7 +50,9 @@ const WishlistScreen = () => {
 
   const [clearWishlist, { isLoading: isClearing }] = useClearWishlistMutation();
 
-  const wishlistItems = wishlist?.items || [];
+  const [getGuestWishlistProducts] = useGetGuestWishlistProductsMutation();
+
+  const wishlistItems = userInfo ? wishlist?.items || [] : guestWishlist;
 
   const pages = Math.ceil(wishlistItems.length / ITEMS_PER_PAGE);
 
@@ -54,17 +69,94 @@ const WishlistScreen = () => {
     }
   }, [pages, page]);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (userInfo || guestWishlistLoaded.current) {
+      return;
+    }
+
+    guestWishlistLoaded.current = true;
+
+    const loadGuestWishlist = async () => {
+      const guestItems = getGuestWishlist();
+
+      if (guestItems.length === 0) {
+        setGuestWishlist([]);
+        return;
+      }
+
+      setIsGuestLoading(true);
+      setGuestError(null);
+
+      try {
+        const productIds = [
+          ...new Set(guestItems.map((item) => item.productId)),
+        ];
+
+        const products = await getGuestWishlistProducts(productIds).unwrap();
+
+        const productMap = new Map(
+          products.map((product) => [String(product._id), product]),
+        );
+
+        const wishlistItems = guestItems
+          .map((item) => {
+            const product = productMap.get(String(item.productId));
+
+            if (!product) {
+              return null;
+            }
+
+            return {
+              product,
+              variant: item.variantId,
+            };
+          })
+          .filter(Boolean);
+
+        setGuestWishlist(wishlistItems);
+      } catch (error) {
+        console.error('Failed to load guest wishlist:', error);
+
+        setGuestError(error?.data?.message || 'Unable to load wishlist');
+      } finally {
+        setIsGuestLoading(false);
+      }
+    };
+
+    loadGuestWishlist();
+  }, [userInfo, getGuestWishlistProducts]);
+
+  if (isLoading || isGuestLoading) {
     return <Loader />;
   }
 
-  if (error) {
+  if (error || guestError) {
     return (
-      <Message variant='danger'>{error?.data?.message || error.error}</Message>
+      <Message variant='danger'>
+        {error?.data?.message || error?.error || guestError}
+      </Message>
     );
   }
 
   const removeWishlistHandler = async (productId, variantId) => {
+    if (!userInfo) {
+      removeGuestWishlistItem(productId, variantId);
+
+      setGuestWishlist((currentWishlist) =>
+        currentWishlist.filter(
+          (item) =>
+            !(
+              String(item.product._id) === String(productId) &&
+              String(item.variant) === String(variantId)
+            ),
+        ),
+      );
+
+      toast.success('Removed from wishlist');
+
+      return;
+    }
+
     try {
       await removeFromWishlist({
         productId,
@@ -78,8 +170,20 @@ const WishlistScreen = () => {
   };
 
   const clearWishlistHandler = async () => {
+    if (!userInfo) {
+      clearGuestWishlist();
+      setGuestWishlist([]);
+      setPage(1);
+
+      toast.success('Wishlist cleared');
+
+      return;
+    }
+
     try {
       await clearWishlist().unwrap();
+
+      setPage(1);
 
       toast.success('Wishlist cleared');
     } catch (error) {

@@ -187,6 +187,27 @@ const getSharedWishlist = asyncHandler(async (req, res, next) => {
   res.status(200).json(wishlist);
 });
 
+// @desc Get products for guest wishlist
+// @route POST /api/wishlist/guest
+// @access Public
+const getGuestWishlistProducts = asyncHandler(async (req, res, next) => {
+  const { productIds } = req.body;
+
+  if (!Array.isArray(productIds)) {
+    return next(new ErrorResponse('Product IDs must be an array', 400));
+  }
+
+  if (productIds.length === 0) {
+    return res.status(200).json([]);
+  }
+
+  const products = await Product.find({
+    _id: { $in: productIds },
+  }).select('name slug image images variants');
+
+  res.status(200).json(products);
+});
+
 // @desc    Add variant to shared wishlist
 // @route   POST /api/wishlist/shared/:shareToken
 // @access  Public
@@ -362,6 +383,7 @@ export {
   clearWishlist,
   createWishlistShare,
   getSharedWishlist,
+  getGuestWishlistProducts,
   addToSharedWishlist,
   removeFromSharedWishlist,
   clearSharedWishlist,

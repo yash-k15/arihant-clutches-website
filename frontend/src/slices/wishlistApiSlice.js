@@ -1,5 +1,5 @@
 import { apiSlice } from './apiSlice.js';
-import { WISHLIST_URL } from '../constants.js';
+import { WISHLIST_URL, GUEST_WISHLIST_URL } from '../constants.js';
 
 export const wishlistApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -65,6 +65,14 @@ export const wishlistApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
     }),
 
+    getGuestWishlistProducts: builder.mutation({
+      query: (productIds) => ({
+        url: GUEST_WISHLIST_URL,
+        method: 'POST',
+        body: { productIds },
+      }),
+    }),
+
     addToSharedWishlist: builder.mutation({
       query: ({ shareToken, productId, variantId }) => ({
         url: `${WISHLIST_URL}/shared/${shareToken}`,
@@ -103,6 +111,7 @@ export const {
   useCreateWishlistShareMutation,
   useMergeWishlistMutation,
   useGetSharedWishlistQuery,
+  useGetGuestWishlistProductsMutation,
   useAddToSharedWishlistMutation,
   useRemoveFromSharedWishlistMutation,
   useClearSharedWishlistMutation,
