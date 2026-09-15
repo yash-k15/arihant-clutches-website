@@ -208,119 +208,6 @@ const getGuestWishlistProducts = asyncHandler(async (req, res, next) => {
   res.status(200).json(products);
 });
 
-// @desc    Add variant to shared wishlist
-// @route   POST /api/wishlist/shared/:shareToken
-// @access  Public
-const addToSharedWishlist = asyncHandler(async (req, res, next) => {
-  const { productId, variantId } = req.body;
-
-  if (!productId || !variantId) {
-    return next(new ErrorResponse('Product and variant are required', 400));
-  }
-
-  const product = await Product.findById(productId);
-
-  if (!product) {
-    return next(new ErrorResponse('Product not found', 404));
-  }
-
-  const variant = product.variants.id(variantId);
-
-  if (!variant) {
-    return next(new ErrorResponse('Variant not found', 404));
-  }
-
-  const wishlist = await Wishlist.findOne({
-    shareToken: req.params.shareToken,
-  });
-
-  if (!wishlist) {
-    return next(new ErrorResponse('Shared wishlist not found', 404));
-  }
-
-  const existingItem = wishlist.items.find(
-    (item) =>
-      item.product.toString() === productId &&
-      item.variant.toString() === variantId,
-  );
-
-  if (!existingItem) {
-    wishlist.items.push({
-      product: productId,
-      variant: variantId,
-    });
-
-    await wishlist.save();
-  }
-
-  await wishlist.populate({
-    path: 'items.product',
-    select: 'name slug image images variants',
-  });
-
-  res.status(200).json(wishlist);
-});
-
-// @desc    Remove variant from shared wishlist
-// @route   DELETE /api/wishlist/shared/:shareToken/:productId/:variantId
-// @access  Public
-const removeFromSharedWishlist = asyncHandler(async (req, res, next) => {
-  const { shareToken, productId, variantId } = req.params;
-
-  const wishlist = await Wishlist.findOne({
-    shareToken,
-  });
-
-  if (!wishlist) {
-    return next(new ErrorResponse('Shared wishlist not found', 404));
-  }
-
-  const originalLength = wishlist.items.length;
-
-  wishlist.items = wishlist.items.filter(
-    (item) =>
-      !(
-        item.product.toString() === productId &&
-        item.variant.toString() === variantId
-      ),
-  );
-
-  if (wishlist.items.length === originalLength) {
-    return next(new ErrorResponse('Wishlist item not found', 404));
-  }
-
-  await wishlist.save();
-
-  await wishlist.populate({
-    path: 'items.product',
-    select: 'name slug image images variants',
-  });
-
-  res.status(200).json(wishlist);
-});
-
-// @desc    Clear shared wishlist
-// @route   DELETE /api/wishlist/shared/:shareToken
-// @access  Public
-const clearSharedWishlist = asyncHandler(async (req, res, next) => {
-  const wishlist = await Wishlist.findOne({
-    shareToken: req.params.shareToken,
-  });
-
-  if (!wishlist) {
-    return next(new ErrorResponse('Shared wishlist not found', 404));
-  }
-
-  wishlist.items = [];
-
-  await wishlist.save();
-
-  res.status(200).json({
-    message: 'Wishlist cleared',
-    wishlist,
-  });
-});
-
 // @desc    Merge guest wishlist into user's wishlist
 // @route   POST /api/wishlist/merge
 // @access  Private
@@ -384,8 +271,5 @@ export {
   createWishlistShare,
   getSharedWishlist,
   getGuestWishlistProducts,
-  addToSharedWishlist,
-  removeFromSharedWishlist,
-  clearSharedWishlist,
   mergeWishlist,
 };

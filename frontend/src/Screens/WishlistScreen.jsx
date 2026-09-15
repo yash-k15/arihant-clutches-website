@@ -19,6 +19,7 @@ import {
   useRemoveFromWishlistMutation,
   useClearWishlistMutation,
   useGetGuestWishlistProductsMutation,
+  useCreateWishlistShareMutation,
 } from '../slices/wishlistApiSlice.js';
 
 import Paginate from '../Components/Paginate.jsx';
@@ -32,6 +33,8 @@ const WishlistScreen = () => {
   const [guestWishlist, setGuestWishlist] = useState([]);
   const [isGuestLoading, setIsGuestLoading] = useState(false);
   const [guestError, setGuestError] = useState(null);
+
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const guestWishlistLoaded = useRef(false);
 
@@ -52,6 +55,8 @@ const WishlistScreen = () => {
 
   const [getGuestWishlistProducts] = useGetGuestWishlistProductsMutation();
 
+  const [createWishlistShare] = useCreateWishlistShareMutation();
+
   const wishlistItems = userInfo ? wishlist?.items || [] : guestWishlist;
 
   const pages = Math.ceil(wishlistItems.length / ITEMS_PER_PAGE);
@@ -62,6 +67,26 @@ const WishlistScreen = () => {
     startIndex,
     startIndex + ITEMS_PER_PAGE,
   );
+
+  const shareWishlistHandler = async () => {
+    try {
+      const { shareToken } = await createWishlistShare().unwrap();
+
+      const shareUrl = `${window.location.origin}/wishlist/${shareToken}`;
+
+      await navigator.clipboard.writeText(shareUrl);
+
+      setIsLinkCopied(true);
+
+      toast.success('Wishlist link copied');
+
+      setTimeout(() => {
+        setIsLinkCopied(false);
+      }, 3000);
+    } catch (error) {
+      toast.error(error?.data?.message || 'Unable to share wishlist');
+    }
+  };
 
   useEffect(() => {
     if (pages > 0 && page > pages) {
@@ -205,10 +230,11 @@ const WishlistScreen = () => {
             <button
               type='button'
               className='wishlist-action-btn'
-              onClick={() => {}}
+              onClick={shareWishlistHandler}
+              disabled={isLinkCopied}
             >
               <IoShareOutline />
-              <span>Share Wishlist</span>
+              {isLinkCopied ? 'Link Copied' : 'Share Wishlist'}
             </button>
 
             <span className='wishlist-action-divider' />

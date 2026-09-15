@@ -72,34 +72,6 @@ export const wishlistApiSlice = apiSlice.injectEndpoints({
         body: { productIds },
       }),
     }),
-
-    addToSharedWishlist: builder.mutation({
-      query: ({ shareToken, productId, variantId }) => ({
-        url: `${WISHLIST_URL}/shared/${shareToken}`,
-        method: 'POST',
-        body: {
-          productId,
-          variantId,
-        },
-      }),
-      invalidatesTags: ['SharedWishlist'],
-    }),
-
-    removeFromSharedWishlist: builder.mutation({
-      query: ({ shareToken, productId, variantId }) => ({
-        url: `${WISHLIST_URL}/shared/${shareToken}/${productId}/${variantId}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['SharedWishlist'],
-    }),
-
-    clearSharedWishlist: builder.mutation({
-      query: (shareToken) => ({
-        url: `${WISHLIST_URL}/shared/${shareToken}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['SharedWishlist'],
-    }),
   }),
 });
 
@@ -112,7 +84,4 @@ export const {
   useMergeWishlistMutation,
   useGetSharedWishlistQuery,
   useGetGuestWishlistProductsMutation,
-  useAddToSharedWishlistMutation,
-  useRemoveFromSharedWishlistMutation,
-  useClearSharedWishlistMutation,
 } = wishlistApiSlice;

@@ -8,9 +8,6 @@ import {
   createWishlistShare,
   getSharedWishlist,
   getGuestWishlistProducts,
-  addToSharedWishlist,
-  removeFromSharedWishlist,
-  clearSharedWishlist,
   mergeWishlist,
 } from '../controllers/wishlistController.js';
 
@@ -33,17 +30,7 @@ router.post('/merge', protect, mergeWishlist);
 router.route('/guest').post(getGuestWishlistProducts);
 
 // Shared wishlist
-router
-  .route('/shared/:shareToken')
-  .get(getSharedWishlist)
-  .post(addToSharedWishlist)
-  .delete(clearSharedWishlist);
-
-// Remove an item from shared wishlist
-router.delete(
-  '/shared/:shareToken/:productId/:variantId',
-  removeFromSharedWishlist,
-);
+router.route('/shared/:shareToken').get(getSharedWishlist);
 
 // Remove an item from logged-in user's wishlist
 router.delete('/:productId/:variantId', protect, removeFromWishlist);

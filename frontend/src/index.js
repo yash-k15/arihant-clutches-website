@@ -28,6 +28,7 @@ import UserListScreen from './Screens/admin/UserListScreen.jsx';
 import ProductFormScreen from './Screens/admin/ProductFormScreen.jsx';
 import AdminLoginScreen from './Screens/AdminLoginScreen.jsx';
 import WishlistScreen from './Screens/WishlistScreen';
+import SharedWishlistScreen from './Screens/SharedWishlistScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +66,7 @@ const router = createBrowserRouter(
       <Route path='/cart' element={<CartScreen />} />
       <Route path='/admin/login' element={<AdminLoginScreen />} />
       <Route path='/wishlist' element={<WishlistScreen />} />
+      <Route path='/wishlist/:shareToken' element={<SharedWishlistScreen />} />
 
       <Route path='' element={<PrivateRoute />}>
         <Route path='/order/:id' element={<OrderScreen />} />
