@@ -6,6 +6,7 @@ import {
   removeFromWishlist,
   clearWishlist,
   createWishlistShare,
+  createGuestWishlistShare,
   getSharedWishlist,
   getGuestWishlistProducts,
   mergeWishlist,
@@ -28,6 +29,8 @@ router.post('/share', protect, createWishlistShare);
 router.post('/merge', protect, mergeWishlist);
 
 router.route('/guest').post(getGuestWishlistProducts);
+
+router.route('/guest/share').post(createGuestWishlistShare);
 
 // Shared wishlist
 router.route('/shared/:shareToken').get(getSharedWishlist);

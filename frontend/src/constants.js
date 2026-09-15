@@ -8,3 +8,4 @@ export const UPLOAD_URL = '/api/upload';
 export const PAYMENT_URL = '/api/payment';
 export const WISHLIST_URL = '/api/wishlist';
 export const GUEST_WISHLIST_URL = '/api/wishlist/guest';
+export const GUEST_WISHLIST_SHARE_URL = '/api/wishlist/guest/share';

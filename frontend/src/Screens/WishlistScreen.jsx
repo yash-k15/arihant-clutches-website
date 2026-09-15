@@ -21,6 +21,7 @@ import {
   useClearWishlistMutation,
   useGetGuestWishlistProductsMutation,
   useCreateWishlistShareMutation,
+  useCreateGuestWishlistShareMutation,
 } from '../slices/wishlistApiSlice.js';
 
 import Paginate from '../Components/Paginate.jsx';
@@ -60,6 +61,8 @@ const WishlistScreen = () => {
 
   const [createWishlistShare] = useCreateWishlistShareMutation();
 
+  const [createGuestWishlistShare] = useCreateGuestWishlistShareMutation();
+
   const wishlistItems = userInfo ? wishlist?.items || [] : guestWishlist;
 
   const pages = Math.ceil(wishlistItems.length / ITEMS_PER_PAGE);
@@ -73,14 +76,24 @@ const WishlistScreen = () => {
 
   const shareWishlistHandler = async () => {
     try {
-      const { shareToken } = await createWishlistShare().unwrap();
+      let shareToken;
+
+      if (userInfo) {
+        const response = await createWishlistShare().unwrap();
+        shareToken = response.shareToken;
+      } else {
+        const guestItems = getGuestWishlist();
+
+        const response = await createGuestWishlistShare(guestItems).unwrap();
+
+        shareToken = response.shareToken;
+      }
 
       const shareUrl = `${window.location.origin}/wishlist/${shareToken}`;
 
       await navigator.clipboard.writeText(shareUrl);
 
       setIsLinkCopied(true);
-
       toast.success('Wishlist link copied');
 
       setTimeout(() => {

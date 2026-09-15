@@ -34,6 +34,12 @@ const wishlistSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
     },
+    expiresAt: {
+      type: Date,
+      index: {
+        expireAfterSeconds: 0,
+      },
+    },
   },
   {
     timestamps: true,

@@ -1,5 +1,9 @@
 import { apiSlice } from './apiSlice.js';
-import { WISHLIST_URL, GUEST_WISHLIST_URL } from '../constants.js';
+import {
+  WISHLIST_URL,
+  GUEST_WISHLIST_URL,
+  GUEST_WISHLIST_SHARE_URL,
+} from '../constants.js';
 
 export const wishlistApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -46,6 +50,14 @@ export const wishlistApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    createGuestWishlistShare: builder.mutation({
+      query: (items) => ({
+        url: GUEST_WISHLIST_SHARE_URL,
+        method: 'POST',
+        body: { items },
+      }),
+    }),
+
     mergeWishlist: builder.mutation({
       query: (items) => ({
         url: `${WISHLIST_URL}/merge`,
@@ -81,6 +93,7 @@ export const {
   useRemoveFromWishlistMutation,
   useClearWishlistMutation,
   useCreateWishlistShareMutation,
+  useCreateGuestWishlistShareMutation,
   useMergeWishlistMutation,
   useGetSharedWishlistQuery,
   useGetGuestWishlistProductsMutation,

@@ -169,6 +169,72 @@ const createWishlistShare = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc Create a shareable guest wishlist
+// @route POST /api/wishlist/guest/share
+// @access Public
+const createGuestWishlistShare = asyncHandler(async (req, res, next) => {
+  const { items } = req.body;
+
+  if (!Array.isArray(items) || items.length === 0) {
+    return next(
+      new ErrorResponse('Wishlist must contain at least one item', 400),
+    );
+  }
+
+  const productIds = [...new Set(items.map((item) => String(item.productId)))];
+
+  const products = await Product.find({
+    _id: { $in: productIds },
+  }).select('_id variants._id');
+
+  const productMap = new Map(
+    products.map((product) => [String(product._id), product]),
+  );
+
+  const validItems = items
+    .filter((item) => item.productId && item.variantId)
+    .map((item) => {
+      const product = productMap.get(String(item.productId));
+
+      if (!product) {
+        return null;
+      }
+
+      const variantExists = product.variants.some(
+        (variant) => String(variant._id) === String(item.variantId),
+      );
+
+      if (!variantExists) {
+        return null;
+      }
+
+      return {
+        product: product._id,
+        variant: item.variantId,
+      };
+    })
+    .filter(Boolean);
+
+  if (validItems.length === 0) {
+    return next(new ErrorResponse('No valid wishlist items found', 400));
+  }
+
+  const shareToken = crypto.randomBytes(32).toString('hex');
+
+  const expiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+
+  const wishlist = await Wishlist.create({
+    owner: null,
+    items: validItems,
+    shareToken,
+    expiresAt,
+  });
+
+  res.status(201).json({
+    shareToken: wishlist.shareToken,
+  });
+});
+
 // @desc    Get shared wishlist
 // @route   GET /api/wishlist/shared/:shareToken
 // @access  Public
@@ -269,6 +335,7 @@ export {
   removeFromWishlist,
   clearWishlist,
   createWishlistShare,
+  createGuestWishlistShare,
   getSharedWishlist,
   getGuestWishlistProducts,
   mergeWishlist,
