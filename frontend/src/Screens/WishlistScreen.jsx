@@ -1,10 +1,11 @@
 import { Row, Col } from 'react-bootstrap';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import Loader from '../Components/Loader';
 import Message from '../Components/Message';
-import { BsX } from 'react-icons/bs';
+import { BsX, BsHeart } from 'react-icons/bs';
 import { IoShareOutline, IoCloseSharp } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 
@@ -23,11 +24,13 @@ import {
 } from '../slices/wishlistApiSlice.js';
 
 import Paginate from '../Components/Paginate.jsx';
+import { useAuthModal } from '../Components/AuthModalContext.jsx';
 
 import '../assets/styles/components/WishlistScreen.css';
 
 const WishlistScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
+  const { openAuth } = useAuthModal();
   const [page, setPage] = useState(1);
 
   const [guestWishlist, setGuestWishlist] = useState([]);
@@ -222,7 +225,29 @@ const WishlistScreen = () => {
         <h1 className='wishlist-title'>Wishlist</h1>
 
         <p className='wishlist-subtitle'>
-          Your saved favourites, all in one place.
+          {userInfo ? (
+            'Your saved favourites, all in one place.'
+          ) : (
+            <>
+              To save your wishlist please{' '}
+              <button
+                type='button'
+                className='wishlist-auth-link'
+                onClick={() => openAuth()}
+              >
+                login
+              </button>{' '}
+              or{' '}
+              <button
+                type='button'
+                className='wishlist-auth-link'
+                onClick={() => openAuth()}
+              >
+                sign up
+              </button>
+              .
+            </>
+          )}
         </p>
 
         {wishlistItems.length > 0 && (
@@ -253,7 +278,19 @@ const WishlistScreen = () => {
       </div>
 
       {wishlistItems.length === 0 ? (
-        <Message>Your wishlist is empty.</Message>
+        <div className='wishlist-empty-state'>
+          <BsHeart className='wishlist-empty-icon' />
+
+          <h2>Your Wishlist is Empty</h2>
+
+          <p>
+            Save your favourite products here and come back to them anytime.
+          </p>
+
+          <Link to='/products' className='wishlist-empty-btn'>
+            Explore Products
+          </Link>
+        </div>
       ) : (
         <>
           <Row className='g-4 wishlist-grid'>
@@ -289,13 +326,23 @@ const WishlistScreen = () => {
                         <BsX />
                       </button>
 
-                      <img
-                        src={variant.images?.[0] || product.image}
-                        alt={product.name}
-                      />
+                      <Link
+                        to={`/products/${product.slug}`}
+                        state={{ variantId: variant._id }}
+                        className='wishlist-card-link'
+                      >
+                        <img
+                          src={variant.images?.[0] || product.image}
+                          alt={product.name}
+                        />
+                      </Link>
                     </div>
 
-                    <div className='wishlist-card-body'>
+                    <Link
+                      to={`/products/${product.slug}`}
+                      state={{ variantId: variant._id }}
+                      className='wishlist-card-link wishlist-card-body'
+                    >
                       <h3>{product.name}</h3>
 
                       <p className='wishlist-card-variant'>{variant.color}</p>
@@ -303,7 +350,7 @@ const WishlistScreen = () => {
                       <p className='wishlist-card-price'>
                         ₹{variant.price.toLocaleString('en-IN')}
                       </p>
-                    </div>
+                    </Link>
                   </div>
                 </Col>
               );

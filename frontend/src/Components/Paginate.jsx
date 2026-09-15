@@ -20,46 +20,64 @@ const Paginate = ({
   return (
     pages > 1 && (
       <Pagination className='custom-pagination'>
-        {[...Array(pages).keys()].map((x) => (
-          <LinkContainer
-            key={x + 1}
-            to={
-              !isAdmin
-                ? keyword
-                  ? {
-                      pathname: `/products/search/${keyword}/page/${x + 1}`,
-                      search,
-                    }
-                  : collection === 'new-arrivals'
+        {[...Array(pages).keys()].map((x) => {
+          const pageNumber = x + 1;
+
+          if (isClientSide) {
+            return (
+              <Pagination.Item
+                key={pageNumber}
+                active={pageNumber === page}
+                onClick={() => onPageChange(pageNumber)}
+              >
+                {pageNumber}
+              </Pagination.Item>
+            );
+          }
+
+          return (
+            <LinkContainer
+              key={pageNumber}
+              to={
+                !isAdmin
+                  ? keyword
                     ? {
-                        pathname: `/products/new-arrivals/page/${x + 1}`,
+                        pathname: `/products/search/${keyword}/page/${pageNumber}`,
                         search,
                       }
-                    : collection === 'best-sellers'
+                    : collection === 'new-arrivals'
                       ? {
-                          pathname: `/products/best-sellers/page/${x + 1}`,
+                          pathname: `/products/new-arrivals/page/${pageNumber}`,
                           search,
                         }
-                      : collection === 'featured'
+                      : collection === 'best-sellers'
                         ? {
-                            pathname: `/products/featured/page/${x + 1}`,
+                            pathname: `/products/best-sellers/page/${pageNumber}`,
                             search,
                           }
-                        : category
+                        : collection === 'featured'
                           ? {
-                              pathname: `/products/category/${category}/page/${x + 1}`,
+                              pathname: `/products/featured/page/${pageNumber}`,
                               search,
                             }
-                          : {
-                              pathname: `/products/page/${x + 1}`,
-                              search,
-                            }
-                : `/admin/productlist/${x + 1}`
-            }
-          >
-            <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
-          </LinkContainer>
-        ))}
+                          : category
+                            ? {
+                                pathname: `/products/category/${category}/page/${pageNumber}`,
+                                search,
+                              }
+                            : {
+                                pathname: `/products/page/${pageNumber}`,
+                                search,
+                              }
+                  : `/admin/productlist/${pageNumber}`
+              }
+            >
+              <Pagination.Item active={pageNumber === page}>
+                {pageNumber}
+              </Pagination.Item>
+            </LinkContainer>
+          );
+        })}
       </Pagination>
     )
   );
