@@ -677,6 +677,62 @@
   transform: translateY(-50%) scale(0.96);
 }
 
+.add-wishlist-btn {
+  width: 100%;
+  margin-top: 10px;
+  min-height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border: 1px solid #2c2222 !important;
+  border-radius: 8px !important;
+
+  background: #fff !important;
+  color: #2c2222 !important;
+
+  font-size: 1rem;
+  font-weight: 500;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.add-wishlist-btn:hover {
+  background: #faf7f1 !important;
+  border-color: #b08d57 !important;
+  color: #b08d57 !important;
+}
+
+.add-wishlist-btn:focus,
+.add-wishlist-btn:focus-visible,
+.add-wishlist-btn:active {
+  background: #fff !important;
+  border-color: #2c2222 !important;
+  color: #2c2222 !important;
+  box-shadow: none !important;
+}
+
+.add-wishlist-btn:active:hover {
+  background: #faf7f1 !important;
+  border-color: #b08d57 !important;
+  color: #b08d57 !important;
+}
+
+.add-wishlist-btn svg {
+  font-size: 1.25rem;
+}
+
+.add-wishlist-btn:disabled {
+  background: #fff !important;
+  border-color: #2c2222 !important;
+  color: #2c2222 !important;
+  opacity: 0.7;
+}
 
 /* =========================================================
    TABLET

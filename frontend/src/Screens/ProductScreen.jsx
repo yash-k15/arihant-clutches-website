@@ -18,9 +18,21 @@ import {
   useCreateReviewMutation,
 } from '../slices/productsApiSlice.js';
 
+import {
+  useGetWishlistQuery,
+  useAddToWishlistMutation,
+  useRemoveFromWishlistMutation,
+} from '../slices/wishlistApiSlice.js';
+
+import {
+  getGuestWishlist,
+  addGuestWishlistItem,
+  removeGuestWishlistItem,
+} from '../utils/wishlistUtils.js';
+
 import { addToCart } from '../slices/cartSlice.js';
 
-import { FaEdit } from 'react-icons/fa';
+import { FaEdit, FaRegHeart, FaHeart } from 'react-icons/fa';
 
 import { getCloudinaryImage } from '../utils/cloudinary.js';
 
@@ -56,6 +68,20 @@ const ProductScreen = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
 
+  const { data: wishlist } = useGetWishlistQuery(undefined, {
+    skip: !userInfo || userInfo.isAdmin,
+  });
+
+  const [addToWishlist, { isLoading: isAddingToWishlist }] =
+    useAddToWishlistMutation();
+
+  const [removeFromWishlist, { isLoading: isRemovingFromWishlist }] =
+    useRemoveFromWishlistMutation();
+
+  const [isGuestWishlisted, setIsGuestWishlisted] = useState(false);
+
+  const wishlistLoading = isAddingToWishlist || isRemovingFromWishlist;
+
   /*
    * --------------------------------------------------
    * Select variant
@@ -79,6 +105,18 @@ const ProductScreen = () => {
       }
     }
   }, [product, location.state]);
+
+  useEffect(() => {
+    if (!product || !selectedVariant || userInfo) return;
+
+    setIsGuestWishlisted(
+      getGuestWishlist().some(
+        (item) =>
+          item.productId === product._id &&
+          item.variantId === selectedVariant._id,
+      ),
+    );
+  }, [product, selectedVariant, userInfo]);
 
   /*
    * --------------------------------------------------
@@ -104,6 +142,17 @@ const ProductScreen = () => {
 
     return Number(price).toLocaleString('en-IN');
   };
+
+  const isCustomerWishlisted =
+    userInfo && !userInfo.isAdmin
+      ? wishlist?.items?.some(
+          (item) =>
+            String(item.product?._id) === String(product?._id) &&
+            String(item.variant) === String(selectedVariant?._id),
+        )
+      : false;
+
+  const isWishlisted = userInfo ? isCustomerWishlisted : isGuestWishlisted;
 
   /*
    * --------------------------------------------------
@@ -143,6 +192,47 @@ const ProductScreen = () => {
     );
 
     openCart();
+  };
+
+  const wishlistHandler = async () => {
+    if (!product || !selectedVariant || userInfo?.isAdmin) return;
+
+    const productId = product._id;
+    const variantId = selectedVariant._id;
+
+    try {
+      if (!userInfo) {
+        if (isGuestWishlisted) {
+          removeGuestWishlistItem(productId, variantId);
+          setIsGuestWishlisted(false);
+          toast.success('Removed from wishlist');
+        } else {
+          addGuestWishlistItem(productId, variantId);
+          setIsGuestWishlisted(true);
+          toast.success('Added to wishlist');
+        }
+
+        return;
+      }
+
+      if (isCustomerWishlisted) {
+        await removeFromWishlist({
+          productId,
+          variantId,
+        }).unwrap();
+
+        toast.success('Removed from wishlist');
+      } else {
+        await addToWishlist({
+          productId,
+          variantId,
+        }).unwrap();
+
+        toast.success('Added to wishlist');
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
   };
 
   /*
@@ -424,6 +514,17 @@ const ProductScreen = () => {
                   onClick={addToCartHandler}
                 >
                   Add to Cart
+                </Button>
+
+                <Button
+                  variant='light'
+                  className='add-wishlist-btn'
+                  type='button'
+                  disabled={!selectedVariant || wishlistLoading}
+                  onClick={wishlistHandler}
+                >
+                  {isWishlisted ? <FaHeart /> : <FaRegHeart />}
+                  {isWishlisted ? 'Added to Wishlist' : 'Add to Wishlist'}
                 </Button>
               </div>
 
