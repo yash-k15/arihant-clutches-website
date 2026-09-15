@@ -10,6 +10,8 @@ const Paginate = ({
   collection = '',
   category = '',
   sort = 'latest',
+  isClientSide = false,
+  onPageChange,
 }) => {
   const location = useLocation();
 
@@ -55,7 +57,7 @@ const Paginate = ({
                 : `/admin/productlist/${x + 1}`
             }
           >
-            <Pagination.Item active={x + 1 === page}>{x + 1} </Pagination.Item>
+            <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
           </LinkContainer>
         ))}
       </Pagination>
