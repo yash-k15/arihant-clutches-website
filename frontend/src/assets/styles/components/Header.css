@@ -113,6 +113,15 @@
   color: #b08d57;
 }
 
+/* ---------- Wishlist ---------- */
+
+.header-wishlist {
+  text-decoration: none;
+}
+
+.header-wishlist:hover {
+  color: #b08d57;
+}
 
 /* ---------- Cart ---------- */
 

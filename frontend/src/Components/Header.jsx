@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Badge, Container, NavDropdown, Offcanvas } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBars, FaShoppingCart, FaUser } from 'react-icons/fa';
+import { FaBars, FaRegHeart, FaShoppingCart, FaUser } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -81,6 +81,14 @@ const Header = () => {
               {/* Actions */}
               <div className='header-actions'>
                 <SearchBox />
+
+                <Link
+                  to='/wishlist'
+                  className='header-action header-wishlist'
+                  aria-label='Wishlist'
+                >
+                  <FaRegHeart />
+                </Link>
 
                 <button
                   type='button'
@@ -208,6 +216,14 @@ const Header = () => {
 
             <div className='mobile-header-right'>
               <SearchBox />
+
+              <Link
+                to='/wishlist'
+                className='header-action header-wishlist'
+                aria-label='Wishlist'
+              >
+                <FaRegHeart />
+              </Link>
 
               <button
                 type='button'
