@@ -5,6 +5,11 @@ import {
   logoutUser,
   getUserProfile,
   updateUserProfile,
+  getUserAddresses,
+  addUserAddress,
+  updateUserAddress,
+  deleteUserAddress,
+  setDefaultUserAddress,
   changeUserPhone,
   getUsers,
   getUserById,
@@ -36,6 +41,18 @@ router
   .route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+
+router
+  .route('/addresses')
+  .get(protect, getUserAddresses)
+  .post(protect, addUserAddress);
+
+router
+  .route('/addresses/:addressId')
+  .put(protect, updateUserAddress)
+  .delete(protect, deleteUserAddress);
+
+router.put('/addresses/:addressId/default', protect, setDefaultUserAddress);
 
 router.put('/change-phone', protect, changeUserPhone);
 

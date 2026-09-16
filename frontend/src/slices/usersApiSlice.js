@@ -1,4 +1,4 @@
-import { USERS_URL } from '../constants.js';
+import { USERS_URL, USER_ADDRESSES_URL } from '../constants.js';
 import { apiSlice } from './apiSlice.js';
 
 export const usersApiSlice = apiSlice.injectEndpoints({
@@ -125,6 +125,47 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+
+    getUserAddresses: builder.query({
+      query: () => ({
+        url: USER_ADDRESSES_URL,
+      }),
+      providesTags: ['User'],
+    }),
+
+    addUserAddress: builder.mutation({
+      query: (address) => ({
+        url: USER_ADDRESSES_URL,
+        method: 'POST',
+        body: address,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    updateUserAddress: builder.mutation({
+      query: ({ addressId, ...address }) => ({
+        url: `${USER_ADDRESSES_URL}/${addressId}`,
+        method: 'PUT',
+        body: address,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    deleteUserAddress: builder.mutation({
+      query: (addressId) => ({
+        url: `${USER_ADDRESSES_URL}/${addressId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['User'],
+    }),
+
+    setDefaultUserAddress: builder.mutation({
+      query: (addressId) => ({
+        url: `${USER_ADDRESSES_URL}/${addressId}/default`,
+        method: 'PUT',
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
 
@@ -146,4 +187,9 @@ export const {
   useVerifyOtpMutation,
   useVerifyPhoneChangeOtpMutation,
   useRegisterPhoneMutation,
+  useGetUserAddressesQuery,
+  useAddUserAddressMutation,
+  useUpdateUserAddressMutation,
+  useDeleteUserAddressMutation,
+  useSetDefaultUserAddressMutation,
 } = usersApiSlice;
