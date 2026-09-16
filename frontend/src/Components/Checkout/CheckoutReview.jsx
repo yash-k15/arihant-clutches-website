@@ -56,10 +56,19 @@ const CheckoutReview = ({ onBack, onEditDelivery }) => {
         </div>
 
         <div className='checkout-review-card'>
-          <p>{shippingAddress.address}</p>
+          <p>{shippingAddress.fullName}</p>
+          <p>{shippingAddress.phone}</p>
+
+          <p>{shippingAddress.addressLine1}</p>
+
+          {shippingAddress.addressLine2 && (
+            <p>{shippingAddress.addressLine2}</p>
+          )}
+
           <p>
             {shippingAddress.city}, {shippingAddress.state}
           </p>
+
           <p>{shippingAddress.postalCode}</p>
           <p>{shippingAddress.country}</p>
         </div>

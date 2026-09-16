@@ -184,7 +184,7 @@ const OrderScreen = () => {
               <div className='order-contact-info'>
                 <p>
                   <strong>Name</strong>
-                  <span>{order.user.name}</span>
+                  <span>{order.shippingAddress.fullName}</span>
                 </p>
 
                 {order.user.email && (
@@ -194,18 +194,20 @@ const OrderScreen = () => {
                   </p>
                 )}
 
-                {order.user.phone && (
-                  <p>
-                    <strong>Phone</strong>
-                    <span>{order.user.phone}</span>
-                  </p>
-                )}
+                <p>
+                  <strong>Phone</strong>
+                  <span>{order.shippingAddress.phone}</span>
+                </p>
 
                 <p>
                   <strong>Address</strong>
                   <span>
-                    {order.shippingAddress.address},{' '}
-                    {order.shippingAddress.city}, {order.shippingAddress.state},{' '}
+                    {order.shippingAddress.addressLine1}
+                    {order.shippingAddress.addressLine2 && (
+                      <>, {order.shippingAddress.addressLine2}</>
+                    )}
+                    , {order.shippingAddress.city},{' '}
+                    {order.shippingAddress.state} -{' '}
                     {order.shippingAddress.postalCode},{' '}
                     {order.shippingAddress.country}
                   </span>

@@ -190,18 +190,34 @@ const orderConfirmationEmail = (order, paymentId) => {
           Shipping Address
         </h2>
 
-        <p>
-          ${order.shippingAddress.address}
+        <p style="margin: 0 0 4px;">
+          ${order.shippingAddress.fullName}
         </p>
 
-        <p>
-          ${order.shippingAddress.city},
-          ${order.shippingAddress.state},
-          ${order.shippingAddress.postalCode}
+        <p style="margin: 0 0 4px;">
+          ${order.shippingAddress.phone}
         </p>
 
-        <p>
-          ${order.shippingAddress.country}
+        <p style="margin: 0 0 4px;">
+          ${order.shippingAddress.addressLine1}
+        </p>
+
+        ${
+          order.shippingAddress.addressLine2
+            ? `
+              <p style="margin: 0 0 4px;">
+                ${order.shippingAddress.addressLine2}
+              </p>
+            `
+            : ''
+        }
+
+        <p style="margin: 0 0 4px;">
+          ${order.shippingAddress.city}, ${order.shippingAddress.state}
+        </p>
+
+        <p style="margin: 0;">
+          ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}
         </p>
 
         <hr style="

@@ -207,6 +207,234 @@
 }
 
 /* ----------------------------------------
+   Delivery / Saved Addresses
+---------------------------------------- */
+
+.checkout-delivery {
+  width: 100%;
+  max-width: 960px;
+}
+
+.checkout-saved-addresses {
+  margin-bottom: 1.5rem;
+}
+
+.checkout-saved-addresses-header {
+  margin-bottom: 0.85rem;
+}
+
+.checkout-saved-addresses-header h4 {
+  margin: 0;
+  color: #2c2222;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.checkout-saved-addresses-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.checkout-address-card {
+  position: relative;
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fff;
+  color: #2c2222;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.checkout-address-card:hover {
+  border-color: #b08d57;
+}
+
+.checkout-address-card.selected {
+  border-color: #b08d57;
+  background: #fcfaf7;
+  box-shadow: 0 0 0 1px rgba(176, 141, 87, 0.15);
+}
+
+.checkout-address-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.checkout-address-card-name {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.checkout-address-card-name strong {
+  color: #2c2222;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.checkout-address-default {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: #f3eadc;
+  color: #8a6b3f;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.checkout-address-radio {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #ccc;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.checkout-address-radio.selected {
+  border: 5px solid #b08d57;
+}
+
+.checkout-address-card-details {
+  color: #777;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.checkout-address-card-details p {
+  margin: 0;
+}
+
+.checkout-new-address-link,
+.checkout-back-to-saved-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #b08d57;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.checkout-new-address-link {
+  margin-top: 1rem;
+}
+
+.checkout-new-address-link:hover,
+.checkout-back-to-saved-link:hover {
+  color: #2c2222;
+}
+
+.checkout-back-to-saved-link {
+  margin-bottom: 1.25rem;
+}
+
+.checkout-address-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.checkout-address-form-grid > div {
+  margin-bottom: 0;
+}
+
+.checkout-address-form-full {
+  grid-column: 1 / -1;
+}
+
+.checkout-address-form-grid label {
+  margin-bottom: 0.5rem;
+  color: #2c2222;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.checkout-address-form-grid label span {
+  color: #999;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.checkout-address-form-grid .form-control {
+  min-height: 46px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  color: #2c2222;
+  box-shadow: none;
+}
+
+.checkout-address-form-grid .form-control:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 2px rgba(176, 141, 87, 0.12);
+}
+
+.checkout-address-save-options {
+  margin-top: 1.25rem;
+}
+
+.checkout-address-save-options .form-check {
+  margin-bottom: 0.5rem;
+}
+
+.checkout-address-save-options .form-check:last-child {
+  margin-bottom: 0;
+}
+
+.checkout-address-save-options .form-check-input {
+  border-color: #ccc;
+  cursor: pointer;
+}
+
+.checkout-address-save-options .form-check-input:checked {
+  border-color: #2c2222;
+  background-color: #2c2222;
+}
+
+.checkout-address-save-options .form-check-label {
+  color: #555;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.checkout-address-limit-message {
+  margin: 0.6rem 0 0;
+  color: #888;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.checkout-address-loading {
+  padding: 3rem 1rem;
+  color: #888;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.checkout-delivery-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+/* ----------------------------------------
    Actions
 ---------------------------------------- */
 
@@ -688,5 +916,33 @@
     border: none !important;
     background: transparent !important;
     color: #2c2222 !important;
+  }
+
+    /* Delivery / Saved Addresses */
+
+  .checkout-saved-addresses-list {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .checkout-address-card {
+    padding: 0.9rem;
+  }
+
+  .checkout-address-form-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .checkout-address-form-full {
+    grid-column: auto;
+  }
+
+  .checkout-delivery-actions {
+    margin-top: 1.25rem;
+  }
+
+  .checkout-delivery-actions .checkout-continue-btn {
+    width: 100%;
   }
 }

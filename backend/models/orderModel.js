@@ -27,11 +27,47 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     shippingAddress: {
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      postalCode: { type: String, required: true },
-      state: { type: String, required: true },
-      country: { type: String, required: true },
+      fullName: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      phone: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      addressLine1: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      addressLine2: {
+        type: String,
+        trim: true,
+        default: '',
+      },
+      city: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      state: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      postalCode: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      country: {
+        type: String,
+        required: true,
+        trim: true,
+        default: 'India',
+      },
     },
     paymentMethod: {
       type: String,
