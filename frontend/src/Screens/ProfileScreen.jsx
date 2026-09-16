@@ -20,15 +20,27 @@ import {
   useVerifyPasswordChangeOtpMutation,
   useChangePasswordMutation,
   useVerifyPhoneChangeOtpMutation,
+  useGetUserAddressesQuery,
+  useAddUserAddressMutation,
+  useUpdateUserAddressMutation,
+  useDeleteUserAddressMutation,
 } from '../slices/usersApiSlice.js';
 import { setCredentials } from '../slices/authSlice.js';
 import { useGetMyOrdersQuery } from '../slices/ordersApiSlice.js';
+
+import AddressForm from '../Components/AddressForm.jsx';
+import SavedAddressCard from '../Components/SavedAddressCard.jsx';
+
 import '../assets/styles/components/ProfileScreen.css';
 
 const ProfileScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [editingAddress, setEditingAddress] = useState(null);
+  const [openAddressMenu, setOpenAddressMenu] = useState(null);
 
   const [isChangingPhone, setIsChangingPhone] = useState(false);
   const [newPhone, setNewPhone] = useState('');
@@ -60,6 +72,18 @@ const ProfileScreen = () => {
 
   const [changePassword, { isLoading: changingPassword }] =
     useChangePasswordMutation();
+
+  const { data: addressData, isLoading: loadingAddresses } =
+    useGetUserAddressesQuery();
+
+  const [addUserAddress, { isLoading: addingAddress }] =
+    useAddUserAddressMutation();
+
+  const [updateUserAddress, { isLoading: updatingAddress }] =
+    useUpdateUserAddressMutation();
+
+  const [deleteUserAddress, { isLoading: deletingAddress }] =
+    useDeleteUserAddressMutation();
 
   const { data: orders, isLoading, error } = useGetMyOrdersQuery();
 
@@ -296,6 +320,70 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleAddAddress = async (address) => {
+    try {
+      await addUserAddress(address).unwrap();
+
+      setIsAddingAddress(false);
+
+      toast.success('Address saved successfully');
+    } catch (error) {
+      toast.error(error?.data?.message || 'Unable to save address');
+    }
+  };
+
+  const handleUpdateAddress = async (address) => {
+    try {
+      await updateUserAddress({
+        addressId: editingAddress._id,
+        ...address,
+      }).unwrap();
+
+      setEditingAddress(null);
+
+      toast.success('Address updated successfully');
+    } catch (error) {
+      toast.error(error?.data?.message || 'Unable to update address');
+    }
+  };
+
+  const handleDeleteAddress = async (addressId) => {
+    setOpenAddressMenu(null);
+
+    if (!window.confirm('Are you sure you want to delete this address?')) {
+      return;
+    }
+
+    try {
+      await deleteUserAddress(addressId).unwrap();
+
+      if (editingAddress?._id === addressId) {
+        setEditingAddress(null);
+      }
+
+      toast.success('Address deleted successfully');
+    } catch (error) {
+      toast.error(error?.data?.message || 'Unable to delete address');
+    }
+  };
+
+  const handleToggleAddressMenu = (addressId) => {
+    setOpenAddressMenu((currentId) =>
+      currentId === addressId ? null : addressId,
+    );
+  };
+
+  const handleEditAddress = (address) => {
+    setIsAddingAddress(false);
+    setEditingAddress(address);
+    setOpenAddressMenu(null);
+  };
+
+  const handleCancelAddressForm = () => {
+    setIsAddingAddress(false);
+    setEditingAddress(null);
+  };
+
   return (
     <div className='profile-page'>
       <header className='profile-page-header'>
@@ -498,6 +586,122 @@ const ProfileScreen = () => {
             </Form>
           )}
         </div>
+      </section>
+
+      <section className='profile-addresses-section'>
+        <div className='profile-section-heading'>
+          <div>
+            <h2>Saved Addresses</h2>
+            <p>Manage your saved delivery addresses</p>
+          </div>
+
+          {!isAddingAddress && !editingAddress && (
+            <Button
+              type='button'
+              className='profile-add-address-button'
+              onClick={() => setIsAddingAddress(true)}
+              disabled={addressData?.addresses?.length >= 10}
+            >
+              + Add Address
+            </Button>
+          )}
+        </div>
+
+        {loadingAddresses ? (
+          <div className='profile-addresses-loader'>
+            <Loader />
+          </div>
+        ) : isAddingAddress ? (
+          <div className='profile-address-form-card'>
+            <div className='profile-address-form-header'>
+              <div>
+                <h3>Add New Address</h3>
+                <p>Save an address for faster checkout.</p>
+              </div>
+
+              <button
+                type='button'
+                className='profile-close-button'
+                onClick={handleCancelAddressForm}
+                aria-label='Cancel adding address'
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <AddressForm
+              onSubmit={handleAddAddress}
+              onCancel={handleCancelAddressForm}
+              isLoading={addingAddress}
+              submitLabel='Save Address'
+            />
+          </div>
+        ) : editingAddress ? (
+          <div className='profile-address-form-card'>
+            <div className='profile-address-form-header'>
+              <div>
+                <h3>Edit Address</h3>
+                <p>Update your saved delivery address.</p>
+              </div>
+
+              <button
+                type='button'
+                className='profile-close-button'
+                onClick={handleCancelAddressForm}
+                aria-label='Cancel editing address'
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <AddressForm
+              initialAddress={editingAddress}
+              onSubmit={handleUpdateAddress}
+              onCancel={handleCancelAddressForm}
+              isLoading={updatingAddress}
+              submitLabel='Update Address'
+            />
+          </div>
+        ) : addressData?.addresses?.length > 0 ? (
+          <>
+            <div className='profile-addresses-list'>
+              {addressData.addresses.map((address) => (
+                <SavedAddressCard
+                  key={address._id}
+                  address={address}
+                  onEdit={handleEditAddress}
+                  onDelete={handleDeleteAddress}
+                  showMenu={openAddressMenu === address._id}
+                  onToggleMenu={handleToggleAddressMenu}
+                  isDeleting={deletingAddress}
+                />
+              ))}
+            </div>
+
+            <div className='profile-addresses-footer'>
+              <span>{addressData.addresses.length} of 10 saved addresses</span>
+
+              {addressData.addresses.length >= 10 && (
+                <span className='profile-address-limit-message'>
+                  Maximum saved addresses reached
+                </span>
+              )}
+            </div>
+          </>
+        ) : (
+          <div className='profile-empty-addresses'>
+            <h3>No saved addresses</h3>
+            <p>Save an address to make checkout faster next time.</p>
+
+            <Button
+              type='button'
+              className='profile-add-address-empty-button'
+              onClick={() => setIsAddingAddress(true)}
+            >
+              + Add Your First Address
+            </Button>
+          </div>
+        )}
       </section>
 
       {userInfo?.isAdmin && (
