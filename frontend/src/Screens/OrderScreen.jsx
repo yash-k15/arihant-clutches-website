@@ -322,18 +322,13 @@ const OrderScreen = () => {
 
               <ListGroup.Item className='order-summary-details'>
                 <div className='summary-row'>
-                  <span>Items</span>
+                  <span>Subtotal</span>
                   <span>₹{formatPrice(order.itemsPrice)}</span>
                 </div>
 
                 <div className='summary-row'>
                   <span>Shipping</span>
                   <span>₹{formatPrice(order.shippingPrice)}</span>
-                </div>
-
-                <div className='summary-row'>
-                  <span>Tax</span>
-                  <span>₹{formatPrice(order.taxPrice)}</span>
                 </div>
 
                 <div className='summary-row summary-total'>

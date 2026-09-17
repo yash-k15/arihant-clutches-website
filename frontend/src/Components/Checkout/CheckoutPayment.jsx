@@ -46,7 +46,7 @@ const CheckoutPayment = ({ onBack, onContinue }) => {
               <span className='checkout-payment-title'>Cash on Delivery</span>
 
               <span className='checkout-payment-description'>
-                Pay in cash when your order arrives.
+                Pay in cash when your order arrives. Shipping is ₹150 per item.
               </span>
             </div>
           </label>
@@ -68,7 +68,7 @@ const CheckoutPayment = ({ onBack, onContinue }) => {
               <span className='checkout-payment-title'>Online Payment</span>
 
               <span className='checkout-payment-description'>
-                Pay securely using card, UPI or wallet.
+                Pay securely using card, UPI or wallet. Free shipping.
               </span>
             </div>
           </label>

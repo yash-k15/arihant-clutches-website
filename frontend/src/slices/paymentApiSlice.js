@@ -5,13 +5,10 @@ export const paymentApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // CREATE RAZORPAY ORDER
     createRazorpayOrder: builder.mutation({
-      query: (amount) => ({
+      query: (orderData) => ({
         url: `${PAYMENT_URL}/create-order`,
         method: 'POST',
-
-        body: {
-          amount,
-        },
+        body: orderData,
       }),
     }),
 

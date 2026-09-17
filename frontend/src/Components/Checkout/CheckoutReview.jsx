@@ -10,7 +10,6 @@ const CheckoutReview = ({ onBack, onEditDelivery }) => {
     shippingAddress,
     paymentMethod,
     shippingPrice,
-    taxPrice,
     totalPrice,
   } = useSelector((state) => state.cart);
 
@@ -146,11 +145,6 @@ const CheckoutReview = ({ onBack, onEditDelivery }) => {
         <div className='checkout-review-summary-row'>
           <span>Shipping</span>
           <strong>₹{formatPrice(shippingPrice)}</strong>
-        </div>
-
-        <div className='checkout-review-summary-row'>
-          <span>Tax</span>
-          <strong>₹{formatPrice(taxPrice)}</strong>
         </div>
 
         <div className='checkout-review-summary-total'>

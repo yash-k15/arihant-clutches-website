@@ -9,10 +9,19 @@ export const updateCart = (state) => {
   );
 
   // Calculate shipping price
-  state.shippingPrice = addDecimals(state.itemsPrice > 100 ? 10 : 0);
+  if (state.paymentMethod === 'COD') {
+    const totalQuantity = state.cartItems.reduce(
+      (acc, item) => acc + item.qty,
+      0,
+    );
 
-  // Calculate tax price (15% tax)
-  state.taxPrice = addDecimals(Number(0.15 * state.itemsPrice).toFixed(2));
+    state.shippingPrice = addDecimals(totalQuantity * 150);
+  } else {
+    state.shippingPrice = addDecimals(0);
+  }
+
+  // No tax
+  state.taxPrice = addDecimals(0);
 
   // Calculate total price
   state.totalPrice = (

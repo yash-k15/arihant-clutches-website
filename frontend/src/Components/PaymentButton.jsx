@@ -83,7 +83,14 @@ const PaymentButton = ({ disabled }) => {
       }
 
       // CREATE RAZORPAY ORDER
-      const order = await createRazorpayOrder(cart.totalPrice).unwrap();
+      const order = await createRazorpayOrder({
+        orderItems: cart.cartItems.map((item) => ({
+          product: item._id,
+          variantId: item.variantId,
+          qty: item.qty,
+        })),
+        paymentMethod: 'ONLINE',
+      }).unwrap();
 
       // RAZORPAY OPTIONS
       const options = {
