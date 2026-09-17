@@ -9,6 +9,7 @@ import { CheckoutProvider } from './Components/Checkout/CheckoutContext.jsx';
 import Checkout from './Components/Checkout/Checkout.jsx';
 import { AuthModalProvider } from './Components/AuthModalContext.jsx';
 import useWishlistMerge from './hooks/useWishlistMerge.js';
+import ScrollToTop from './Components/ScrollToTop.jsx';
 
 const App = () => {
   useWishlistMerge();
@@ -18,6 +19,7 @@ const App = () => {
       <CheckoutProvider>
         <AuthModalProvider>
           <CartDrawerProvider>
+            <ScrollToTop />
             <Header />
             <main className='py-3'>
               <Container>
