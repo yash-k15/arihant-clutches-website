@@ -1,4 +1,10 @@
-import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  Link,
+} from 'react-router-dom';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { Form, Image, Button, Modal } from 'react-bootstrap';
@@ -33,15 +39,25 @@ import {
 import { addToCart } from '../slices/cartSlice.js';
 
 import { FaEdit, FaRegHeart, FaHeart } from 'react-icons/fa';
+import { IoShareOutline } from 'react-icons/io5';
 
 import { getCloudinaryImage } from '../utils/cloudinary.js';
 
 import '../assets/styles/components/ProductScreen.css';
 
+const createColorSlug = (color) => {
+  return color
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
 const ProductScreen = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
 
   const { openCart } = useCartDrawer();
@@ -55,6 +71,7 @@ const ProductScreen = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
 
   const [showImageModal, setShowImageModal] = useState(false);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const {
     data: product,
@@ -89,22 +106,32 @@ const ProductScreen = () => {
    */
 
   useEffect(() => {
-    if (product?.variants?.length > 0) {
-      const requestedVariantId = location.state?.variantId;
-
-      const variantFromNavigation = requestedVariantId
-        ? product.variants.find((variant) => variant._id === requestedVariantId)
-        : null;
-
-      const variantToSelect = variantFromNavigation || product.variants[0];
-
-      setSelectedVariant(variantToSelect);
-
-      if (variantToSelect.images?.length > 0) {
-        setSelectedImage(variantToSelect.images[0]);
-      }
+    if (!product?.variants?.length) {
+      return;
     }
-  }, [product, location.state]);
+
+    const requestedColor = searchParams.get('color');
+    const requestedVariantId = location.state?.variantId;
+
+    const variantFromColor = requestedColor
+      ? product.variants.find(
+          (variant) => createColorSlug(variant.color) === requestedColor,
+        )
+      : null;
+
+    const variantFromNavigation = requestedVariantId
+      ? product.variants.find((variant) => variant._id === requestedVariantId)
+      : null;
+
+    const variantToSelect =
+      variantFromColor || variantFromNavigation || product.variants[0];
+
+    setSelectedVariant(variantToSelect);
+
+    if (variantToSelect.images?.length > 0) {
+      setSelectedImage(variantToSelect.images[0]);
+    }
+  }, [product, location.state, searchParams]);
 
   useEffect(() => {
     if (!product || !selectedVariant || userInfo) return;
@@ -166,6 +193,17 @@ const ProductScreen = () => {
     if (variant.images?.length > 0) {
       setSelectedImage(variant.images[0]);
     }
+
+    setSearchParams(
+      (currentParams) => {
+        const nextParams = new URLSearchParams(currentParams);
+
+        nextParams.set('color', createColorSlug(variant.color));
+
+        return nextParams;
+      },
+      { replace: true },
+    );
   };
 
   /*
@@ -232,6 +270,20 @@ const ProductScreen = () => {
       }
     } catch (err) {
       toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const shareProductHandler = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+
+      setIsLinkCopied(true);
+
+      setTimeout(() => {
+        setIsLinkCopied(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Failed to copy product link:', error);
     }
   };
 
@@ -526,6 +578,16 @@ const ProductScreen = () => {
                   {isWishlisted ? <FaHeart /> : <FaRegHeart />}
                   {isWishlisted ? 'Added to Wishlist' : 'Add to Wishlist'}
                 </Button>
+
+                <button
+                  type='button'
+                  className='product-share-btn'
+                  onClick={shareProductHandler}
+                  disabled={isLinkCopied}
+                >
+                  <IoShareOutline />
+                  {isLinkCopied ? 'Link Copied' : 'Share'}
+                </button>
               </div>
 
               {/* -------------------------------------- */}
