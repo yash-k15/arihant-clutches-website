@@ -594,11 +594,61 @@
     letter-spacing: 1.2px;
   }
 
-  .mobile-category-link {
-    padding-left: 12px;
+  /* ---------- Mobile Category Dropdown ---------- */
 
-    font-size: 0.9rem;
-  }
+.mobile-category-section {
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.mobile-category-toggle {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 15px 0;
+
+  border: none;
+  background: transparent;
+
+  color: #2c2222;
+
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.mobile-category-toggle:hover {
+  color: #b08d57;
+}
+
+.mobile-category-arrow {
+  font-size: 1rem;
+  line-height: 1;
+
+  transition: transform 0.2s ease;
+}
+
+.mobile-category-arrow.open {
+  transform: rotate(180deg);
+}
+
+.mobile-category-list {
+  padding-bottom: 5px;
+}
+
+.mobile-category-link {
+  padding: 12px 0 12px 12px;
+
+  border-bottom: none;
+
+  font-size: 0.9rem;
+}
 
 
   /* ---------- Mobile Account ---------- */

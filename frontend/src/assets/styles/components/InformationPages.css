@@ -1,0 +1,103 @@
+/* =========================
+   Information Pages
+========================= */
+
+.info-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 0rem;
+  color: #2c2222;
+}
+
+.info-page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.info-page-header h1 {
+  margin: 0 0 0.75rem;
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #2c2222;
+}
+
+.info-page-header p {
+  max-width: 650px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #5f5555;
+}
+
+.info-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.info-page-section {
+  padding-bottom: 2.25rem;
+  border-bottom: 1px solid rgba(44, 34, 34, 0.12);
+}
+
+.info-page-section:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.info-page-section h2 {
+  margin: 0 0 0.9rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c2222;
+}
+
+.info-page-section p {
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #5f5555;
+}
+
+.info-page-section p:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 767px) {
+  .info-page {
+    padding: 2rem 1rem 3rem;
+  }
+
+  .info-page-header {
+    margin-bottom: 2.25rem;
+  }
+
+  .info-page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .info-page-header p {
+    font-size: 0.9rem;
+  }
+
+  .info-page-content {
+    gap: 1.75rem;
+  }
+
+  .info-page-section {
+    padding-bottom: 1.75rem;
+  }
+
+  .info-page-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .info-page-section p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+}

@@ -31,6 +31,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showMobileCategories, setShowMobileCategories] = useState(false);
 
   const [logoutApiCall] = useLogoutMutation();
 
@@ -38,6 +39,7 @@ const Header = () => {
 
   const closeMobileMenu = () => {
     setShowMobileMenu(false);
+    setShowMobileCategories(false);
   };
 
   const openAuthModal = () => {
@@ -185,6 +187,14 @@ const Header = () => {
                   ))}
                 </div>
               </div>
+
+              <Link to='/international-orders' className='header-nav-link'>
+                International Orders
+              </Link>
+
+              <Link to='/wholesale-orders' className='header-nav-link'>
+                Wholesale
+              </Link>
             </nav>
           </Container>
         </div>
@@ -290,18 +300,55 @@ const Header = () => {
               Featured
             </Link>
 
-            <div className='mobile-nav-section'>Shop by Category</div>
-
-            {categories.map((category) => (
-              <Link
-                key={category._id}
-                to={`/products/category/${category.slug}`}
-                className='mobile-nav-link mobile-category-link'
-                onClick={closeMobileMenu}
+            <div className='mobile-category-section'>
+              <button
+                type='button'
+                className='mobile-category-toggle'
+                onClick={() => setShowMobileCategories((prev) => !prev)}
+                aria-expanded={showMobileCategories}
               >
-                {category.name}
-              </Link>
-            ))}
+                <span>Shop by Category</span>
+
+                <span
+                  className={`mobile-category-arrow ${
+                    showMobileCategories ? 'open' : ''
+                  }`}
+                >
+                  ▾
+                </span>
+              </button>
+
+              {showMobileCategories && (
+                <div className='mobile-category-list'>
+                  {categories.map((category) => (
+                    <Link
+                      key={category._id}
+                      to={`/products/category/${category.slug}`}
+                      className='mobile-nav-link mobile-category-link'
+                      onClick={closeMobileMenu}
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link
+              to='/international-orders'
+              className='mobile-nav-link'
+              onClick={closeMobileMenu}
+            >
+              International Orders
+            </Link>
+
+            <Link
+              to='/wholesale-orders'
+              className='mobile-nav-link'
+              onClick={closeMobileMenu}
+            >
+              Wholesale
+            </Link>
 
             <div className='mobile-account-section'>
               <div className='mobile-nav-section'>Account</div>

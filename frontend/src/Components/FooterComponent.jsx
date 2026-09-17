@@ -47,6 +47,18 @@ const FooterComponent = () => {
                 </Link>
               </li>
 
+              <li>
+                <Link to='/international-orders' className='footer-link'>
+                  International Orders
+                </Link>
+              </li>
+
+              <li>
+                <Link to='/wholesale-orders' className='footer-link'>
+                  Wholesale
+                </Link>
+              </li>
+
               {!userInfo ? (
                 <>
                   <li>

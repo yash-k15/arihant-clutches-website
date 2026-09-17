@@ -29,6 +29,8 @@ import ProductFormScreen from './Screens/admin/ProductFormScreen.jsx';
 import AdminLoginScreen from './Screens/AdminLoginScreen.jsx';
 import WishlistScreen from './Screens/WishlistScreen';
 import SharedWishlistScreen from './Screens/SharedWishlistScreen';
+import InternationalOrdersScreen from './Screens/InformationPages/InternationalOrdersScreen.jsx';
+import WholesaleOrdersScreen from './Screens/InformationPages/WholesaleOrdersScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,6 +69,12 @@ const router = createBrowserRouter(
       <Route path='/admin/login' element={<AdminLoginScreen />} />
       <Route path='/wishlist' element={<WishlistScreen />} />
       <Route path='/wishlist/:shareToken' element={<SharedWishlistScreen />} />
+
+      <Route
+        path='/international-orders'
+        element={<InternationalOrdersScreen />}
+      />
+      <Route path='/wholesale-orders' element={<WholesaleOrdersScreen />} />
 
       <Route path='' element={<PrivateRoute />}>
         <Route path='/order/:id' element={<OrderScreen />} />
