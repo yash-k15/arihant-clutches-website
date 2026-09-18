@@ -13,10 +13,18 @@ const getProducts = asyncHandler(async (req, res, next) => {
   const filters = {};
 
   if (req.query.keyword) {
-    filters.name = {
+    const searchRegex = {
       $regex: req.query.keyword,
       $options: 'i',
     };
+
+    filters.$or = [
+      { name: searchRegex },
+      { brand: searchRegex },
+      { category: searchRegex },
+      { description: searchRegex },
+      { 'variants.color': searchRegex },
+    ];
   }
 
   if (req.query.category) {

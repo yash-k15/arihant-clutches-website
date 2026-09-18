@@ -300,6 +300,7 @@ const ProductsScreen = () => {
                     : ''
             }
             category={category}
+            keyword={keyword}
             sort={sort}
           />
         </>
