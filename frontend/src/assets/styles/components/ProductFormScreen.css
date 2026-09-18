@@ -200,6 +200,139 @@
   opacity: 0.7;
 }
 
+/* ================================
+   Product Video
+================================ */
+
+.admin-product-form-video {
+  width: 100%;
+  max-width: 320px;
+}
+
+.admin-product-form-video video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: contain;
+  background: #f7f5f3;
+  border: 1px solid rgba(44, 34, 34, 0.12);
+  border-radius: 10px;
+}
+
+.admin-product-form-video-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.admin-product-form-video-actions .form-group {
+  margin: 0;
+}
+
+.admin-product-form-video-replace {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 18px;
+  margin: 0;
+  border: 1px solid #2c2222;
+  border-radius: 10px;
+  background: #2c2222;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-product-form-video-replace:hover {
+  background: #b08d57;
+  border-color: #b08d57;
+  transform: translateY(-1px);
+}
+
+.admin-product-form-video-replace:active,
+.admin-product-form-video-replace:focus,
+.admin-product-form-video-replace:focus-visible {
+  background: #2c2222 !important;
+  border-color: #2c2222 !important;
+  color: #fff !important;
+  outline: none;
+  box-shadow: none !important;
+}
+
+.admin-product-form-video-remove {
+  min-height: 42px;
+  padding: 10px 18px;
+  margin: 0;
+  border: 1px solid rgba(44, 34, 34, 0.2);
+  border-radius: 10px;
+  background: #fff;
+  color: #2c2222;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-product-form-video-remove:hover {
+  background: #2c2222;
+  border-color: #2c2222;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.admin-product-form-video-remove:active,
+.admin-product-form-video-remove:focus,
+.admin-product-form-video-remove:focus-visible {
+  background: #fff !important;
+  border-color: rgba(44, 34, 34, 0.2) !important;
+  color: #2c2222 !important;
+  outline: none;
+  box-shadow: none !important;
+}
+
+/* Upload state */
+
+.admin-product-form-section
+  > .form-group[controlid='product-video'] {
+  max-width: 520px;
+}
+
+.admin-product-form-section
+  > .form-group[controlid='product-video']
+  .form-control {
+  padding: 10px 12px;
+  border-color: rgba(44, 34, 34, 0.16);
+  border-radius: 8px;
+}
+
+.admin-product-form-section
+  > .form-group[controlid='product-video']
+  .form-control:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 0.15rem rgba(176, 141, 87, 0.12);
+}
+
+.admin-product-form-section
+  > .form-group[controlid='product-video']
+  .form-text {
+  display: block;
+  margin-top: 8px;
+  color: #6f6666;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
 
 /* =========================================
    Tablet
@@ -271,4 +404,31 @@
 .admin-product-form-submit {
   width: 100%;
 }
+
+.admin-product-form-video {
+    max-width: 100%;
+  }
+
+  .admin-product-form-video-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .admin-product-form-video-actions .form-group {
+    width: 100%;
+  }
+
+  .admin-product-form-video-replace,
+  .admin-product-form-video-remove {
+    width: 100%;
+  }
+
+  .admin-product-form-video-replace {
+    min-height: 44px;
+  }
+
+  .admin-product-form-video-remove {
+    min-height: 44px;
+  }
 }

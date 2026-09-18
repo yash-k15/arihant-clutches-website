@@ -14,6 +14,8 @@ import {
   useGetProductDetailsQuery,
   useUploadProductImageMutation,
   useDeleteProductImageMutation,
+  useUploadProductVideoMutation,
+  useDeleteProductVideoMutation,
   useGetCategoriesQuery,
 } from '../../slices/productsApiSlice';
 
@@ -39,6 +41,18 @@ const ProductFormScreen = () => {
 
   const [variants, setVariants] = useState([]);
 
+  const [video, setVideo] = useState({
+    url: '',
+    publicId: '',
+  });
+
+  const [originalVideo, setOriginalVideo] = useState({
+    url: '',
+    publicId: '',
+  });
+
+  const [uploadedVideoIds, setUploadedVideoIds] = useState([]);
+
   const {
     data: product,
     isLoading: isLoadingProduct,
@@ -62,7 +76,14 @@ const ProductFormScreen = () => {
   const [uploadProductImage] = useUploadProductImageMutation();
   const [deleteProductImage] = useDeleteProductImageMutation();
 
-  const isSubmitting = loadingCreate || loadingUpdate;
+  const [uploadProductVideo, { isLoading: isUploadingVideo }] =
+    useUploadProductVideoMutation();
+
+  const [deleteProductVideo, { isLoading: isDeletingVideo }] =
+    useDeleteProductVideoMutation();
+
+  const isSubmitting =
+    loadingCreate || loadingUpdate || isUploadingVideo || isDeletingVideo;
 
   useEffect(() => {
     if (product && isEditMode) {
@@ -79,8 +100,75 @@ const ProductFormScreen = () => {
       setIsBestSeller(product.isBestSeller || false);
 
       setVariants(product.variants || []);
+
+      const productVideo = product.video || {
+        url: '',
+        publicId: '',
+      };
+
+      setVideo(productVideo);
+      setOriginalVideo(productVideo);
+      setUploadedVideoIds([]);
     }
   }, [product, isEditMode]);
+
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (file.type !== 'video/mp4') {
+      toast.error('Please select an MP4 video');
+      e.target.value = '';
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append('video', file);
+    formData.append('productName', name);
+
+    try {
+      const res = await uploadProductVideo(formData).unwrap();
+
+      setVideo(res.video);
+
+      setUploadedVideoIds((prev) => [...prev, res.video.publicId]);
+
+      toast.success('Video uploaded successfully');
+    } catch (error) {
+      toast.error(error?.data?.message || 'Video upload failed');
+    } finally {
+      e.target.value = '';
+    }
+  };
+
+  const handleVideoRemove = () => {
+    setVideo({
+      url: '',
+      publicId: '',
+    });
+  };
+
+  const cleanupUnusedVideos = async (videoIds) => {
+    const uniqueVideoIds = [...new Set(videoIds)];
+
+    await Promise.all(
+      uniqueVideoIds.map((publicId) => deleteProductVideo(publicId).unwrap()),
+    );
+  };
+
+  const handleCancel = async () => {
+    if (uploadedVideoIds.length > 0) {
+      try {
+        await cleanupUnusedVideos(uploadedVideoIds);
+      } catch (error) {
+        console.error('Failed to clean up uploaded product videos:', error);
+      }
+    }
+
+    navigate('/admin/productlist');
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -120,7 +208,30 @@ const ProductFormScreen = () => {
           isNewArrival,
           isBestSeller,
           variants,
+          video,
         }).unwrap();
+
+        const videosToDelete = uploadedVideoIds.filter(
+          (publicId) => publicId !== video.publicId,
+        );
+
+        if (
+          originalVideo.publicId &&
+          originalVideo.publicId !== video.publicId
+        ) {
+          videosToDelete.push(originalVideo.publicId);
+        }
+
+        if (videosToDelete.length > 0) {
+          try {
+            await cleanupUnusedVideos(videosToDelete);
+          } catch (error) {
+            console.error(
+              'Some unused product videos could not be deleted:',
+              error,
+            );
+          }
+        }
 
         toast.success('Product updated');
 
@@ -138,6 +249,7 @@ const ProductFormScreen = () => {
           isNewArrival,
           isBestSeller,
           variants,
+          video,
         }).unwrap();
 
         toast.success('Product created');
@@ -145,6 +257,17 @@ const ProductFormScreen = () => {
         navigate(`/products/${createdProduct.slug}`);
       }
     } catch (err) {
+      if (uploadedVideoIds.length > 0) {
+        try {
+          await cleanupUnusedVideos(uploadedVideoIds);
+        } catch (cleanupError) {
+          console.error(
+            'Failed to clean up uploaded product videos:',
+            cleanupError,
+          );
+        }
+      }
+
       toast.error(err?.data?.message || err.error);
     }
   };
@@ -337,6 +460,61 @@ const ProductFormScreen = () => {
 
               <div className='admin-product-form-divider' />
 
+              <div className='admin-product-form-section'>
+                <h2 className='admin-product-form-section-title'>
+                  Product Video
+                </h2>
+
+                {video.url ? (
+                  <div className='admin-product-form-video'>
+                    <video src={video.url} controls preload='metadata' />
+
+                    <div className='admin-product-form-video-actions'>
+                      <Form.Group controlId='product-video'>
+                        <Form.Label
+                          className='admin-product-form-video-replace'
+                          aria-disabled={isUploadingVideo || isDeletingVideo}
+                        >
+                          {isUploadingVideo ? 'Uploading...' : 'Replace Video'}
+
+                          <Form.Control
+                            type='file'
+                            accept='video/mp4,.mp4'
+                            onChange={handleVideoUpload}
+                            disabled={isUploadingVideo || isDeletingVideo}
+                            hidden
+                          />
+                        </Form.Label>
+                      </Form.Group>
+
+                      <Button
+                        type='button'
+                        className='admin-product-form-video-remove'
+                        onClick={handleVideoRemove}
+                        disabled={isUploadingVideo || isDeletingVideo}
+                      >
+                        {isDeletingVideo ? 'Removing...' : 'Remove Video'}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Form.Group controlId='product-video'>
+                    <Form.Label>Upload Product Video</Form.Label>
+
+                    <Form.Control
+                      type='file'
+                      accept='video/mp4,.mp4'
+                      onChange={handleVideoUpload}
+                      disabled={isUploadingVideo || isDeletingVideo}
+                    />
+
+                    <Form.Text>
+                      MP4 videos only. Upload one video for this product.
+                    </Form.Text>
+                  </Form.Group>
+                )}
+              </div>
+
               <AdminVariantManager
                 variants={variants}
                 setVariants={setVariants}
@@ -350,7 +528,7 @@ const ProductFormScreen = () => {
                 <Button
                   type='button'
                   className='admin-product-form-cancel'
-                  onClick={() => navigate('/admin/productlist')}
+                  onClick={handleCancel}
                   disabled={isSubmitting}
                 >
                   Cancel

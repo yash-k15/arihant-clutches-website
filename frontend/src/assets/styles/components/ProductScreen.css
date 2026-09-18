@@ -88,15 +88,25 @@
   grid-template-columns: 82px minmax(0, 1fr);
   gap: 18px;
   align-items: start;
+  container-type: inline-size;
 }
 
 .product-gallery-thumbnails {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  height: calc((100cqw - 100px) * 1.25);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.product-gallery-thumbnails::-webkit-scrollbar {
+  display: none;
 }
 
 .product-gallery-thumbnail {
+  flex: 0 0 auto;
   width: 82px;
   height: 102px;
   padding: 0;
@@ -123,6 +133,80 @@
   height: 100%;
   display: block;
   object-fit: cover;
+}
+
+.product-gallery-thumbnail video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.product-gallery-video-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.product-gallery-video-preview video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.product-gallery-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: #fff;
+  font-size: 2rem;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.product-main-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+  background: #f8f8f8;
+}
+
+.product-main-video-wrapper {
+  position: relative;
+  width: 100%;
+  background: #f8f8f8;
+}
+
+.product-main-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 4rem;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.product-main-video-play:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.product-main-video-play:focus,
+.product-main-video-play:focus-visible,
+.product-main-video-play:active {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
 }
 
 .product-main-image-wrapper {
@@ -182,6 +266,10 @@
 
 .product-rating .rating svg {
   color: #b08d57;
+}
+
+  .product-rating .rating-text {
+  padding-left: 10px;
 }
 
 .product-detail-price {
@@ -608,6 +696,52 @@
   object-fit: contain;
 }
 
+.zoomed-product-video-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+.zoomed-product-video {
+  display: block;
+  max-width: 100vw;
+  max-height: 100vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.zoomed-product-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 4rem;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.zoomed-product-video-play:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.zoomed-product-video-play:focus,
+.zoomed-product-video-play:focus-visible,
+.zoomed-product-video-play:active {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+}
+
 .image-modal-close,
 .modal-nav {
   position: absolute;
@@ -895,6 +1029,8 @@
     display: flex;
     flex-direction: row;
     width: 100%;
+    height: auto;
+    max-height: none;
     gap: 8px;
     overflow-x: auto;
     padding-bottom: 4px;
@@ -934,6 +1070,8 @@
   .product-rating {
     margin-bottom: 14px;
   }
+
+
 
   .product-detail-price {
     font-size: 1.4rem;

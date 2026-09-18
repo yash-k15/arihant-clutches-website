@@ -9,15 +9,14 @@ import asyncHandler from '../middleware/asyncHandler.js';
 
 const router = express.Router();
 
-// Store file in memory instead of uploads folder
 const storage = multer.memoryStorage();
 
-// Validate file type
-function fileFilter(req, file, cb) {
+function imageFileFilter(req, file, cb) {
   const filetypes = /jpe?g|png|webp/;
   const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
 
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
   const mimetype = mimetypes.test(file.mimetype);
 
   if (extname && mimetype) {
@@ -27,21 +26,43 @@ function fileFilter(req, file, cb) {
   }
 }
 
-const upload = multer({ storage, fileFilter });
+function videoFileFilter(req, file, cb) {
+  const filetypes = /mp4/;
+  const mimetypes = /video\/mp4/;
 
-// Use .array to accept an array of images
-const uploadMultipleImages = upload.array('images', 10);
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 
-//Upload buffer → Cloudinary
-const uploadToCloudinary = (fileBuffer, folder, publicId) =>
+  const mimetype = mimetypes.test(file.mimetype);
+
+  if (extname && mimetype) {
+    cb(null, true);
+  } else {
+    cb(new Error('MP4 videos only!'), false);
+  }
+}
+
+const imageUpload = multer({
+  storage,
+  fileFilter: imageFileFilter,
+});
+
+const videoUpload = multer({
+  storage,
+  fileFilter: videoFileFilter,
+});
+
+const uploadMultipleImages = imageUpload.array('images', 10);
+
+const uploadVideo = videoUpload.single('video');
+
+const uploadToCloudinary = (fileBuffer, folder, publicId, resourceType) =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder,
         public_id: publicId,
-        resource_type: 'image',
+        resource_type: resourceType,
       },
-
       (error, result) => {
         if (result) {
           resolve(result);
@@ -54,10 +75,15 @@ const uploadToCloudinary = (fileBuffer, folder, publicId) =>
     streamifier.createReadStream(fileBuffer).pipe(stream);
   });
 
+/*
+ * Upload product images
+ */
 router.post('/', (req, res) => {
   uploadMultipleImages(req, res, async function (err) {
     if (err) {
-      return res.status(400).send({ message: err.message });
+      return res.status(400).send({
+        message: err.message,
+      });
     }
 
     const productSlug = req.body.productName
@@ -92,7 +118,7 @@ router.post('/', (req, res) => {
 
           const publicId = `${baseName}-${uniqueSuffix}`;
 
-          return uploadToCloudinary(file.buffer, folder, publicId);
+          return uploadToCloudinary(file.buffer, folder, publicId, 'image');
         }),
       );
 
@@ -112,15 +138,76 @@ router.post('/', (req, res) => {
   });
 });
 
-// Delete Image on Cloudinary
+/*
+ * Upload product video
+ */
+router.post('/video', (req, res) => {
+  uploadVideo(req, res, async function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: err.message,
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).send({
+        message: 'Please select an MP4 video',
+      });
+    }
+
+    const productSlug = req.body.productName
+      ? slugify(req.body.productName, {
+          lower: true,
+          strict: true,
+        })
+      : 'temp';
+
+    const folder = `products/${productSlug}/video`;
+
+    try {
+      const originalName = req.file.originalname.replace(/\.[^/.]+$/, '');
+
+      const baseName = slugify(originalName, {
+        lower: true,
+        strict: true,
+      });
+
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1000)}`;
+
+      const publicId = `${baseName}-${uniqueSuffix}`;
+
+      const upload = await uploadToCloudinary(
+        req.file.buffer,
+        folder,
+        publicId,
+        'video',
+      );
+
+      res.status(200).send({
+        message: 'Video uploaded successfully',
+        video: {
+          url: upload.secure_url,
+          publicId: upload.public_id,
+        },
+      });
+    } catch (error) {
+      res.status(500).send({
+        message: 'Cloudinary video upload failed',
+      });
+    }
+  });
+});
+
 const getPublicIdFromUrl = (url) => {
   const parts = url.split('/upload/')[1];
-
   const withoutVersion = parts.replace(/^.*?\/v\d+\//, '');
 
   return withoutVersion.replace(/\.[^/.]+$/, '');
 };
 
+/*
+ * Delete product image
+ */
 const deleteProductImage = asyncHandler(async (req, res) => {
   const { imageUrl } = req.body;
 
@@ -128,9 +215,34 @@ const deleteProductImage = asyncHandler(async (req, res) => {
 
   await cloudinary.uploader.destroy(publicId);
 
-  res.json({ message: 'Image deleted' });
+  res.json({
+    message: 'Image deleted',
+  });
 });
 
 router.delete('/', deleteProductImage);
+
+/*
+ * Delete product video
+ */
+const deleteProductVideo = asyncHandler(async (req, res) => {
+  const { publicId } = req.body;
+
+  if (!publicId) {
+    return res.status(400).json({
+      message: 'Video public ID is required',
+    });
+  }
+
+  await cloudinary.uploader.destroy(publicId, {
+    resource_type: 'video',
+  });
+
+  res.json({
+    message: 'Video deleted',
+  });
+});
+
+router.delete('/video', deleteProductVideo);
 
 export default router;

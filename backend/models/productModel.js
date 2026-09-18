@@ -115,6 +115,16 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    video: {
+      url: {
+        type: String,
+        default: '',
+      },
+      publicId: {
+        type: String,
+        default: '',
+      },
+    },
   },
   {
     timestamps: true,

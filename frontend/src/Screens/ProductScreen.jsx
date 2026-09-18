@@ -38,7 +38,7 @@ import {
 
 import { addToCart } from '../slices/cartSlice.js';
 
-import { FaEdit, FaRegHeart, FaHeart } from 'react-icons/fa';
+import { FaEdit, FaRegHeart, FaHeart, FaRegPlayCircle } from 'react-icons/fa';
 import { IoShareOutline } from 'react-icons/io5';
 
 import { getCloudinaryImage } from '../utils/cloudinary.js';
@@ -64,6 +64,8 @@ const ProductScreen = () => {
   const { openAuth } = useAuthModal();
 
   const [selectedImage, setSelectedImage] = useState('');
+  const [isVideoSelected, setIsVideoSelected] = useState(false);
+  const [isMainVideoPlaying, setIsMainVideoPlaying] = useState(false);
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -71,6 +73,8 @@ const ProductScreen = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
 
   const [showImageModal, setShowImageModal] = useState(false);
+  const [isModalVideoPlaying, setIsModalVideoPlaying] = useState(false);
+
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const {
@@ -189,6 +193,8 @@ const ProductScreen = () => {
 
   const handleVariantChange = (variant) => {
     setSelectedVariant(variant);
+    setIsVideoSelected(false);
+    setIsMainVideoPlaying(false);
 
     if (variant.images?.length > 0) {
       setSelectedImage(variant.images[0]);
@@ -293,25 +299,41 @@ const ProductScreen = () => {
    * --------------------------------------------------
    */
 
-  const currentImageIndex = images.indexOf(selectedImage);
+  const mediaCount = images.length + (product?.video?.url ? 1 : 0);
 
-  const showNextImage = useCallback(() => {
-    if (!images.length) return;
+  const currentMediaIndex = isVideoSelected
+    ? images.length
+    : images.indexOf(selectedImage);
+
+  const showNextMedia = useCallback(() => {
+    if (!mediaCount) return;
 
     const nextIndex =
-      currentImageIndex >= images.length - 1 ? 0 : currentImageIndex + 1;
+      currentMediaIndex >= mediaCount - 1 ? 0 : currentMediaIndex + 1;
 
-    setSelectedImage(images[nextIndex]);
-  }, [images, currentImageIndex]);
+    if (product?.video?.url && nextIndex === images.length) {
+      setIsVideoSelected(true);
+    } else {
+      setIsVideoSelected(false);
+      setIsMainVideoPlaying(false);
+      setSelectedImage(images[nextIndex]);
+    }
+  }, [images, mediaCount, currentMediaIndex, product?.video?.url]);
 
-  const showPreviousImage = useCallback(() => {
-    if (!images.length) return;
+  const showPreviousMedia = useCallback(() => {
+    if (!mediaCount) return;
 
     const previousIndex =
-      currentImageIndex <= 0 ? images.length - 1 : currentImageIndex - 1;
+      currentMediaIndex <= 0 ? mediaCount - 1 : currentMediaIndex - 1;
 
-    setSelectedImage(images[previousIndex]);
-  }, [images, currentImageIndex]);
+    if (product?.video?.url && previousIndex === images.length) {
+      setIsVideoSelected(true);
+    } else {
+      setIsVideoSelected(false);
+      setIsMainVideoPlaying(false);
+      setSelectedImage(images[previousIndex]);
+    }
+  }, [images, mediaCount, currentMediaIndex, product?.video?.url]);
 
   /*
    * --------------------------------------------------
@@ -325,6 +347,7 @@ const ProductScreen = () => {
 
   const closeImageModal = () => {
     setShowImageModal(false);
+    setIsModalVideoPlaying(false);
   };
 
   /*
@@ -338,11 +361,11 @@ const ProductScreen = () => {
 
     const handleKeyDown = (event) => {
       if (event.key === 'ArrowRight') {
-        showNextImage();
+        showNextMedia();
       }
 
       if (event.key === 'ArrowLeft') {
-        showPreviousImage();
+        showPreviousMedia();
       }
 
       if (event.key === 'Escape') {
@@ -355,7 +378,7 @@ const ProductScreen = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showImageModal, showNextImage, showPreviousImage]);
+  }, [showImageModal, showNextMedia, showPreviousMedia]);
 
   /*
    * --------------------------------------------------
@@ -449,7 +472,11 @@ const ProductScreen = () => {
                     className={`product-gallery-thumbnail ${
                       selectedImage === image ? 'active' : ''
                     }`}
-                    onClick={() => setSelectedImage(image)}
+                    onClick={() => {
+                      setIsVideoSelected(false);
+                      setIsMainVideoPlaying(false);
+                      setSelectedImage(image);
+                    }}
                     aria-label={`View product image ${index + 1}`}
                   >
                     <Image
@@ -458,19 +485,77 @@ const ProductScreen = () => {
                     />
                   </button>
                 ))}
+
+                {product.video?.url && (
+                  <button
+                    type='button'
+                    className={`product-gallery-thumbnail product-gallery-video-thumbnail ${
+                      isVideoSelected ? 'active' : ''
+                    }`}
+                    onClick={() => {
+                      setIsVideoSelected(true);
+                    }}
+                    aria-label='View product video'
+                  >
+                    <div className='product-gallery-video-preview'>
+                      <video
+                        src={product.video.url}
+                        muted
+                        preload='metadata'
+                        playsInline
+                      />
+
+                      <span className='product-gallery-video-play'>
+                        <FaRegPlayCircle />
+                      </span>
+                    </div>
+                  </button>
+                )}
               </div>
 
               <div className='product-main-image-wrapper'>
-                {selectedImage && (
-                  <Image
-                    src={getCloudinaryImage(
-                      selectedImage,
-                      'w_1200,f_auto,q_auto',
+                {isVideoSelected && product.video?.url ? (
+                  <div className='product-main-video-wrapper'>
+                    <video
+                      src={product.video.url}
+                      controls
+                      playsInline
+                      preload='metadata'
+                      className='product-main-video'
+                      onPlay={() => setIsMainVideoPlaying(true)}
+                      onPause={() => setIsMainVideoPlaying(false)}
+                    />
+
+                    {!isMainVideoPlaying && (
+                      <button
+                        type='button'
+                        className='product-main-video-play'
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          const video =
+                            event.currentTarget.previousElementSibling;
+
+                          video.play();
+                        }}
+                        aria-label='Play product video'
+                      >
+                        <FaRegPlayCircle />
+                      </button>
                     )}
-                    alt={product.name}
-                    className='product-main-image'
-                    onClick={openImageModal}
-                  />
+                  </div>
+                ) : (
+                  selectedImage && (
+                    <Image
+                      src={getCloudinaryImage(
+                        selectedImage,
+                        'w_1200,f_auto,q_auto',
+                      )}
+                      alt={product.name}
+                      className='product-main-image'
+                      onClick={openImageModal}
+                    />
+                  )
                 )}
               </div>
             </div>
@@ -508,7 +593,7 @@ const ProductScreen = () => {
 
               {product.variants?.length > 0 && (
                 <div className='product-detail-section variant-selector'>
-                  <div className='variant-section-title'>Select Colour</div>
+                  <div className='variant-section-title'>Color Options</div>
 
                   <div className='variant-options'>
                     {product.variants.map((variant) => (
@@ -776,14 +861,14 @@ const ProductScreen = () => {
                 ×
               </button>
 
-              {images.length > 1 && (
+              {mediaCount > 1 && (
                 <>
                   <button
                     type='button'
                     className='modal-nav left'
                     onClick={(event) => {
                       event.stopPropagation();
-                      showPreviousImage();
+                      showPreviousMedia();
                     }}
                     aria-label='Previous image'
                   >
@@ -795,7 +880,7 @@ const ProductScreen = () => {
                     className='modal-nav right'
                     onClick={(event) => {
                       event.stopPropagation();
-                      showNextImage();
+                      showNextMedia();
                     }}
                     aria-label='Next image'
                   >
@@ -804,16 +889,51 @@ const ProductScreen = () => {
                 </>
               )}
 
-              {selectedImage && (
-                <Image
-                  src={getCloudinaryImage(
-                    selectedImage,
-                    'w_2000,f_auto,q_auto',
-                  )}
-                  alt={product.name}
-                  className='zoomed-product-image'
+              {isVideoSelected && product.video?.url ? (
+                <div
+                  className='zoomed-product-video-wrapper'
                   onClick={(event) => event.stopPropagation()}
-                />
+                >
+                  <video
+                    src={product.video.url}
+                    controls
+                    playsInline
+                    preload='metadata'
+                    className='zoomed-product-video'
+                    onPlay={() => setIsModalVideoPlaying(true)}
+                    onPause={() => setIsModalVideoPlaying(false)}
+                  />
+
+                  {!isModalVideoPlaying && (
+                    <button
+                      type='button'
+                      className='zoomed-product-video-play'
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        const video =
+                          event.currentTarget.previousElementSibling;
+
+                        video.play();
+                        setIsModalVideoPlaying(true);
+                      }}
+                      aria-label='Play product video'
+                    >
+                      <FaRegPlayCircle />
+                    </button>
+                  )}
+                </div>
+              ) : (
+                selectedImage && (
+                  <Image
+                    src={getCloudinaryImage(
+                      selectedImage,
+                      'w_2000,f_auto,q_auto',
+                    )}
+                    alt={product.name}
+                    className='zoomed-product-image'
+                    onClick={(event) => event.stopPropagation()}
+                  />
+                )
               )}
             </Modal.Body>
           </Modal>

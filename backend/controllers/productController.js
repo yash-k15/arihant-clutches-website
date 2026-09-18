@@ -159,6 +159,7 @@ const createProduct = asyncHandler(async (req, res, next) => {
     isNewArrival,
     isBestSeller,
     variants,
+    video,
   } = req.body;
 
   const product = new Product({
@@ -174,6 +175,7 @@ const createProduct = asyncHandler(async (req, res, next) => {
     isNewArrival,
     isBestSeller,
     variants,
+    video,
   });
 
   const createdProduct = await product.save();
@@ -181,7 +183,7 @@ const createProduct = asyncHandler(async (req, res, next) => {
 });
 
 // @desc Update a product
-// @route PUT /api/product/:id
+// @route PUT /api/product/:slug
 // @access Private/Admin
 const updateProduct = asyncHandler(async (req, res, next) => {
   const {
@@ -196,6 +198,7 @@ const updateProduct = asyncHandler(async (req, res, next) => {
     weight,
     dimensions,
     variants,
+    video,
   } = req.body;
 
   const product = await Product.findOne({ slug: req.params.slug });
@@ -215,6 +218,10 @@ const updateProduct = asyncHandler(async (req, res, next) => {
   product.weight = weight ?? product.weight;
   product.dimensions = dimensions || product.dimensions;
   product.variants = variants || product.variants;
+
+  if (video !== undefined) {
+    product.video = video;
+  }
 
   const updatedProduct = await product.save();
   res.status(200).json(updatedProduct);
