@@ -132,6 +132,12 @@ const ProductListScreen = () => {
 
   const formatPrice = (price) => new Intl.NumberFormat('en-IN').format(price);
 
+  const getTotalStock = (product) =>
+    product.variants.reduce(
+      (total, variant) => total + Number(variant.countInStock || 0),
+      0,
+    );
+
   return (
     <div className='admin-products-page'>
       <div className='admin-products-header'>
@@ -235,17 +241,32 @@ const ProductListScreen = () => {
                       </td>
 
                       <td>
-                        {product.variants[0]?.countInStock > 0 ? (
-                          <span className='admin-products-stock in-stock'>
+                        <div className='admin-products-stock-details'>
+                          <div
+                            className={`admin-products-stock ${
+                              getTotalStock(product) > 0
+                                ? 'in-stock'
+                                : 'out-of-stock'
+                            }`}
+                          >
                             <span className='admin-products-status-dot' />
-                            In Stock
-                          </span>
-                        ) : (
-                          <span className='admin-products-stock out-of-stock'>
-                            <span className='admin-products-status-dot' />
-                            Out of Stock
-                          </span>
-                        )}
+                            {getTotalStock(product) > 0
+                              ? `${getTotalStock(product)} Total`
+                              : 'Out of Stock'}
+                          </div>
+
+                          <div className='admin-products-variant-stock'>
+                            {product.variants.map((variant) => (
+                              <div
+                                key={variant._id}
+                                className='admin-products-variant-stock-row'
+                              >
+                                <span>{variant.color}</span>
+                                <span>{variant.countInStock}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </td>
 
                       <td>
@@ -329,17 +350,32 @@ const ProductListScreen = () => {
                     <div>
                       <span className='admin-product-card-label'>Stock</span>
 
-                      {product.variants[0]?.countInStock > 0 ? (
-                        <span className='admin-products-stock in-stock'>
+                      <div className='admin-products-stock-details'>
+                        <div
+                          className={`admin-products-stock ${
+                            getTotalStock(product) > 0
+                              ? 'in-stock'
+                              : 'out-of-stock'
+                          }`}
+                        >
                           <span className='admin-products-status-dot' />
-                          In Stock
-                        </span>
-                      ) : (
-                        <span className='admin-products-stock out-of-stock'>
-                          <span className='admin-products-status-dot' />
-                          Out of Stock
-                        </span>
-                      )}
+                          {getTotalStock(product) > 0
+                            ? `${getTotalStock(product)} Total`
+                            : 'Out of Stock'}
+                        </div>
+
+                        <div className='admin-products-variant-stock'>
+                          {product.variants.map((variant) => (
+                            <div
+                              key={variant._id}
+                              className='admin-products-variant-stock-row'
+                            >
+                              <span>{variant.color}</span>
+                              <span>{variant.countInStock}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
 
                     <div>
