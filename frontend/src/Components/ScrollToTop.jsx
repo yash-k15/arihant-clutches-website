@@ -5,16 +5,6 @@ const ScrollToTop = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const currentPath = location.pathname;
-
-    if (currentPath.startsWith('/products/') && location.search) {
-      const searchParams = new URLSearchParams(location.search);
-
-      if (searchParams.has('color')) {
-        return;
-      }
-    }
-
     window.scrollTo({
       top: 0,
       left: 0,
