@@ -1,15 +1,18 @@
-import { FiFilter, FiSearch, FiSliders } from 'react-icons/fi';
-
-import '../assets/styles/components/AdminTableToolbar.css';
+import { FiFilter, FiSearch } from 'react-icons/fi';
+import AdminSortDropdown from './AdminSortDropdown';
 
 const AdminTableToolbar = ({
   searchValue = '',
   onSearchChange,
   searchPlaceholder = 'Search...',
   onFilterClick,
-  onSortClick,
   filterCount = 0,
-  sortLabel = 'Sort By',
+
+  sortValue = '',
+  sortOptions = [],
+  sortOpen = false,
+  onSortToggle,
+  onSortChange,
 }) => {
   return (
     <div className='admin-table-toolbar'>
@@ -43,15 +46,14 @@ const AdminTableToolbar = ({
           </button>
         )}
 
-        {onSortClick && (
-          <button
-            type='button'
-            className='admin-table-toolbar-btn'
-            onClick={onSortClick}
-          >
-            <FiSliders />
-            <span>{sortLabel}</span>
-          </button>
+        {sortOptions.length > 0 && (
+          <AdminSortDropdown
+            value={sortValue}
+            options={sortOptions}
+            isOpen={sortOpen}
+            onToggle={onSortToggle}
+            onChange={onSortChange}
+          />
         )}
       </div>
     </div>

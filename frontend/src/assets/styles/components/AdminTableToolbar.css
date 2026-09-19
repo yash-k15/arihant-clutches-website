@@ -50,6 +50,7 @@
 }
 
 .admin-table-toolbar-actions {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -103,6 +104,91 @@
   font-weight: 700;
 }
 
+/* ADMIN SORT DROPDOWN */
+
+.admin-sort-dropdown {
+  position: relative;
+}
+
+.admin-sort-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 105px;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid #ded8d2;
+  border-radius: 8px;
+  background: #fff;
+  color: #2c2222;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-sort-button:hover,
+.admin-sort-button.active {
+  border-color: #b08d57;
+  background: #faf8f6;
+}
+
+.admin-sort-button:hover {
+  transform: translateY(-1px);
+}
+
+.admin-sort-button svg {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.admin-sort-button svg.rotated {
+  transform: rotate(180deg);
+}
+
+.admin-sort-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 1000;
+  min-width: 190px;
+  padding: 6px;
+  border: 1px solid #e5dfd8;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(44, 34, 34, 0.12);
+}
+
+.admin-sort-menu button {
+  display: block;
+  width: 100%;
+  padding: 9px 11px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #4c4540;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-sort-menu button:hover {
+  background: #f8f5f1;
+  color: #2c2222;
+}
+
+.admin-sort-menu button.selected {
+  background: #f7f1e8;
+  color: #2c2222;
+  font-weight: 600;
+}
+
 @media (max-width: 767px) {
   .admin-table-toolbar {
     flex-direction: column;
@@ -120,5 +206,10 @@
 
   .admin-table-toolbar-btn {
     flex: 1;
+  }
+
+  .admin-sort-menu {
+    left: 0;
+    right: auto;
   }
 }

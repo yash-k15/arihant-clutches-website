@@ -32,12 +32,15 @@ const ProductListScreen = () => {
   const [searchParams] = useSearchParams();
 
   const keyword = searchParams.get('keyword') || '';
+  const sort = searchParams.get('sort') || 'latest';
 
   const [searchValue, setSearchValue] = useState(keyword);
+  const [sortOpen, setSortOpen] = useState(false);
 
   const { data, isLoading, error, refetch } = useGetProductsQuery({
     pageNumber,
     adminSearch: keyword,
+    sort,
   });
 
   const {
@@ -61,6 +64,13 @@ const ProductListScreen = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [editingCategory, setEditingCategory] = useState(null);
+
+  const productSortOptions = [
+    { value: 'latest', label: 'Latest' },
+    { value: 'price-asc', label: 'Price Low → High' },
+    { value: 'price-desc', label: 'Price High → Low' },
+    { value: 'rating', label: 'Average Rating' },
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -181,6 +191,26 @@ const ProductListScreen = () => {
       0,
     );
 
+  const handleSortChange = (value) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (value === 'latest') {
+      params.delete('sort');
+    } else {
+      params.set('sort', value);
+    }
+
+    setSortOpen(false);
+
+    navigate(
+      {
+        pathname: '/admin/productlist',
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+  };
+
   const hasOutOfStockVariant = (product) =>
     product.variants.some((variant) => Number(variant.countInStock || 0) <= 0);
 
@@ -216,6 +246,11 @@ const ProductListScreen = () => {
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         searchPlaceholder='Search products...'
+        sortValue={sort}
+        sortOptions={productSortOptions}
+        sortOpen={sortOpen}
+        onSortToggle={() => setSortOpen((prev) => !prev)}
+        onSortChange={handleSortChange}
       />
 
       <div className='admin-products-content'>
