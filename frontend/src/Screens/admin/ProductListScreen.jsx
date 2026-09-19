@@ -181,6 +181,9 @@ const ProductListScreen = () => {
       0,
     );
 
+  const hasOutOfStockVariant = (product) =>
+    product.variants.some((variant) => Number(variant.countInStock || 0) <= 0);
+
   return (
     <div className='admin-products-page'>
       <div className='admin-products-header'>
@@ -283,9 +286,9 @@ const ProductListScreen = () => {
                         <div className='admin-products-stock-details'>
                           <div
                             className={`admin-products-stock ${
-                              getTotalStock(product) > 0
-                                ? 'in-stock'
-                                : 'out-of-stock'
+                              hasOutOfStockVariant(product)
+                                ? 'out-of-stock'
+                                : 'in-stock'
                             }`}
                           >
                             <span className='admin-products-status-dot' />
@@ -392,9 +395,9 @@ const ProductListScreen = () => {
                       <div className='admin-products-stock-details'>
                         <div
                           className={`admin-products-stock ${
-                            getTotalStock(product) > 0
-                              ? 'in-stock'
-                              : 'out-of-stock'
+                            hasOutOfStockVariant(product)
+                              ? 'out-of-stock'
+                              : 'in-stock'
                           }`}
                         >
                           <span className='admin-products-status-dot' />
