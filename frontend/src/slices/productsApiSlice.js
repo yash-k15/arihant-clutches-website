@@ -6,6 +6,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
     getProducts: builder.query({
       query: ({
         keyword,
+        adminSearch,
         pageNumber,
         category,
         isFeatured,
@@ -21,6 +22,10 @@ export const productsApiSlice = apiSlice.injectEndpoints({
 
         if (keyword) {
           params.set('keyword', keyword);
+        }
+
+        if (adminSearch) {
+          params.set('adminSearch', adminSearch);
         }
 
         if (pageNumber) {

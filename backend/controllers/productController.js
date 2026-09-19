@@ -27,6 +27,15 @@ const getProducts = asyncHandler(async (req, res, next) => {
     ];
   }
 
+  if (req.query.adminSearch) {
+    const searchRegex = {
+      $regex: req.query.adminSearch,
+      $options: 'i',
+    };
+
+    filters.$or = [{ name: searchRegex }, { 'variants.color': searchRegex }];
+  }
+
   if (req.query.category) {
     const category = await Category.findOne({
       slug: req.query.category,

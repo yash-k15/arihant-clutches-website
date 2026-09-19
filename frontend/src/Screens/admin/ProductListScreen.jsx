@@ -1,7 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import {
+  useParams,
+  useNavigate,
+  Link,
+  useSearchParams,
+} from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import Message from '../../Components/Message';
 import Loader from '../../Components/Loader';
@@ -16,14 +21,23 @@ import {
 } from '../../slices/productsApiSlice';
 import Paginate from '../../Components/Paginate';
 import { getCloudinaryImage } from '../../utils/cloudinary';
+import AdminTableToolbar from '../../Components/AdminTableToolbar';
+
 import '../../assets/styles/components/ProductListScreen.css';
 
 const ProductListScreen = () => {
   const { pageNumber } = useParams();
   const navigate = useNavigate();
 
+  const [searchParams] = useSearchParams();
+
+  const keyword = searchParams.get('keyword') || '';
+
+  const [searchValue, setSearchValue] = useState(keyword);
+
   const { data, isLoading, error, refetch } = useGetProductsQuery({
     pageNumber,
+    adminSearch: keyword,
   });
 
   const {
@@ -47,6 +61,35 @@ const ProductListScreen = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [editingCategory, setEditingCategory] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const trimmedSearch = searchValue.trim();
+      const currentKeyword = searchParams.get('keyword') || '';
+
+      if (trimmedSearch === currentKeyword) {
+        return;
+      }
+
+      const params = new URLSearchParams(searchParams);
+
+      if (trimmedSearch) {
+        params.set('keyword', trimmedSearch);
+      } else {
+        params.delete('keyword');
+      }
+
+      navigate(
+        {
+          pathname: '/admin/productlist',
+          search: params.toString(),
+        },
+        { replace: true },
+      );
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchValue, searchParams, navigate]);
 
   const openCategoryModal = () => {
     setShowCategoryModal(true);
@@ -166,15 +209,11 @@ const ProductListScreen = () => {
         </div>
       </div>
 
-      <div className='admin-products-toolbar'>
-        <div className='admin-products-search'>
-          <input
-            type='search'
-            placeholder='Search products...'
-            aria-label='Search products'
-          />
-        </div>
-      </div>
+      <AdminTableToolbar
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        searchPlaceholder='Search products...'
+      />
 
       <div className='admin-products-content'>
         {loadingDelete && <Loader />}

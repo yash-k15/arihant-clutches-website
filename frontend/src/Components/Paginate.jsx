@@ -69,7 +69,10 @@ const Paginate = ({
                                 pathname: `/products/page/${pageNumber}`,
                                 search,
                               }
-                  : `/admin/productlist/${pageNumber}`
+                  : {
+                      pathname: `/admin/productlist/${pageNumber}`,
+                      search,
+                    }
               }
             >
               <Pagination.Item active={pageNumber === page}>
