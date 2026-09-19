@@ -319,13 +319,6 @@ const ProductListScreen = () => {
     );
   };
 
-  const filterCount =
-    (priceMin ? 1 : 0) +
-    (priceMax ? 1 : 0) +
-    (stockFilter ? 1 : 0) +
-    selectedCategories.length +
-    selectedVisibility.length;
-
   const handleSortChange = (value) => {
     const params = new URLSearchParams(searchParams);
 
@@ -348,6 +341,12 @@ const ProductListScreen = () => {
 
   const hasOutOfStockVariant = (product) =>
     product.variants.some((variant) => Number(variant.countInStock || 0) <= 0);
+
+  const filterCount =
+    (adminPriceGte || adminPriceLte ? 1 : 0) +
+    (adminStock ? 1 : 0) +
+    adminCategories.length +
+    adminVisibility.length;
 
   return (
     <div className='admin-products-page'>
@@ -381,7 +380,8 @@ const ProductListScreen = () => {
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         searchPlaceholder='Search products...'
-        onFilterClick={openFilterPanel}
+        onFilterClick={() => setFilterOpen(true)}
+        filterCount={filterCount}
         sortValue={sort}
         sortOptions={productSortOptions}
         sortOpen={sortOpen}

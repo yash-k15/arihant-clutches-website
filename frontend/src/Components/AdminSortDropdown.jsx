@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 
 import '../assets/styles/components/AdminTableToolbar.css';
@@ -9,11 +10,29 @@ const AdminSortDropdown = ({
   isOpen = false,
   onToggle,
 }) => {
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onToggle();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onToggle]);
+
   const selectedOption =
     options.find((option) => option.value === value) || options[0];
 
   return (
-    <div className='admin-sort-dropdown'>
+    <div className='admin-sort-dropdown' ref={dropdownRef}>
       <button
         type='button'
         className={`admin-sort-button ${isOpen ? 'active' : ''}`}
