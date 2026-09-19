@@ -116,7 +116,7 @@ const updateOrderToDelivered = asyncHandler(async (req, res, next) => {
 // @route   GET /api/orders
 // @access  Private/Admin
 const getOrders = asyncHandler(async (req, res, next) => {
-  const pageSize = process.env.PAGINATION_LIMIT;
+  const pageSize = process.env.ADMIN_ORDERS_PER_PAGE;
   const page = Number(req.query.pageNumber) || 1;
 
   const filters = {};

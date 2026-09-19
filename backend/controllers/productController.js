@@ -7,7 +7,13 @@ import slugify from 'slugify';
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res, next) => {
-  const pageSize = process.env.PAGINATION_LIMIT;
+  const pageSize =
+    req.query.admin === 'true'
+      ? process.env.ADMIN_PRODUCTS_PER_PAGE
+      : req.query.home === 'true'
+        ? process.env.HOME_PRODUCTS_LIMIT
+        : process.env.PRODUCTS_PER_PAGE;
+
   const page = Number(req.query.pageNumber) || 1;
 
   const filters = {};

@@ -12,6 +12,7 @@ import '../assets/styles/components/HomeScreen.css';
 const HomeScreen = () => {
   const { pageNumber, keyword } = useParams();
   const { data, isLoading, error } = useGetProductsQuery({
+    home: true,
     keyword,
     pageNumber,
   });

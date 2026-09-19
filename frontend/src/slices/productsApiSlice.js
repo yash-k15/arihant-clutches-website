@@ -5,6 +5,8 @@ export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: ({
+        admin,
+        home,
         keyword,
         adminSearch,
         adminStock,
@@ -24,6 +26,14 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         productTypes,
       }) => {
         const params = new URLSearchParams();
+
+        if (admin) {
+          params.set('admin', 'true');
+        }
+
+        if (home) {
+          params.set('home', 'true');
+        }
 
         if (keyword) {
           params.set('keyword', keyword);

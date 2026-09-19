@@ -56,6 +56,7 @@ const ProductListScreen = () => {
   const [selectedVisibility, setSelectedVisibility] = useState(adminVisibility);
 
   const { data, isLoading, error, refetch } = useGetProductsQuery({
+    admin: true,
     pageNumber,
     adminSearch: keyword,
     adminStock,
