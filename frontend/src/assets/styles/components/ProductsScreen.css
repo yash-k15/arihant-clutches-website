@@ -187,36 +187,6 @@
   cursor: pointer;
 }
 
-.custom-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 30px;
-  margin-bottom: 0;
-}
-
-.custom-pagination .page-link {
-  border: none;
-  color: #2c2222;
-  border-radius: 10px !important;
-  padding: 10px 16px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.custom-pagination .page-link:hover {
-  background: #b08d57;
-  color: #fff;
-}
-
-.custom-pagination .active .page-link {
-  background: #2c2222;
-  color: #fff;
-}
-
 /* =========================================
    Tablet
    ========================================= */
@@ -248,16 +218,6 @@
 
   .products-sort-menu {
     width: 170px;
-  }
-
-  .custom-pagination {
-    margin-top: 28px;
-    gap: 6px;
-  }
-
-  .custom-pagination .page-link {
-    padding: 9px 14px;
-    font-size: 0.9rem;
   }
 }
 
@@ -450,17 +410,5 @@
 
   .products-sort-btn svg {
     font-size: 0.65rem;
-  }
-
-  .custom-pagination {
-    margin-top: 25px;
-    margin-bottom: 0;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
-
-  .custom-pagination .page-link {
-    padding: 8px 12px;
-    font-size: 0.85rem;
   }
 }

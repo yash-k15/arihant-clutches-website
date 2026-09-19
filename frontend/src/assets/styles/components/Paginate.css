@@ -1,0 +1,109 @@
+/* =========================================
+   Pagination
+   ========================================= */
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+
+.custom-pagination .page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+  color: #2c2222;
+
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  box-shadow: none;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.custom-pagination .page-link:hover {
+  background: #f3eee7;
+  color: #2c2222;
+}
+
+.custom-pagination .active .page-link {
+  background: #2c2222;
+  color: #fff;
+}
+
+.custom-pagination .page-item.disabled .page-link {
+  background: transparent;
+  color: #b5b0aa;
+}
+
+.custom-pagination .custom-pagination-arrow .page-link {
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.custom-pagination .custom-pagination-ellipsis .page-link {
+  min-width: 28px;
+  padding: 0;
+
+  background: transparent;
+  color: #8a8580;
+
+  font-size: 0.9rem;
+}
+
+.custom-pagination .custom-pagination-ellipsis .page-link:hover {
+  background: transparent;
+  color: #8a8580;
+}
+
+/* =========================================
+   Mobile
+   ========================================= */
+
+@media (max-width: 767.98px) {
+  .custom-pagination {
+    gap: 2px;
+    margin-top: 25px;
+    padding: 0 8px;
+    flex-wrap: nowrap;
+  }
+
+  .custom-pagination .page-link {
+    min-width: 30px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+
+    font-size: 0.78rem;
+  }
+
+  .custom-pagination .custom-pagination-arrow .page-link {
+    min-width: 30px;
+    width: 30px;
+    height: 30px;
+
+    font-size: 1rem;
+  }
+
+  .custom-pagination .custom-pagination-ellipsis .page-link {
+    min-width: 20px;
+    width: 20px;
+
+    font-size: 0.75rem;
+  }
+}
