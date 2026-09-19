@@ -24,9 +24,55 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
     }),
     getOrders: builder.query({
-      query: () => ({
-        url: ORDERS_URL,
-      }),
+      query: ({
+        keyword,
+        pageNumber,
+        paymentStatus,
+        paymentMethod,
+        deliveryStatus,
+        dateFrom,
+        dateTo,
+        sort,
+      } = {}) => {
+        const params = new URLSearchParams();
+
+        if (keyword) {
+          params.set('keyword', keyword);
+        }
+
+        if (pageNumber) {
+          params.set('pageNumber', pageNumber);
+        }
+
+        if (paymentStatus) {
+          params.set('paymentStatus', paymentStatus);
+        }
+
+        if (paymentMethod) {
+          params.set('paymentMethod', paymentMethod);
+        }
+
+        if (deliveryStatus) {
+          params.set('deliveryStatus', deliveryStatus);
+        }
+
+        if (dateFrom) {
+          params.set('dateFrom', dateFrom);
+        }
+
+        if (dateTo) {
+          params.set('dateTo', dateTo);
+        }
+
+        if (sort) {
+          params.set('sort', sort);
+        }
+
+        return {
+          url: ORDERS_URL,
+          params,
+        };
+      },
       keepUnusedDataFor: 5,
     }),
     payOrder: builder.mutation({

@@ -6,6 +6,7 @@ const Paginate = ({
   pages,
   page,
   isAdmin = false,
+  adminPath = 'productlist',
   keyword = '',
   collection = '',
   category = '',
@@ -70,7 +71,7 @@ const Paginate = ({
                                 search,
                               }
                   : {
-                      pathname: `/admin/productlist/${pageNumber}`,
+                      pathname: `/admin/${adminPath}/${pageNumber}`,
                       search,
                     }
               }

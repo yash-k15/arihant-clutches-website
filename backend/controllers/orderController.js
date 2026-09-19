@@ -2,6 +2,7 @@ import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
+import User from '../models/userModel.js';
 
 // @desc    Create new Order
 // @route   POST /api/orders
@@ -115,8 +116,121 @@ const updateOrderToDelivered = asyncHandler(async (req, res, next) => {
 // @route   GET /api/orders
 // @access  Private/Admin
 const getOrders = asyncHandler(async (req, res, next) => {
-  const orders = await Order.find({}).populate('user', 'id name email phone');
-  res.status(200).json(orders);
+  const pageSize = process.env.PAGINATION_LIMIT;
+  const page = Number(req.query.pageNumber) || 1;
+
+  const filters = {};
+
+  // Search
+  if (req.query.keyword) {
+    const searchRegex = {
+      $regex: req.query.keyword,
+      $options: 'i',
+    };
+
+    const matchingUsers = await User.find({
+      $or: [
+        { name: searchRegex },
+        { email: searchRegex },
+        { phone: searchRegex },
+      ],
+    }).select('_id');
+
+    const userIds = matchingUsers.map((user) => user._id);
+
+    const searchConditions = [{ user: { $in: userIds } }];
+
+    // Allow searching by full MongoDB order ID
+    if (req.query.keyword.match(/^[0-9a-fA-F]{24}$/)) {
+      searchConditions.push({
+        _id: req.query.keyword,
+      });
+    }
+
+    // Allow searching by the last 6 characters shown in the admin table
+    searchConditions.push({
+      $expr: {
+        $regexMatch: {
+          input: { $toString: '$_id' },
+          regex: req.query.keyword,
+          options: 'i',
+        },
+      },
+    });
+
+    filters.$or = searchConditions;
+  }
+
+  // Payment status
+  if (req.query.paymentStatus === 'paid') {
+    filters.isPaid = true;
+  } else if (req.query.paymentStatus === 'pending') {
+    filters.isPaid = false;
+  }
+
+  // Payment method
+  if (req.query.paymentMethod) {
+    filters.paymentMethod = req.query.paymentMethod;
+  }
+
+  // Delivery status
+  if (req.query.deliveryStatus === 'delivered') {
+    filters.isDelivered = true;
+  } else if (req.query.deliveryStatus === 'processing') {
+    filters.isDelivered = false;
+  }
+
+  // Date range
+  const createdAtFilter = {};
+
+  if (req.query.dateFrom) {
+    createdAtFilter.$gte = new Date(`${req.query.dateFrom}T00:00:00.000+05:30`);
+  }
+
+  if (req.query.dateTo) {
+    createdAtFilter.$lte = new Date(`${req.query.dateTo}T23:59:59.999+05:30`);
+  }
+
+  if (Object.keys(createdAtFilter).length > 0) {
+    filters.createdAt = createdAtFilter;
+  }
+
+  // Count filtered orders
+  const count = await Order.countDocuments(filters);
+
+  // Sorting
+  let sortOption = { createdAt: -1 };
+
+  switch (req.query.sort) {
+    case 'oldest':
+      sortOption = { createdAt: 1 };
+      break;
+
+    case 'total-asc':
+      sortOption = { totalPrice: 1, createdAt: -1 };
+      break;
+
+    case 'total-desc':
+      sortOption = { totalPrice: -1, createdAt: -1 };
+      break;
+
+    case 'latest':
+    default:
+      sortOption = { createdAt: -1 };
+      break;
+  }
+
+  const orders = await Order.find(filters)
+    .populate('user', 'id name email phone')
+    .sort(sortOption)
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  res.status(200).json({
+    orders,
+    page,
+    pages: Math.ceil(count / pageSize),
+  });
 });
 
 // @desc    Check stock before payment

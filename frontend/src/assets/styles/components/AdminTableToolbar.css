@@ -427,6 +427,58 @@
   cursor: pointer;
 }
 
+.admin-filter-date-range {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.admin-filter-date-range > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-filter-date-range label {
+  min-width: 34px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2c2222;
+}
+
+.admin-filter-date-range input[type='date'] {
+  flex: 1;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid #d8d2cc;
+  border-radius: 8px;
+  background: #fff;
+  color: #2c2222;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-filter-date-range input[type='date']:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.12);
+}
+
+.admin-filter-date-range input[type='date']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.admin-filter-date-range input[type='date']::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
 @media (max-width: 767px) {
   .admin-table-toolbar {
     flex-direction: column;
