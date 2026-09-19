@@ -189,6 +189,244 @@
   font-weight: 600;
 }
 
+/* ADMIN FILTER PANEL */
+
+.admin-filter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(44, 34, 34, 0.25);
+}
+
+.admin-filter-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(420px, 100%);
+  height: 100%;
+  background: #fff;
+  box-shadow: -8px 0 30px rgba(44, 34, 34, 0.12);
+}
+
+.admin-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  border-bottom: 1px solid #eee9e4;
+}
+
+.admin-filter-header h3 {
+  margin: 0;
+  color: #2c2222;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.admin-filter-header span {
+  display: block;
+  margin-top: 4px;
+  color: #8a817b;
+  font-size: 0.75rem;
+}
+
+.admin-filter-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #e5dfd8;
+  border-radius: 8px;
+  background: #fff;
+  color: #4c4540;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-filter-close:hover {
+  border-color: #b08d57;
+  background: #f8f5f1;
+  color: #2c2222;
+}
+
+.admin-filter-close svg {
+  width: 17px;
+  height: 17px;
+}
+
+.admin-filter-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 22px 24px;
+}
+
+.admin-filter-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid #eee9e4;
+  background: #fff;
+}
+
+.admin-filter-reset,
+.admin-filter-apply {
+  flex: 1;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-filter-reset {
+  border: 1px solid #ded8d2;
+  background: #fff;
+  color: #2c2222;
+}
+
+.admin-filter-reset:hover:not(:disabled) {
+  border-color: #b08d57;
+  background: #f8f5f1;
+  transform: translateY(-1px);
+}
+
+.admin-filter-reset:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.admin-filter-apply {
+  border: 1px solid #2c2222;
+  background: #2c2222;
+  color: #fff;
+}
+
+.admin-filter-apply:hover {
+  border-color: #b08d57;
+  background: #b08d57;
+  transform: translateY(-1px);
+}
+
+/* PRODUCT FILTER SECTIONS */
+
+.admin-filter-section {
+  padding: 0 0 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid #eee9e4;
+}
+
+.admin-filter-section:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.admin-filter-section h4 {
+  margin: 0 0 14px;
+  color: #2c2222;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/* PRICE */
+
+.admin-filter-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-filter-price-row input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid #ded8d2;
+  border-radius: 7px;
+  outline: none;
+  background: #fff;
+  color: #2c2222;
+  font-size: 0.82rem;
+}
+
+.admin-filter-price-row input:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 2px rgba(176, 141, 87, 0.1);
+}
+
+.admin-filter-price-row span {
+  flex: 0 0 auto;
+  color: #8a817b;
+}
+
+/* STOCK */
+
+.admin-filter-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.admin-filter-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: #4c4540;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.admin-filter-radio-group input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #b08d57;
+  cursor: pointer;
+}
+
+/* CHECKBOXES */
+
+.admin-filter-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.admin-filter-checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: #4c4540;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.admin-filter-checkbox-group input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #b08d57;
+  cursor: pointer;
+}
+
 @media (max-width: 767px) {
   .admin-table-toolbar {
     flex-direction: column;
@@ -211,5 +449,20 @@
   .admin-sort-menu {
     left: 0;
     right: auto;
+  }
+  .admin-filter-panel {
+    width: 100%;
+  }
+
+  .admin-filter-header {
+    padding: 18px 20px;
+  }
+
+  .admin-filter-body {
+    padding: 20px;
+  }
+
+  .admin-filter-footer {
+    padding: 14px 20px;
   }
 }

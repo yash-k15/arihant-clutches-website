@@ -22,6 +22,7 @@ import {
 import Paginate from '../../Components/Paginate';
 import { getCloudinaryImage } from '../../utils/cloudinary';
 import AdminTableToolbar from '../../Components/AdminTableToolbar';
+import AdminFilterPanel from '../../Components/AdminFilterPanel';
 
 import '../../assets/styles/components/ProductListScreen.css';
 
@@ -34,12 +35,34 @@ const ProductListScreen = () => {
   const keyword = searchParams.get('keyword') || '';
   const sort = searchParams.get('sort') || 'latest';
 
+  const adminStock = searchParams.get('adminStock') || '';
+  const adminPriceGte = searchParams.get('adminPriceGte') || '';
+  const adminPriceLte = searchParams.get('adminPriceLte') || '';
+
+  const adminCategories = searchParams.getAll('adminCategory');
+
+  const adminVisibility = searchParams.getAll('adminVisibility');
+
   const [searchValue, setSearchValue] = useState(keyword);
   const [sortOpen, setSortOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  const [priceMin, setPriceMin] = useState(adminPriceGte);
+  const [priceMax, setPriceMax] = useState(adminPriceLte);
+  const [stockFilter, setStockFilter] = useState(adminStock);
+
+  const [selectedCategories, setSelectedCategories] = useState(adminCategories);
+
+  const [selectedVisibility, setSelectedVisibility] = useState(adminVisibility);
 
   const { data, isLoading, error, refetch } = useGetProductsQuery({
     pageNumber,
     adminSearch: keyword,
+    adminStock,
+    adminPriceGte,
+    adminPriceLte,
+    adminCategories,
+    adminVisibility,
     sort,
   });
 
@@ -167,6 +190,33 @@ const ProductListScreen = () => {
     }
   };
 
+  const toggleCategory = (categoryName) => {
+    setSelectedCategories((prev) =>
+      prev.includes(categoryName)
+        ? prev.filter((category) => category !== categoryName)
+        : [...prev, categoryName],
+    );
+  };
+
+  const toggleVisibility = (visibility) => {
+    setSelectedVisibility((prev) =>
+      prev.includes(visibility)
+        ? prev.filter((item) => item !== visibility)
+        : [...prev, visibility],
+    );
+  };
+
+  const openFilterPanel = () => {
+    setPriceMin(searchParams.get('adminPriceGte') || '');
+    setPriceMax(searchParams.get('adminPriceLte') || '');
+    setStockFilter(searchParams.get('adminStock') || '');
+
+    setSelectedCategories(searchParams.getAll('adminCategory'));
+    setSelectedVisibility(searchParams.getAll('adminVisibility'));
+
+    setFilterOpen(true);
+  };
+
   const deleteHandler = async (slug) => {
     if (window.confirm('Are you sure?')) {
       try {
@@ -190,6 +240,91 @@ const ProductListScreen = () => {
       (total, variant) => total + Number(variant.countInStock || 0),
       0,
     );
+
+  const handleApplyFilters = () => {
+    const params = new URLSearchParams(searchParams);
+
+    // Price
+    if (priceMin) {
+      params.set('adminPriceGte', priceMin);
+    } else {
+      params.delete('adminPriceGte');
+    }
+
+    if (priceMax) {
+      params.set('adminPriceLte', priceMax);
+    } else {
+      params.delete('adminPriceLte');
+    }
+
+    // Stock
+    if (stockFilter) {
+      params.set('adminStock', stockFilter);
+    } else {
+      params.delete('adminStock');
+    }
+
+    // Categories
+    params.delete('adminCategory');
+
+    selectedCategories.forEach((category) => {
+      params.append('adminCategory', category);
+    });
+
+    // Visibility
+    params.delete('adminVisibility');
+
+    selectedVisibility.forEach((visibility) => {
+      params.append('adminVisibility', visibility);
+    });
+
+    // Start from page 1 when filters change
+    params.delete('pageNumber');
+
+    setFilterOpen(false);
+
+    navigate(
+      {
+        pathname: '/admin/productlist',
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+  };
+
+  const handleResetFilters = () => {
+    setPriceMin('');
+    setPriceMax('');
+    setStockFilter('');
+    setSelectedCategories([]);
+    setSelectedVisibility([]);
+
+    const params = new URLSearchParams(searchParams);
+
+    params.delete('adminPriceGte');
+    params.delete('adminPriceLte');
+    params.delete('adminStock');
+    params.delete('adminCategory');
+    params.delete('adminVisibility');
+    params.delete('pageNumber');
+
+    setFilterOpen(false);
+
+    navigate(
+      {
+        pathname: '/admin/productlist',
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+  };
+
+  const filterCount =
+    (priceMin ? 1 : 0) +
+    (priceMax ? 1 : 0) +
+    (stockFilter ? 1 : 0) +
+    selectedCategories.length +
+    selectedVisibility.length;
 
   const handleSortChange = (value) => {
     const params = new URLSearchParams(searchParams);
@@ -246,12 +381,132 @@ const ProductListScreen = () => {
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         searchPlaceholder='Search products...'
+        onFilterClick={openFilterPanel}
         sortValue={sort}
         sortOptions={productSortOptions}
         sortOpen={sortOpen}
         onSortToggle={() => setSortOpen((prev) => !prev)}
         onSortChange={handleSortChange}
       />
+
+      <AdminFilterPanel
+        show={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        onReset={handleResetFilters}
+        onApply={handleApplyFilters}
+        filterCount={filterCount}
+      >
+        <div className='admin-filter-section'>
+          <h4>Price</h4>
+
+          <div className='admin-filter-price-row'>
+            <input
+              type='number'
+              min='0'
+              placeholder='Min'
+              value={priceMin}
+              onChange={(e) => setPriceMin(e.target.value)}
+            />
+
+            <span>—</span>
+
+            <input
+              type='number'
+              min='0'
+              placeholder='Max'
+              value={priceMax}
+              onChange={(e) => setPriceMax(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className='admin-filter-section'>
+          <h4>Stock</h4>
+
+          <div className='admin-filter-radio-group'>
+            <label>
+              <input
+                type='radio'
+                name='admin-stock-filter'
+                checked={stockFilter === ''}
+                onChange={() => setStockFilter('')}
+              />
+              <span>All</span>
+            </label>
+
+            <label>
+              <input
+                type='radio'
+                name='admin-stock-filter'
+                checked={stockFilter === 'in-stock'}
+                onChange={() => setStockFilter('in-stock')}
+              />
+              <span>In Stock</span>
+            </label>
+
+            <label>
+              <input
+                type='radio'
+                name='admin-stock-filter'
+                checked={stockFilter === 'out-stock'}
+                onChange={() => setStockFilter('out-stock')}
+              />
+              <span>Out of Stock</span>
+            </label>
+          </div>
+        </div>
+
+        <div className='admin-filter-section'>
+          <h4>Category</h4>
+
+          <div className='admin-filter-checkbox-group'>
+            {categories?.map((category) => (
+              <label key={category._id}>
+                <input
+                  type='checkbox'
+                  checked={selectedCategories.includes(category.name)}
+                  onChange={() => toggleCategory(category.name)}
+                />
+
+                <span>{category.name}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className='admin-filter-section'>
+          <h4>Visibility</h4>
+
+          <div className='admin-filter-checkbox-group'>
+            <label>
+              <input
+                type='checkbox'
+                checked={selectedVisibility.includes('featured')}
+                onChange={() => toggleVisibility('featured')}
+              />
+              <span>Featured</span>
+            </label>
+
+            <label>
+              <input
+                type='checkbox'
+                checked={selectedVisibility.includes('new-arrival')}
+                onChange={() => toggleVisibility('new-arrival')}
+              />
+              <span>New Arrival</span>
+            </label>
+
+            <label>
+              <input
+                type='checkbox'
+                checked={selectedVisibility.includes('best-seller')}
+                onChange={() => toggleVisibility('best-seller')}
+              />
+              <span>Best Seller</span>
+            </label>
+          </div>
+        </div>
+      </AdminFilterPanel>
 
       <div className='admin-products-content'>
         {loadingDelete && <Loader />}

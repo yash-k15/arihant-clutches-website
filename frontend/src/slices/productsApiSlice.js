@@ -7,6 +7,11 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       query: ({
         keyword,
         adminSearch,
+        adminStock,
+        adminPriceGte,
+        adminPriceLte,
+        adminCategories,
+        adminVisibility,
         pageNumber,
         category,
         isFeatured,
@@ -27,6 +32,26 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         if (adminSearch) {
           params.set('adminSearch', adminSearch);
         }
+
+        if (adminStock) {
+          params.set('adminStock', adminStock);
+        }
+
+        if (adminPriceGte) {
+          params.set('adminPriceGte', adminPriceGte);
+        }
+
+        if (adminPriceLte) {
+          params.set('adminPriceLte', adminPriceLte);
+        }
+
+        adminCategories?.forEach((category) => {
+          params.append('adminCategory', category);
+        });
+
+        adminVisibility?.forEach((visibility) => {
+          params.append('adminVisibility', visibility);
+        });
 
         if (pageNumber) {
           params.set('pageNumber', pageNumber);

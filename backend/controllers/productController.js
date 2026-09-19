@@ -61,8 +61,22 @@ const getProducts = asyncHandler(async (req, res, next) => {
     filters.isBestSeller = true;
   }
 
-  // Availability filter
-  if (req.query['filter.v.availability'] === '1') {
+  // Stock filter
+  if (req.query.adminStock === 'in-stock') {
+    filters.variants = {
+      $not: {
+        $elemMatch: {
+          countInStock: { $lte: 0 },
+        },
+      },
+    };
+  } else if (req.query.adminStock === 'out-stock') {
+    filters.variants = {
+      $elemMatch: {
+        countInStock: { $lte: 0 },
+      },
+    };
+  } else if (req.query['filter.v.availability'] === '1') {
     filters.variants = {
       $elemMatch: {
         countInStock: { $gt: 0 },
@@ -70,15 +84,41 @@ const getProducts = asyncHandler(async (req, res, next) => {
     };
   }
 
-  // Price filter
+  // Price filters
   const priceFilter = {};
 
+  // Admin price filter
+  if (req.query.adminPriceGte !== undefined) {
+    const minPrice = Number(req.query.adminPriceGte);
+
+    if (Number.isFinite(minPrice)) {
+      priceFilter.$gte = minPrice;
+    }
+  }
+
+  if (req.query.adminPriceLte !== undefined) {
+    const maxPrice = Number(req.query.adminPriceLte);
+
+    if (Number.isFinite(maxPrice)) {
+      priceFilter.$lte = maxPrice;
+    }
+  }
+
+  // Storefront price filter
   if (req.query['filter.v.price.gte'] !== undefined) {
-    priceFilter.$gte = Number(req.query['filter.v.price.gte']);
+    const minPrice = Number(req.query['filter.v.price.gte']);
+
+    if (Number.isFinite(minPrice)) {
+      priceFilter.$gte = minPrice;
+    }
   }
 
   if (req.query['filter.v.price.lte'] !== undefined) {
-    priceFilter.$lte = Number(req.query['filter.v.price.lte']);
+    const maxPrice = Number(req.query['filter.v.price.lte']);
+
+    if (Number.isFinite(maxPrice)) {
+      priceFilter.$lte = maxPrice;
+    }
   }
 
   if (Object.keys(priceFilter).length > 0) {
@@ -96,6 +136,56 @@ const getProducts = asyncHandler(async (req, res, next) => {
     filters.category = {
       $in: selectedProductTypes,
     };
+  }
+
+  // Admin category filter
+  const adminCategories = req.query.adminCategory;
+
+  if (adminCategories) {
+    const selectedAdminCategories = Array.isArray(adminCategories)
+      ? adminCategories
+      : [adminCategories];
+
+    filters.category = {
+      $in: selectedAdminCategories,
+    };
+  }
+
+  // Admin visibility filter
+  const adminVisibility = req.query.adminVisibility;
+
+  if (adminVisibility) {
+    const selectedVisibility = Array.isArray(adminVisibility)
+      ? adminVisibility
+      : [adminVisibility];
+
+    const visibilityFilters = [];
+
+    if (selectedVisibility.includes('featured')) {
+      visibilityFilters.push({
+        isFeatured: true,
+      });
+    }
+
+    if (selectedVisibility.includes('new-arrival')) {
+      visibilityFilters.push({
+        isNewArrival: true,
+      });
+    }
+
+    if (selectedVisibility.includes('best-seller')) {
+      visibilityFilters.push({
+        isBestSeller: true,
+      });
+    }
+
+    if (visibilityFilters.length > 0) {
+      filters.$and = filters.$and || [];
+
+      filters.$and.push({
+        $or: visibilityFilters,
+      });
+    }
   }
 
   const count = await Product.countDocuments(filters);
