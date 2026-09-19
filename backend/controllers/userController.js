@@ -391,8 +391,67 @@ const changeUserPhone = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users
 // @access  Private/admin
 const getUsers = asyncHandler(async (req, res, next) => {
-  const users = await User.find({});
-  res.status(200).json(users);
+  const pageSize = process.env.PAGINATION_LIMIT;
+  const page = Number(req.query.pageNumber) || 1;
+
+  const filters = {};
+
+  // Search
+  if (req.query.keyword) {
+    const searchRegex = {
+      $regex: req.query.keyword,
+      $options: 'i',
+    };
+
+    filters.$or = [
+      { name: searchRegex },
+      { email: searchRegex },
+      { phone: searchRegex },
+    ];
+  }
+
+  // Role
+  if (req.query.role === 'admin') {
+    filters.isAdmin = true;
+  } else if (req.query.role === 'customer') {
+    filters.isAdmin = false;
+  }
+
+  const count = await User.countDocuments(filters);
+
+  // Sorting
+  let sortOption = { createdAt: -1 };
+
+  switch (req.query.sort) {
+    case 'oldest':
+      sortOption = { createdAt: 1 };
+      break;
+
+    case 'name-asc':
+      sortOption = { name: 1, createdAt: -1 };
+      break;
+
+    case 'name-desc':
+      sortOption = { name: -1, createdAt: -1 };
+      break;
+
+    case 'latest':
+    default:
+      sortOption = { createdAt: -1 };
+      break;
+  }
+
+  const users = await User.find(filters)
+    .select('-password')
+    .sort(sortOption)
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  res.status(200).json({
+    users,
+    page,
+    pages: Math.ceil(count / pageSize),
+  });
 });
 
 // @desc    Get user by id

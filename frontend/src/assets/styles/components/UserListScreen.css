@@ -129,6 +129,10 @@
   white-space: nowrap;
 }
 
+.admin-users-table thead th:first-child {
+  padding-left: 60px;
+}
+
 .admin-users-table tbody td {
   padding: 14px 16px;
   border-color: #f1ede9;

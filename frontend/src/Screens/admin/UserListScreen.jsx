@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Button, Modal, Table } from 'react-bootstrap';
 import { FaCopy, FaExchangeAlt, FaTrash } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -9,10 +10,74 @@ import {
   useDeleteUserMutation,
   useUpdateUserMutation,
 } from '../../slices/usersApiSlice';
+import AdminTableToolbar from '../../Components/AdminTableToolbar';
+import AdminFilterPanel from '../../Components/AdminFilterPanel';
+import Paginate from '../../Components/Paginate';
+
 import '../../assets/styles/components/UserListScreen.css';
 
 const UserListScreen = () => {
-  const { data: users, isLoading, error } = useGetUsersQuery();
+  const { pageNumber } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const keyword = searchParams.get('keyword') || '';
+  const role = searchParams.get('role') || '';
+  const sort = searchParams.get('sort') || 'latest';
+
+  const [searchValue, setSearchValue] = useState(keyword);
+
+  const [sortOpen, setSortOpen] = useState(false);
+
+  const userSortOptions = [
+    { value: 'latest', label: 'Latest' },
+    { value: 'oldest', label: 'Oldest' },
+    { value: 'name-asc', label: 'Name A → Z' },
+    { value: 'name-desc', label: 'Name Z → A' },
+  ];
+
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [draftRole, setDraftRole] = useState(role);
+
+  const filterCount = role ? 1 : 0;
+
+  const { data, isLoading, error } = useGetUsersQuery({
+    keyword,
+    pageNumber,
+    role,
+    sort,
+  });
+
+  const users = data?.users || [];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const trimmedSearch = searchValue.trim();
+      const currentKeyword = searchParams.get('keyword') || '';
+
+      if (trimmedSearch === currentKeyword) return;
+
+      const params = new URLSearchParams(searchParams);
+
+      if (trimmedSearch) {
+        params.set('keyword', trimmedSearch);
+      } else {
+        params.delete('keyword');
+      }
+
+      params.delete('pageNumber');
+
+      navigate(
+        {
+          pathname: '/admin/userlist',
+          search: params.toString(),
+        },
+        { replace: true },
+      );
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchValue, searchParams, navigate]);
 
   const [deleteUser, { isLoading: loadingDelete }] = useDeleteUserMutation();
 
@@ -167,6 +232,67 @@ const UserListScreen = () => {
     </div>
   );
 
+  const openFilterPanel = () => {
+    setDraftRole(role);
+    setFilterOpen(true);
+  };
+
+  const handleApplyFilters = () => {
+    const params = new URLSearchParams(searchParams);
+
+    if (draftRole) {
+      params.set('role', draftRole);
+    } else {
+      params.delete('role');
+    }
+
+    params.delete('pageNumber');
+    setFilterOpen(false);
+
+    navigate(
+      {
+        pathname: '/admin/userlist',
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+  };
+
+  const handleResetFilters = () => {
+    const params = new URLSearchParams(searchParams);
+
+    params.delete('role');
+    params.delete('pageNumber');
+
+    setDraftRole('');
+    setFilterOpen(false);
+
+    navigate(
+      {
+        pathname: '/admin/userlist',
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+  };
+
+  const handleSortChange = (value) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set('sort', value);
+    params.delete('pageNumber');
+
+    setSortOpen(false);
+
+    navigate(
+      {
+        pathname: '/admin/userlist',
+        search: params.toString(),
+      },
+      { replace: true },
+    );
+  };
+
   return (
     <div className='admin-users-page'>
       <div className='admin-users-header'>
@@ -179,15 +305,62 @@ const UserListScreen = () => {
         </div>
       </div>
 
-      <div className='admin-users-toolbar'>
-        <div className='admin-users-search'>
-          <input
-            type='search'
-            placeholder='Search users...'
-            aria-label='Search users'
-          />
+      <AdminTableToolbar
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        searchPlaceholder='Search users...'
+        onFilterClick={openFilterPanel}
+        filterCount={filterCount}
+        sortValue={sort}
+        sortOptions={userSortOptions}
+        sortOpen={sortOpen}
+        onSortToggle={() => setSortOpen((prev) => !prev)}
+        onSortChange={handleSortChange}
+      />
+
+      <AdminFilterPanel
+        show={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        onReset={handleResetFilters}
+        onApply={handleApplyFilters}
+        filterCount={filterCount}
+      >
+        <div className='admin-filter-section'>
+          <h4>Role</h4>
+
+          <div className='admin-filter-radio-group'>
+            <label>
+              <input
+                type='radio'
+                name='user-role'
+                checked={draftRole === ''}
+                onChange={() => setDraftRole('')}
+              />
+              <span>All</span>
+            </label>
+
+            <label>
+              <input
+                type='radio'
+                name='user-role'
+                checked={draftRole === 'customer'}
+                onChange={() => setDraftRole('customer')}
+              />
+              <span>Customer</span>
+            </label>
+
+            <label>
+              <input
+                type='radio'
+                name='user-role'
+                checked={draftRole === 'admin'}
+                onChange={() => setDraftRole('admin')}
+              />
+              <span>Admin</span>
+            </label>
+          </div>
         </div>
-      </div>
+      </AdminFilterPanel>
 
       {loadingDelete && <Loader />}
       {loadingRoleUpdate && <Loader />}
@@ -277,6 +450,13 @@ const UserListScreen = () => {
           </div>
         </>
       )}
+
+      <Paginate
+        pages={data?.pages || 1}
+        page={data?.page || Number(pageNumber) || 1}
+        isAdmin
+        adminPath='userlist'
+      />
 
       <Modal
         show={showRoleModal}

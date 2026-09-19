@@ -31,9 +31,19 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     getUsers: builder.query({
-      query: () => ({
-        url: USERS_URL,
-      }),
+      query: ({ keyword, pageNumber, role, sort } = {}) => {
+        const params = new URLSearchParams();
+
+        if (keyword) params.set('keyword', keyword);
+        if (pageNumber) params.set('pageNumber', pageNumber);
+        if (role) params.set('role', role);
+        if (sort) params.set('sort', sort);
+
+        return {
+          url: USERS_URL,
+          params,
+        };
+      },
       providesTags: ['Users'],
       keepUnusedDataFor: 5,
     }),
