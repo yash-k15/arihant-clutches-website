@@ -158,6 +158,10 @@ const Header = () => {
         <div className='header-navigation'>
           <Container>
             <nav className='header-nav'>
+              <Link to='/products' className='header-nav-link'>
+                All Products
+              </Link>
+
               <Link to='/products/new-arrivals' className='header-nav-link'>
                 New Arrivals
               </Link>
@@ -276,6 +280,14 @@ const Header = () => {
 
         <Offcanvas.Body>
           <nav className='mobile-nav'>
+            <Link
+              to='/products'
+              className='mobile-nav-link'
+              onClick={closeMobileMenu}
+            >
+              All Products
+            </Link>
+
             <Link
               to='/products/new-arrivals'
               className='mobile-nav-link'
