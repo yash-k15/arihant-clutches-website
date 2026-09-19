@@ -72,6 +72,41 @@
   box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.12);
 }
 
+/* OTP */
+
+.auth-modal .otp-input-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.auth-modal .otp-input {
+  width: 48px;
+  height: 52px;
+
+  padding: 0;
+
+  border: 1px solid #ddd6ce;
+  border-radius: 10px;
+
+  color: #2c2222;
+
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+
+  box-shadow: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.auth-modal .otp-input:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.12);
+}
+
 /* Primary buttons */
 
 .auth-modal .auth-submit-btn {
@@ -136,5 +171,15 @@
 
   .auth-modal .form-control {
     height: 48px;
+  }
+
+  .auth-modal .otp-input-group {
+    gap: 7px;
+  }
+
+  .auth-modal .otp-input {
+    width: 42px;
+    height: 48px;
+    font-size: 1.1rem;
   }
 }

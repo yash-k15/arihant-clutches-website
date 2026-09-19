@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import {
@@ -17,19 +17,29 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
   const [step, setStep] = useState('phone');
 
   const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+
+  const firstOtpInputRef = useRef(null);
 
   useEffect(() => {
     if (show) {
       setPhone('');
-      setOtp('');
+      setOtp(['', '', '', '', '', '']);
       setName('');
       setEmail('');
       setStep('phone');
     }
   }, [show]);
+
+  useEffect(() => {
+    if (step === 'otp') {
+      setTimeout(() => {
+        firstOtpInputRef.current?.focus();
+      }, 0);
+    }
+  }, [step]);
 
   const [sendOtp, { isLoading: sendingOtp }] = useSendOtpMutation();
   const [verifyOtp, { isLoading: verifyingOtp }] = useVerifyOtpMutation();
@@ -55,7 +65,7 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
     try {
       const res = await verifyOtp({
         phone,
-        otp,
+        otp: otp.join(''),
       }).unwrap();
 
       if (res.isNewUser) {
@@ -95,7 +105,7 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
 
   const resetForm = () => {
     setPhone('');
-    setOtp('');
+    setOtp(['', '', '', '', '', '']);
     setName('');
     setEmail('');
     setStep('phone');
@@ -142,21 +152,98 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
         {step === 'otp' && (
           <Form onSubmit={verifyOtpHandler}>
             <Form.Group>
-              <Form.Label>OTP</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter OTP'
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-              />
+              <Form.Label>Enter OTP</Form.Label>
+
+              <div className='otp-input-group'>
+                {otp.map((digit, index) => (
+                  <Form.Control
+                    ref={index === 0 ? firstOtpInputRef : null}
+                    key={index}
+                    type='text'
+                    inputMode='numeric'
+                    maxLength={1}
+                    value={digit}
+                    className='otp-input'
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+
+                      const newOtp = [...otp];
+
+                      if (!value) {
+                        newOtp[index] = '';
+                        setOtp(newOtp);
+                        return;
+                      }
+
+                      newOtp[index] = value.slice(-1);
+                      setOtp(newOtp);
+
+                      if (index < otp.length - 1) {
+                        document
+                          .getElementById(`otp-input-${index + 1}`)
+                          ?.focus();
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Backspace') {
+                        if (otp[index]) {
+                          const newOtp = [...otp];
+                          newOtp[index] = '';
+                          setOtp(newOtp);
+                          return;
+                        }
+
+                        if (index > 0) {
+                          document
+                            .getElementById(`otp-input-${index - 1}`)
+                            ?.focus();
+                        }
+                      }
+                    }}
+                    onPaste={(e) => {
+                      e.preventDefault();
+
+                      const pastedValue = e.clipboardData
+                        .getData('text')
+                        .replace(/\D/g, '')
+                        .slice(0, 6);
+
+                      if (!pastedValue) return;
+
+                      const newOtp = [...otp];
+
+                      pastedValue.split('').forEach((digit, pasteIndex) => {
+                        const targetIndex = index + pasteIndex;
+
+                        if (targetIndex < otp.length) {
+                          newOtp[targetIndex] = digit;
+                        }
+                      });
+
+                      setOtp(newOtp);
+
+                      const focusIndex = Math.min(
+                        index + pastedValue.length,
+                        otp.length - 1,
+                      );
+
+                      document
+                        .getElementById(`otp-input-${focusIndex}`)
+                        ?.focus();
+                    }}
+                    id={`otp-input-${index}`}
+                    autoComplete={index === 0 ? 'one-time-code' : 'off'}
+                  />
+                ))}
+              </div>
             </Form.Group>
 
             <Button
               type='submit'
               className='auth-submit-btn'
-              disabled={verifyingOtp}
+              disabled={verifyingOtp || otp.join('').length !== 6}
             >
-              Verify OTP
+              {verifyingOtp ? 'Verifying...' : 'Verify OTP'}
             </Button>
           </Form>
         )}
