@@ -37,7 +37,6 @@
 
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 
@@ -62,7 +61,7 @@
 
 .header-logo {
   width: auto;
-  height: 45px;
+  height: 82px;
 
   object-fit: contain;
 }
@@ -78,9 +77,7 @@
   bottom: 0;
 
   display: flex;
-  align-items: center;
-
-  gap: 8px;
+  align-items: center
 }
 
 .header-action {
@@ -447,7 +444,7 @@
   }
 
   .mobile-header-inner {
-    min-height: 64px;
+    min-height: 60px;
 
     display: flex;
     align-items: center;
@@ -490,7 +487,7 @@
 
   .mobile-logo {
     width: auto;
-    height: 34px;
+    height: 45px;
 
     object-fit: contain;
   }

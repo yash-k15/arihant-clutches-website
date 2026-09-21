@@ -10,7 +10,7 @@ import { useGetCategoriesQuery } from '../slices/productsApiSlice.js';
 import { logout } from '../slices/authSlice.js';
 
 import SearchBox from './SearchBox.jsx';
-import logo from '../assets/logo.png';
+import logo from '../assets/Arihant_Clutches_Logo.png';
 import { useCartDrawer } from './CartDrawerContext.jsx';
 import { useAuthModal } from './AuthModalContext.jsx';
 
@@ -76,8 +76,6 @@ const Header = () => {
                   alt='Arihant Clutches'
                   className='header-logo'
                 />
-
-                <span>Arihant Clutches</span>
               </Link>
 
               {/* Actions */}
@@ -224,8 +222,6 @@ const Header = () => {
 
             <Link to='/' className='mobile-brand'>
               <img src={logo} alt='Arihant Clutches' className='mobile-logo' />
-
-              <span>Arihant Clutches</span>
             </Link>
 
             <div className='mobile-header-right'>
@@ -273,8 +269,6 @@ const Header = () => {
               alt='Arihant Clutches'
               className='mobile-drawer-logo'
             />
-
-            <span>Arihant Clutches</span>
           </Offcanvas.Title>
         </Offcanvas.Header>
 

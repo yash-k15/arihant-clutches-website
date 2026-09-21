@@ -79,7 +79,7 @@
     color 0.2s ease;
 }
 
-.products-filter-btn {
+.products-sort-btn {
   border-right: 1px solid #e8e8e8;
 }
 
@@ -132,6 +132,8 @@
 
   overflow: hidden;
   z-index: 1000;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 .products-sort-menu-header {
