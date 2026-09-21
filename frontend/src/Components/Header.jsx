@@ -151,6 +151,10 @@ const Header = () => {
                       <LinkContainer to='/admin/orderlist'>
                         <NavDropdown.Item>Orders</NavDropdown.Item>
                       </LinkContainer>
+
+                      <LinkContainer to='/admin/carousel'>
+                        <NavDropdown.Item>Carousel</NavDropdown.Item>
+                      </LinkContainer>
                     </NavDropdown>
                   )}
                 </div>
@@ -425,6 +429,14 @@ const Header = () => {
                     onClick={closeMobileMenu}
                   >
                     Orders
+                  </Link>
+
+                  <Link
+                    to='/admin/carousel'
+                    className='mobile-nav-link'
+                    onClick={closeMobileMenu}
+                  >
+                    Carousel
                   </Link>
                 </>
               )}

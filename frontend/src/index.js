@@ -33,6 +33,7 @@ import InternationalOrdersScreen from './Screens/InformationPages/InternationalO
 import WholesaleOrdersScreen from './Screens/InformationPages/WholesaleOrdersScreen.jsx';
 import ContactScreen from './Screens/InformationPages/ContactScreen.jsx';
 import ShippingPolicyScreen from './Screens/InformationPages/ShippingPolicyScreen.jsx';
+import CarouselScreen from './Screens/admin/CarouselScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -103,6 +104,7 @@ const router = createBrowserRouter(
           element={<UserListScreen />}
         />
         <Route path='/admin/product/create' element={<ProductFormScreen />} />
+        <Route path='/admin/carousel' element={<CarouselScreen />} />
       </Route>
     </Route>,
   ),
