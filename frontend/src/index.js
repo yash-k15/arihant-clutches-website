@@ -31,6 +31,7 @@ import WishlistScreen from './Screens/WishlistScreen';
 import SharedWishlistScreen from './Screens/SharedWishlistScreen';
 import InternationalOrdersScreen from './Screens/InformationPages/InternationalOrdersScreen.jsx';
 import WholesaleOrdersScreen from './Screens/InformationPages/WholesaleOrdersScreen.jsx';
+import ContactScreen from './Screens/InformationPages/ContactScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -75,6 +76,7 @@ const router = createBrowserRouter(
         element={<InternationalOrdersScreen />}
       />
       <Route path='/wholesale-orders' element={<WholesaleOrdersScreen />} />
+      <Route path='/contact' element={<ContactScreen />} />
 
       <Route path='' element={<PrivateRoute />}>
         <Route path='/order/:id' element={<OrderScreen />} />

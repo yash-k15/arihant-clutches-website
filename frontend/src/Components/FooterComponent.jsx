@@ -48,6 +48,12 @@ const FooterComponent = () => {
               </li>
 
               <li>
+                <Link to='/contact' className='footer-link'>
+                  Contact Us
+                </Link>
+              </li>
+
+              <li>
                 <Link to='/international-orders' className='footer-link'>
                   International Orders
                 </Link>
@@ -112,7 +118,7 @@ const FooterComponent = () => {
             <h5 className='footer-heading'>Contact</h5>
             <p className='mb-1'>Sneha Kothari</p>
             <p className='mb-1'>support@arihantclutches.com</p>
-            <p className='mb-0'>+91 98765 43210</p>
+            <p className='mb-0'>+91 99090 25236</p>
           </Col>
         </Row>
 
