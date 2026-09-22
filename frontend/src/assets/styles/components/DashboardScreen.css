@@ -223,9 +223,7 @@
   transform: translateY(-1px);
 }
 
-/* ---------------------------------------------
-   Empty State
---------------------------------------------- */
+/* Empty State */
 
 .admin-dashboard-empty-state {
   padding: 32px 20px;
@@ -237,9 +235,7 @@
   text-align: center;
 }
 
-/* ---------------------------------------------
-   Pagination
---------------------------------------------- */
+/* Pagination */
 
 .admin-dashboard-pagination {
   display: flex;
@@ -277,4 +273,150 @@
   border-color: #2c2222;
   background: #2c2222;
   color: #fff;
+}
+
+/* ---------------------------------------------
+   Sales Overview
+--------------------------------------------- */
+
+.admin-dashboard-sales-summary {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 22px;
+}
+
+.admin-dashboard-sales-summary-label {
+  color: #6f6258;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin-dashboard-sales-summary-value {
+  margin-top: 2px;
+  color: #2c2222;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.admin-dashboard-sales-periods {
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.admin-dashboard-sales-periods .btn-group {
+  gap: 8px;
+}
+
+.admin-dashboard-sales-period {
+  min-width: 90px;
+  padding: 9px 16px;
+  border: 1px solid #e8ddcd !important;
+  border-radius: 8px !important;
+  background-color: #fdfaf5 !important;
+  color: #2c2222 !important;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: none !important;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-dashboard-sales-period:hover {
+  border-color: #b08d57 !important;
+  background-color: #f3eadf !important;
+  color: #2c2222 !important;
+}
+
+.admin-dashboard-sales-period.active {
+  border-color: #2c2222 !important;
+  background-color: #2c2222 !important;
+  color: #fff !important;
+}
+
+.admin-dashboard-custom-range {
+  margin-bottom: 24px;
+  padding: 18px;
+  border: 1px solid #e8ddcd;
+  border-radius: 10px;
+  background-color: #fdfaf5;
+}
+
+.admin-dashboard-custom-range .form-label {
+  margin-bottom: 7px;
+  color: #6f6258;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin-dashboard-custom-range .form-control {
+  min-height: 40px;
+  border: 1px solid #e8ddcd;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #2c2222;
+  font-size: 13px;
+  box-shadow: none;
+}
+
+.admin-dashboard-custom-range .form-control:focus {
+  border-color: #b08d57;
+  box-shadow: 0 0 0 2px rgba(176, 141, 87, 0.12);
+}
+
+.admin-dashboard-custom-range-button {
+  min-height: 40px;
+  padding: 8px 18px;
+  border: 1px solid #2c2222 !important;
+  border-radius: 8px !important;
+  background-color: #2c2222 !important;
+  color: #fff !important;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: none !important;
+}
+
+.admin-dashboard-custom-range-button:hover:not(:disabled) {
+  border-color: #b08d57 !important;
+  background-color: #b08d57 !important;
+  color: #fff !important;
+}
+
+.admin-dashboard-custom-range-button:disabled {
+  opacity: 0.5;
+}
+
+.admin-dashboard-sales-chart {
+  width: 100%;
+  min-height: 320px;
+}
+
+.admin-dashboard-sales-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  color: #6f6258;
+  font-size: 14px;
+}
+
+@media (max-width: 767.98px) {
+  .admin-dashboard-sales-periods {
+    padding-bottom: 4px;
+  }
+
+  .admin-dashboard-sales-period {
+    min-width: auto;
+    padding: 8px 13px;
+  }
+
+  .admin-dashboard-custom-range {
+    padding: 16px;
+  }
+
+  .admin-dashboard-sales-chart {
+    min-height: 280px;
+  }
 }

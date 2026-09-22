@@ -11,7 +11,26 @@ export const dashboardApiSlice = apiSlice.injectEndpoints({
       providesTags: ['Dashboard'],
       keepUnusedDataFor: 5,
     }),
+
+    getDashboardSales: builder.query({
+      query: ({ period = '7days', dateFrom, dateTo } = {}) => {
+        const params = new URLSearchParams();
+
+        params.set('period', period);
+
+        if (period === 'custom') {
+          params.set('dateFrom', dateFrom);
+          params.set('dateTo', dateTo);
+        }
+
+        return {
+          url: '/api/admin/dashboard/sales',
+          params,
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetDashboardQuery } = dashboardApiSlice;
+export const { useGetDashboardQuery, useGetDashboardSalesQuery } =
+  dashboardApiSlice;

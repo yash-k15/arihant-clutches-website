@@ -18,6 +18,7 @@ import {
 
 import Loader from '../../Components/Loader';
 import Message from '../../Components/Message';
+import SalesOverview from '../../Components/SalesOverview.jsx';
 import { useGetDashboardQuery } from '../../slices/dashboardApiSlice.js';
 
 import '../../assets/styles/components/DashboardScreen.css';
@@ -313,6 +314,8 @@ const DashboardScreen = () => {
               )}
             </Card.Body>
           </Card>
+
+          <SalesOverview />
         </>
       )}
     </>
