@@ -9,6 +9,7 @@ const getDashboardOverview = asyncHandler(async (req, res) => {
     totalSalesResult,
     onlineProcessingOrders,
     codProcessingOrders,
+    toBeDelivered,
     totalProducts,
     totalCustomers,
     lowStockCount,
@@ -42,6 +43,10 @@ const getDashboardOverview = asyncHandler(async (req, res) => {
     Order.countDocuments({
       paymentMethod: 'COD',
       isPaid: false,
+      isDelivered: false,
+    }),
+
+    Order.countDocuments({
       isDelivered: false,
     }),
 
@@ -92,6 +97,7 @@ const getDashboardOverview = asyncHandler(async (req, res) => {
     totalSales: totalSalesResult[0]?.totalSales || 0,
     onlineProcessingOrders,
     codProcessingOrders,
+    toBeDelivered,
     totalProducts,
     totalCustomers,
     lowStockCount,

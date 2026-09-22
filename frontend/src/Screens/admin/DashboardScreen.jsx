@@ -11,6 +11,9 @@ import {
   BsExclamationTriangle,
   BsPencilSquare,
   BsCheckCircle,
+  BsTruck,
+  BsCreditCard,
+  BsCashCoin,
 } from 'react-icons/bs';
 
 import Loader from '../../Components/Loader';
@@ -66,6 +69,33 @@ const DashboardScreen = () => {
       title: 'Orders Delivered',
       value: data?.deliveredOrders,
       icon: BsCheckCircle,
+    },
+  ];
+
+  const orderStatusCards = [
+    {
+      title: 'To Be Delivered',
+      value: data?.toBeDelivered,
+      icon: BsTruck,
+      to: '/admin/orderlist?deliveryStatus=processing',
+    },
+    {
+      title: 'Online Payment',
+      value: data?.onlineProcessingOrders,
+      icon: BsCreditCard,
+      to: '/admin/orderlist?paymentMethod=ONLINE&deliveryStatus=processing',
+    },
+    {
+      title: 'Cash on Delivery',
+      value: data?.codProcessingOrders,
+      icon: BsCashCoin,
+      to: '/admin/orderlist?paymentMethod=COD&deliveryStatus=processing',
+    },
+    {
+      title: 'Delivered',
+      value: data?.deliveredOrders,
+      icon: BsCheckCircle,
+      to: '/admin/orderlist?deliveryStatus=delivered',
     },
   ];
 
@@ -129,6 +159,61 @@ const DashboardScreen = () => {
               );
             })}
           </Row>
+
+          {/* Order Status */}
+          <Card className='admin-dashboard-section-card'>
+            <Card.Body>
+              <div className='admin-dashboard-section-header'>
+                <div>
+                  <h2 className='admin-dashboard-section-title'>
+                    Order Status
+                  </h2>
+                  <p className='admin-dashboard-section-subtitle'>
+                    Track orders that require attention and completed deliveries
+                  </p>
+                </div>
+
+                <div className='admin-dashboard-section-icon'>
+                  <BsTruck />
+                </div>
+              </div>
+
+              <Row className='g-4'>
+                {orderStatusCards.map((card) => {
+                  const Icon = card.icon;
+
+                  return (
+                    <Col md={6} lg={3} key={card.title}>
+                      <Card className='admin-dashboard-card admin-dashboard-order-status-card'>
+                        <Card.Body>
+                          <div className='admin-dashboard-card-header'>
+                            <Card.Title className='admin-dashboard-card-title'>
+                              {card.title}
+                            </Card.Title>
+
+                            <div className='admin-dashboard-card-icon'>
+                              <Icon />
+                            </div>
+                          </div>
+
+                          <h2 className='admin-dashboard-card-value'>
+                            {card.value}
+                          </h2>
+
+                          <Link
+                            to={card.to}
+                            className='admin-dashboard-view-orders'
+                          >
+                            View Orders <span aria-hidden='true'>→</span>
+                          </Link>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Card.Body>
+          </Card>
 
           {/* Low Stock Products */}
           <Card className='admin-dashboard-section-card'>

@@ -57,6 +57,29 @@
   font-weight: 700;
 }
 
+.admin-dashboard-order-status-card .card-body {
+  padding: 20px;
+}
+
+.admin-dashboard-view-orders {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  color: #2c2222;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    gap 0.2s ease;
+}
+
+.admin-dashboard-view-orders:hover {
+  color: #b08d57;
+  gap: 8px;
+}
+
 /* ---------------------------------------------
    Low Stock Products
 --------------------------------------------- */
