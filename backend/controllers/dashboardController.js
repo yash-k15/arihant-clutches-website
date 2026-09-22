@@ -7,11 +7,12 @@ const getDashboardOverview = asyncHandler(async (req, res) => {
   const [
     totalOrders,
     totalSalesResult,
-    processingOrders,
-    pendingPayment,
+    onlineProcessingOrders,
+    codProcessingOrders,
     totalProducts,
     totalCustomers,
     lowStockCount,
+    deliveredOrders,
     lowStockProducts,
   ] = await Promise.all([
     Order.countDocuments(),
@@ -33,12 +34,15 @@ const getDashboardOverview = asyncHandler(async (req, res) => {
     ]),
 
     Order.countDocuments({
+      paymentMethod: 'ONLINE',
       isPaid: true,
       isDelivered: false,
     }),
 
     Order.countDocuments({
+      paymentMethod: 'COD',
       isPaid: false,
+      isDelivered: false,
     }),
 
     Product.countDocuments(),
@@ -51,6 +55,10 @@ const getDashboardOverview = asyncHandler(async (req, res) => {
       'variants.countInStock': {
         $lte: 5,
       },
+    }),
+
+    Order.countDocuments({
+      isDelivered: true,
     }),
 
     Product.aggregate([
@@ -82,11 +90,12 @@ const getDashboardOverview = asyncHandler(async (req, res) => {
   res.json({
     totalOrders,
     totalSales: totalSalesResult[0]?.totalSales || 0,
-    processingOrders,
-    pendingPayment,
+    onlineProcessingOrders,
+    codProcessingOrders,
     totalProducts,
     totalCustomers,
     lowStockCount,
+    deliveredOrders,
     lowStockProducts,
   });
 });

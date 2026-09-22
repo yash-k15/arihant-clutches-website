@@ -10,6 +10,7 @@ import {
   BsPeople,
   BsExclamationTriangle,
   BsPencilSquare,
+  BsCheckCircle,
 } from 'react-icons/bs';
 
 import Loader from '../../Components/Loader';
@@ -37,13 +38,13 @@ const DashboardScreen = () => {
       icon: BsCurrencyRupee,
     },
     {
-      title: 'Processing Orders',
-      value: data?.processingOrders,
+      title: 'Online Processing',
+      value: data?.onlineProcessingOrders,
       icon: BsBoxSeam,
     },
     {
-      title: 'Pending Payment',
-      value: data?.pendingPayment,
+      title: 'COD Processing',
+      value: data?.codProcessingOrders,
       icon: BsClockHistory,
     },
     {
@@ -60,6 +61,11 @@ const DashboardScreen = () => {
       title: 'Low Stock',
       value: data?.lowStockCount,
       icon: BsExclamationTriangle,
+    },
+    {
+      title: 'Orders Delivered',
+      value: data?.deliveredOrders,
+      icon: BsCheckCircle,
     },
   ];
 
