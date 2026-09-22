@@ -144,16 +144,20 @@ const Header = () => {
                         <NavDropdown.Item>Products</NavDropdown.Item>
                       </LinkContainer>
 
-                      <LinkContainer to='/admin/userlist'>
-                        <NavDropdown.Item>Users</NavDropdown.Item>
-                      </LinkContainer>
-
                       <LinkContainer to='/admin/orderlist'>
                         <NavDropdown.Item>Orders</NavDropdown.Item>
                       </LinkContainer>
 
+                      <LinkContainer to='/admin/userlist'>
+                        <NavDropdown.Item>Users</NavDropdown.Item>
+                      </LinkContainer>
+
                       <LinkContainer to='/admin/carousel'>
                         <NavDropdown.Item>Carousel</NavDropdown.Item>
+                      </LinkContainer>
+
+                      <LinkContainer to='/admin/dashboard'>
+                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
                       </LinkContainer>
                     </NavDropdown>
                   )}
@@ -370,6 +374,52 @@ const Header = () => {
                 Wholesale
               </Link> */}
 
+              {userInfo?.isAdmin && (
+                <>
+                  <div className='mobile-nav-section'>Admin</div>
+
+                  <Link
+                    to='/admin/productlist'
+                    className='mobile-nav-link'
+                    onClick={closeMobileMenu}
+                  >
+                    Products
+                  </Link>
+
+                  <Link
+                    to='/admin/orderlist'
+                    className='mobile-nav-link'
+                    onClick={closeMobileMenu}
+                  >
+                    Orders
+                  </Link>
+
+                  <Link
+                    to='/admin/userlist'
+                    className='mobile-nav-link'
+                    onClick={closeMobileMenu}
+                  >
+                    Users
+                  </Link>
+
+                  <Link
+                    to='/admin/carousel'
+                    className='mobile-nav-link'
+                    onClick={closeMobileMenu}
+                  >
+                    Carousel
+                  </Link>
+
+                  <Link
+                    to='/admin/dashboard'
+                    className='mobile-nav-link'
+                    onClick={closeMobileMenu}
+                  >
+                    Dashboard
+                  </Link>
+                </>
+              )}
+
               <div className='mobile-account-section'>
                 <div className='mobile-nav-section'>Account</div>
 
@@ -402,44 +452,6 @@ const Header = () => {
                   </button>
                 )}
               </div>
-
-              {userInfo?.isAdmin && (
-                <>
-                  <div className='mobile-nav-section'>Admin</div>
-
-                  <Link
-                    to='/admin/productlist'
-                    className='mobile-nav-link'
-                    onClick={closeMobileMenu}
-                  >
-                    Products
-                  </Link>
-
-                  <Link
-                    to='/admin/userlist'
-                    className='mobile-nav-link'
-                    onClick={closeMobileMenu}
-                  >
-                    Users
-                  </Link>
-
-                  <Link
-                    to='/admin/orderlist'
-                    className='mobile-nav-link'
-                    onClick={closeMobileMenu}
-                  >
-                    Orders
-                  </Link>
-
-                  <Link
-                    to='/admin/carousel'
-                    className='mobile-nav-link'
-                    onClick={closeMobileMenu}
-                  >
-                    Carousel
-                  </Link>
-                </>
-              )}
             </nav>
           </Offcanvas.Body>
         </Offcanvas>
