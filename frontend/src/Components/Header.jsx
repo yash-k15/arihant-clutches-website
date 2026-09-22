@@ -200,13 +200,13 @@ const Header = () => {
                   </div>
                 </div>
 
-                <Link to='/international-orders' className='header-nav-link'>
+                {/* <Link to='/international-orders' className='header-nav-link'>
                   International Orders
                 </Link>
 
                 <Link to='/wholesale-orders' className='header-nav-link'>
                   Wholesale
-                </Link>
+                </Link> */}
               </nav>
             </Container>
           </div>
@@ -354,7 +354,7 @@ const Header = () => {
                 )}
               </div>
 
-              <Link
+              {/* <Link
                 to='/international-orders'
                 className='mobile-nav-link'
                 onClick={closeMobileMenu}
@@ -368,7 +368,7 @@ const Header = () => {
                 onClick={closeMobileMenu}
               >
                 Wholesale
-              </Link>
+              </Link> */}
 
               <div className='mobile-account-section'>
                 <div className='mobile-nav-section'>Account</div>
