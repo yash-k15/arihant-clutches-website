@@ -70,7 +70,10 @@ const Paginate = ({
 
   const getPageLink = (pageNumber) => {
     if (isAdmin) {
-      return `/admin/${adminPath}/${pageNumber}`;
+      return {
+        pathname: `/admin/${adminPath}/${pageNumber}`,
+        search,
+      };
     }
 
     if (keyword) {
