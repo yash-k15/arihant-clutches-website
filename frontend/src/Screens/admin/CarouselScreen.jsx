@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { FaTrash, FaGripVertical } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -95,8 +95,7 @@ const CarouselScreen = () => {
   const [removeCarouselItem, { isLoading: loadingRemove }] =
     useRemoveCarouselItemMutation();
 
-  const [updateCarousel, { isLoading: loadingUpdate }] =
-    useUpdateCarouselMutation();
+  const [updateCarousel] = useUpdateCarouselMutation();
 
   const [showModal, setShowModal] = useState(false);
 

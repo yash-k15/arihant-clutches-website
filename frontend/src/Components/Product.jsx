@@ -16,7 +16,6 @@ import {
   removeGuestWishlistItem,
   isGuestWishlistItem,
 } from '../utils/wishlistUtils.js';
-import { useAuthModal } from './AuthModalContext.jsx';
 import '../assets/styles/components/Product.css';
 
 const Product = ({ product }) => {
@@ -34,9 +33,7 @@ const Product = ({ product }) => {
   const [removeFromWishlist, { isLoading: isRemovingFromWishlist }] =
     useRemoveFromWishlistMutation();
 
-  const { openAuth } = useAuthModal();
-
-  const [guestWishlistVersion, setGuestWishlistVersion] = useState(0);
+  const [setGuestWishlistVersion] = useState(0);
 
   const selectVariantHandler = (variant) => {
     setSelectedVariant(variant);

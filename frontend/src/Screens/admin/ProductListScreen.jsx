@@ -381,7 +381,7 @@ const ProductListScreen = () => {
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         searchPlaceholder='Search products...'
-        onFilterClick={() => setFilterOpen(true)}
+        onFilterClick={openFilterPanel}
         filterCount={filterCount}
         sortValue={sort}
         sortOptions={productSortOptions}

@@ -61,7 +61,7 @@ const ProductFilters = ({
     } else {
       setSelectedCategories(params.getAll('filter.p.product_type'));
     }
-  }, [show]);
+  }, [show, categorySlug, location.search]);
 
   const { data: categories = [], isLoading: isCategoriesLoading } =
     useGetCategoriesQuery();
