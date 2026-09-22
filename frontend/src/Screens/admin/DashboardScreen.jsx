@@ -14,6 +14,9 @@ import {
   BsTruck,
   BsCreditCard,
   BsCashCoin,
+  BsPlusCircle,
+  BsImages,
+  BsShop,
 } from 'react-icons/bs';
 
 import Loader from '../../Components/Loader';
@@ -119,6 +122,39 @@ const DashboardScreen = () => {
     lowStockStartIndex,
     lowStockStartIndex + LOW_STOCK_PER_PAGE,
   );
+
+  const quickActions = [
+    {
+      title: 'Add Product',
+      icon: BsPlusCircle,
+      to: '/admin/product/create',
+    },
+    {
+      title: 'Products',
+      icon: BsBoxes,
+      to: '/admin/productlist',
+    },
+    {
+      title: 'Orders',
+      icon: BsBagCheck,
+      to: '/admin/orderlist',
+    },
+    {
+      title: 'Customers',
+      icon: BsPeople,
+      to: '/admin/userlist',
+    },
+    {
+      title: 'Carousel',
+      icon: BsImages,
+      to: '/admin/carousel',
+    },
+    {
+      title: 'View Store',
+      icon: BsShop,
+      to: '/',
+    },
+  ];
 
   return (
     <>
@@ -316,6 +352,49 @@ const DashboardScreen = () => {
           </Card>
 
           <SalesOverview />
+
+          <Card className='admin-dashboard-section-card'>
+            <Card.Body>
+              <div className='admin-dashboard-section-header'>
+                <div>
+                  <h2 className='admin-dashboard-section-title'>
+                    Quick Actions
+                  </h2>
+
+                  <p className='admin-dashboard-section-subtitle'>
+                    Quick access to commonly used admin tasks
+                  </p>
+                </div>
+              </div>
+
+              <Row className='g-3'>
+                {quickActions.map((action) => {
+                  const Icon = action.icon;
+
+                  return (
+                    <Col key={action.title} xs={12} sm={6} lg={4}>
+                      <Link
+                        to={action.to}
+                        className='admin-dashboard-quick-action'
+                      >
+                        <span className='admin-dashboard-quick-action-icon'>
+                          <Icon />
+                        </span>
+
+                        <span className='admin-dashboard-quick-action-title'>
+                          {action.title}
+                        </span>
+
+                        <span className='admin-dashboard-quick-action-arrow'>
+                          →
+                        </span>
+                      </Link>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Card.Body>
+          </Card>
         </>
       )}
     </>

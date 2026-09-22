@@ -402,6 +402,65 @@
   font-size: 14px;
 }
 
+/* ---------------------------------------------
+   Quick Actions
+--------------------------------------------- */
+
+.admin-dashboard-quick-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 12px 14px;
+  border: 1px solid #e8ddcd;
+  border-radius: 10px;
+  background-color: #fdfaf5;
+  color: #2c2222;
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-dashboard-quick-action:hover {
+  border-color: #b08d57;
+  background-color: #f3eadf;
+  color: #2c2222;
+  transform: translateY(-1px);
+}
+
+.admin-dashboard-quick-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background-color: #f3eadf;
+  color: #b08d57;
+  font-size: 17px;
+}
+
+.admin-dashboard-quick-action-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-dashboard-quick-action-arrow {
+  color: #b08d57;
+  font-size: 18px;
+  font-weight: 600;
+  transition: transform 0.2s ease;
+}
+
+.admin-dashboard-quick-action:hover
+  .admin-dashboard-quick-action-arrow {
+  transform: translateX(3px);
+}
+
 @media (max-width: 767.98px) {
   .admin-dashboard-sales-periods {
     padding-bottom: 4px;
