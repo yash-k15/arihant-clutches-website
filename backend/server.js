@@ -12,6 +12,7 @@ import uploadRoutes from './routes/uploadRoute.js';
 import paymentRoutes from './routes/paymentRoute.js';
 import wishlistRoutes from './routes/wishlistRoute.js';
 import carouselRoutes from './routes/carouselRoute.js';
+import dashboardRoutes from './routes/dashboardRoute.js';
 
 const port = process.env.PORT || 4000;
 
@@ -40,6 +41,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/carousel', carouselRoutes);
+app.use('/api/admin/dashboard', dashboardRoutes);
 
 // const __dirname = path.resolve(); // Set __dirname to current directory
 // app.use('/uploads', express.static(path.join(__dirname, '/uploads')));

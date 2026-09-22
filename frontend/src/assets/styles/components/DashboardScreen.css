@@ -1,0 +1,54 @@
+.admin-dashboard-card {
+  height: 100%;
+  border: 1px solid #e8ddcd;
+  border-radius: 10px;
+  background: #fdfaf5;
+  box-shadow: 0 2px 8px rgba(44, 34, 34, 0.06);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(44, 34, 34, 0.1);
+}
+
+.admin-dashboard-card .card-body {
+  padding: 20px;
+}
+
+.admin-dashboard-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-dashboard-card-title {
+  margin: 0;
+  padding-top: 4px;
+  color: #6f6258;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-dashboard-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #f3eadf;
+  color: #b08d57;
+  font-size: 20px;
+}
+
+.admin-dashboard-card-value {
+  margin: 20px 0 0;
+  color: #2c2222;
+  font-size: 28px;
+  font-weight: 700;
+}

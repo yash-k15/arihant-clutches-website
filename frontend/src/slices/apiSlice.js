@@ -19,6 +19,7 @@ export const apiSlice = createApi({
     'Wishlist',
     'SharedWishlist',
     'Carousel',
+    'Dashboard',
   ],
   endpoints: (builder) => ({}),
 });

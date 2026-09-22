@@ -34,6 +34,7 @@ import WholesaleOrdersScreen from './Screens/InformationPages/WholesaleOrdersScr
 import ContactScreen from './Screens/InformationPages/ContactScreen.jsx';
 import ShippingPolicyScreen from './Screens/InformationPages/ShippingPolicyScreen.jsx';
 import CarouselScreen from './Screens/admin/CarouselScreen.jsx';
+import DashboardScreen from './Screens/admin/DashboardScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -105,6 +106,7 @@ const router = createBrowserRouter(
         />
         <Route path='/admin/product/create' element={<ProductFormScreen />} />
         <Route path='/admin/carousel' element={<CarouselScreen />} />
+        <Route path='/admin/dashboard' element={<DashboardScreen />} />
       </Route>
     </Route>,
   ),
