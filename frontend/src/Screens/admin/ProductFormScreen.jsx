@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import Message from '../../Components/Message';
 import Loader from '../../Components/Loader';
@@ -118,7 +118,7 @@ const ProductFormScreen = () => {
     if (!file) return;
 
     if (file.type !== 'video/mp4') {
-      toast.error('Please select an MP4 video');
+      toast.warning('Please select an MP4 video');
       e.target.value = '';
       return;
     }
@@ -174,12 +174,12 @@ const ProductFormScreen = () => {
     e.preventDefault();
 
     if (!name || !brand || !category || !description) {
-      toast.error('Please fill all required fields');
+      toast.warning('Please fill all required fields');
       return;
     }
 
     if (variants.length === 0) {
-      toast.error('Please add at least one variant');
+      toast.warning('Please add at least one variant');
       return;
     }
 
@@ -189,7 +189,9 @@ const ProductFormScreen = () => {
     );
 
     if (invalidVariant) {
-      toast.error('Each variant must have color, price and at least one image');
+      toast.warning(
+        'Each variant must have color, price and at least one image',
+      );
       return;
     }
 
@@ -268,7 +270,7 @@ const ProductFormScreen = () => {
         }
       }
 
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err.error || 'Unable to save product');
     }
   };
 

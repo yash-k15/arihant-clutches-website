@@ -7,7 +7,7 @@ import Loader from '../Components/Loader';
 import Message from '../Components/Message';
 import { BsX, BsHeart } from 'react-icons/bs';
 import { IoShareOutline, IoCloseSharp } from 'react-icons/io5';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import {
   getGuestWishlist,

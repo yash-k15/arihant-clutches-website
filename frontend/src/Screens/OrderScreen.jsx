@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { useSelector } from 'react-redux';
 import { FiCopy } from 'react-icons/fi';
 
@@ -40,9 +40,9 @@ const OrderScreen = () => {
     try {
       await payOrder(orderId).unwrap();
       await refetch();
-      toast.success('Payment Received');
+      toast.success('Payment marked as received');
     } catch (err) {
-      toast.error(err?.data?.message || err.message);
+      toast.error(err?.data?.message || 'Unable to mark payment as received');
     }
   };
 
@@ -50,9 +50,9 @@ const OrderScreen = () => {
     try {
       await deliverOrder(orderId).unwrap();
       await refetch();
-      toast.success('Order Delivered');
+      toast.success('Order marked as delivered');
     } catch (err) {
-      toast.error(err?.data?.message || err.message);
+      toast.error(err?.data?.message || 'Unable to mark order as delivered');
     }
   };
 

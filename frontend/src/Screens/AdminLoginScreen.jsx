@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import Loader from '../Components/Loader.jsx';
 import { useLoginMutation } from '../slices/usersApiSlice.js';
@@ -46,7 +46,7 @@ const AdminLoginScreen = () => {
       }).unwrap();
 
       if (!res.isAdmin) {
-        toast.error('You are not authorized to access the admin panel.');
+        toast.warning('You are not authorized to access the admin panel.');
         return;
       }
 
@@ -54,7 +54,10 @@ const AdminLoginScreen = () => {
       toast.success('Admin login successful');
       navigate(redirect);
     } catch (err) {
-      toast.error(err?.data?.message || 'Invalid admin credentials');
+      toast.error(
+        err?.data?.message ||
+          'Unable to sign in. Please check your credentials.',
+      );
     }
   };
 

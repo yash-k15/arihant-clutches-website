@@ -7,7 +7,7 @@ import {
   useRegisterPhoneMutation,
 } from '../slices/usersApiSlice';
 import { setCredentials } from '../slices/authSlice';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import '../assets/styles/components/AuthModal.css';
 

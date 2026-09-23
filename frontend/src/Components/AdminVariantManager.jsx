@@ -81,7 +81,9 @@ const AdminVariantManager = ({
 
       toast.success('Variant images uploaded');
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(
+        err?.data?.message || err.error || 'Unable to upload variant images',
+      );
     }
   };
 
@@ -140,7 +142,7 @@ const AdminVariantManager = ({
 
       toast.success('Image Removed');
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err.error || 'Unable to remove image');
     }
   };
 

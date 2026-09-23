@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Button, Modal, Table } from 'react-bootstrap';
 import { FaCopy, FaExchangeAlt, FaTrash } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import Message from '../../Components/Message';
 import Loader from '../../Components/Loader';
 import {
@@ -118,7 +118,9 @@ const UserListScreen = () => {
 
       closeRoleModal();
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(
+        err?.data?.message || err.error || 'Unable to change user role',
+      );
     }
   };
 
@@ -128,7 +130,7 @@ const UserListScreen = () => {
         await deleteUser(id).unwrap();
         toast.success('User deleted');
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        toast.error(err?.data?.message || err.error || 'Unable to delete user');
       }
     }
   };

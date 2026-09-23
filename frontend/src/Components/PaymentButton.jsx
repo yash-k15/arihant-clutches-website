@@ -1,7 +1,7 @@
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import {
   useCreateRazorpayOrderMutation,
   useVerifyPaymentMutation,
@@ -42,7 +42,7 @@ const PaymentButton = ({ disabled }) => {
 
       // ---------- COD ----------
       if (cart.paymentMethod === 'COD') {
-        const res = await verifyPayment({
+        const orderPromise = verifyPayment({
           orderData: {
             orderItems: cart.cartItems.map((item) => ({
               product: item._id,
@@ -66,6 +66,15 @@ const PaymentButton = ({ disabled }) => {
           },
         }).unwrap();
 
+        toast.promise(orderPromise, {
+          loading: 'Placing order...',
+          success: 'Order placed successfully',
+          error: (error) =>
+            error?.data?.message || error?.message || 'Unable to place order',
+        });
+
+        const res = await orderPromise;
+
         dispatch(clearCartItems());
         closeCheckout();
         navigate(`/order/${res.order._id}`, {
@@ -78,7 +87,7 @@ const PaymentButton = ({ disabled }) => {
       // ---------- ONLINE ----------
       // CHECK IF RAZORPAY EXISTS
       if (!window.Razorpay) {
-        alert('Razorpay SDK failed to load');
+        toast.error('Razorpay SDK failed to load');
         return;
       }
 
@@ -105,7 +114,7 @@ const PaymentButton = ({ disabled }) => {
         handler: async function (response) {
           try {
             // VERIFY PAYMENT + CREATE DB ORDER
-            const res = await verifyPayment({
+            const paymentPromise = verifyPayment({
               paymentData: response,
               orderData: {
                 orderItems: cart.cartItems.map((item) => ({
@@ -127,6 +136,33 @@ const PaymentButton = ({ disabled }) => {
               },
             }).unwrap();
 
+            toast.promise(paymentPromise, {
+              loading: 'Verifying payment...',
+              success: (res) =>
+                res.success
+                  ? 'Payment successful'
+                  : 'Payment verification failed',
+              error: (error) => {
+                const outOfStock = error?.data?.outOfStockItems;
+
+                if (outOfStock?.length) {
+                  const items = outOfStock
+                    .map((item) => `${item.name} (${item.color})`)
+                    .join(', ');
+
+                  return `Out of stock: ${items}`;
+                }
+
+                return (
+                  error?.data?.message ||
+                  error?.message ||
+                  'Payment verification failed'
+                );
+              },
+            });
+
+            const res = await paymentPromise;
+
             // SUCCESS
             if (res.success) {
               dispatch(clearCartItems());
@@ -135,25 +171,10 @@ const PaymentButton = ({ disabled }) => {
                 state: { justPlacedOrder: true },
               });
             } else {
-              alert('Payment verification failed');
+              toast.error('Payment verification failed');
             }
           } catch (error) {
             console.log(error);
-
-            const outOfStock = error?.data?.outOfStockItems;
-
-            if (outOfStock?.length) {
-              const items = outOfStock
-                .map((item) => `${item.name} (${item.color})`)
-                .join(', ');
-
-              toast.error(`Out of stock: ${items}`);
-              return;
-            }
-
-            toast.error(
-              error?.data?.message || error?.message || 'Something went wrong',
-            );
           }
         },
 

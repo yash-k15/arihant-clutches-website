@@ -1,7 +1,6 @@
 import { Container } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'sonner';
 import Header from './Components/Header';
 import FooterComponent from './Components/FooterComponent';
 import { CartDrawerProvider } from './Components/CartDrawerContext.jsx';
@@ -27,7 +26,13 @@ const App = () => {
               </Container>
             </main>
             <FooterComponent />
-            <ToastContainer />
+            <Toaster
+              position='top-right'
+              richColors
+              closeButton
+              visibleToasts={3}
+              duration={2500}
+            />
           </CartDrawerProvider>
         </AuthModalProvider>
         <Checkout />

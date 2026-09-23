@@ -9,7 +9,7 @@ import {
   FiX,
 } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import Message from '../Components/Message.jsx';
 import Loader from '../Components/Loader.jsx';
@@ -186,12 +186,12 @@ const ProfileScreen = () => {
     const phone = newPhone.trim();
 
     if (!/^[6-9]\d{9}$/.test(phone)) {
-      toast.error('Enter a valid mobile number');
+      toast.warning('Enter a valid mobile number');
       return;
     }
 
     if (phone === userInfo.phone) {
-      toast.error('This is already your current phone number');
+      toast.warning('This is already your current phone number');
       return;
     }
 
@@ -212,7 +212,7 @@ const ProfileScreen = () => {
 
   const handleVerifyPhoneOtp = async () => {
     if (!phoneOtp.trim()) {
-      toast.error('Enter the OTP');
+      toast.warning('Enter the OTP');
       return;
     }
 
@@ -259,7 +259,7 @@ const ProfileScreen = () => {
 
   const handleVerifyPasswordOtp = async () => {
     if (!passwordOtp.trim()) {
-      toast.error('Enter the OTP');
+      toast.warning('Enter the OTP');
       return;
     }
 
@@ -278,22 +278,22 @@ const ProfileScreen = () => {
 
   const handleChangePassword = async () => {
     if (!newPassword) {
-      toast.error('Enter a new password');
+      toast.warning('Enter a new password');
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.warning('Password must be at least 6 characters');
       return;
     }
 
     if (!confirmPassword) {
-      toast.error('Confirm your new password');
+      toast.warning('Confirm your new password');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.warning('Passwords do not match');
       return;
     }
 

@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { BsHeart, BsHeartFill } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import Rating from './Rating';
 import { getCloudinaryImage } from '../utils/cloudinary';
 import {

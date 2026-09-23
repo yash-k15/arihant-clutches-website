@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { FaTrash, FaGripVertical } from 'react-icons/fa';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import Loader from '../../Components/Loader';
 import Message from '../../Components/Message';
 import {
@@ -148,7 +148,7 @@ const CarouselScreen = () => {
     e.preventDefault();
 
     if (!selectedProduct || !selectedVariant) {
-      toast.error('Product and variant are required');
+      toast.warning('Product and variant are required');
       return;
     }
 

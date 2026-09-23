@@ -10,7 +10,7 @@ import {
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import Message from '../../Components/Message';
 import Loader from '../../Components/Loader';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import {
   useGetProductsQuery,
   useDeleteProductMutation,
@@ -141,7 +141,7 @@ const ProductListScreen = () => {
     e.preventDefault();
 
     if (!categoryName.trim()) {
-      toast.error('Category name is required');
+      toast.warning('Category name is required');
       return;
     }
 
@@ -221,11 +221,13 @@ const ProductListScreen = () => {
   const deleteHandler = async (slug) => {
     if (window.confirm('Are you sure?')) {
       try {
-        await deleteProduct(slug);
+        await deleteProduct(slug).unwrap();
         toast.success('Product Deleted');
         refetch();
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        toast.error(
+          err?.data?.message || err.error || 'Unable to delete product',
+        );
       }
     }
   };

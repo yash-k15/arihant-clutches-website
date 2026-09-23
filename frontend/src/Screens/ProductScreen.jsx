@@ -10,7 +10,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Form, Image, Button, Modal } from 'react-bootstrap';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 import Rating from '../Components/Rating';
 import Loader from '../Components/Loader.jsx';
@@ -275,7 +275,7 @@ const ProductScreen = () => {
         toast.success('Added to wishlist');
       }
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || 'Unable to update your wishlist');
     }
   };
 
@@ -290,6 +290,7 @@ const ProductScreen = () => {
       }, 3000);
     } catch (error) {
       console.error('Failed to copy product link:', error);
+      toast.error('Unable to copy product link');
     }
   };
 
@@ -403,7 +404,7 @@ const ProductScreen = () => {
 
       refetch();
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || 'Unable to submit your review');
     }
   };
 
@@ -815,7 +816,7 @@ const ProductScreen = () => {
                       type='submit'
                       className='review-submit-btn'
                     >
-                      Submit Review
+                      {loadingReview ? 'Submitting...' : 'Submit Review'}
                     </Button>
                   </Form>
                 ) : (
