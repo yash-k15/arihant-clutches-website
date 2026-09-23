@@ -38,7 +38,6 @@
 .search-backdrop {
   position: fixed;
 
-  top: 82px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -48,12 +47,9 @@
   z-index: 9998;
 }
 
-/* ---------- Search Panel ---------- */
-
 .search-panel {
   position: fixed;
 
-  top: 82px;
   left: 0;
   right: 0;
 
@@ -171,14 +167,6 @@
 /* ---------- Mobile ---------- */
 
 @media (max-width: 767.98px) {
-  .search-backdrop {
-    top: 64px;
-  }
-
-  .search-panel {
-    top: 64px;
-  }
-
   .search-form {
     min-height: 58px;
     padding: 0 16px;

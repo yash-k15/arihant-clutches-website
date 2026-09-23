@@ -15,6 +15,44 @@ const SearchBox = () => {
   const panelRef = useRef(null);
   const inputRef = useRef(null);
 
+  const [searchTop, setSearchTop] = useState(0);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const updateSearchPosition = () => {
+      const isMobile = window.innerWidth <= 767.98;
+
+      const header = document.querySelector(
+        isMobile ? '.mobile-header' : '.header-top',
+      );
+
+      if (header) {
+        setSearchTop(header.getBoundingClientRect().bottom);
+      }
+    };
+
+    updateSearchPosition();
+
+    window.addEventListener('resize', updateSearchPosition);
+
+    return () => {
+      window.removeEventListener('resize', updateSearchPosition);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       const clickedTrigger = triggerRef.current?.contains(event.target);
@@ -64,11 +102,16 @@ const SearchBox = () => {
         <>
           <div
             className='search-backdrop'
+            style={{ top: `${searchTop}px` }}
             onClick={closeSearch}
             aria-hidden='true'
           />
 
-          <div className='search-panel' ref={panelRef}>
+          <div
+            className='search-panel'
+            ref={panelRef}
+            style={{ top: `${searchTop}px` }}
+          >
             <Form onSubmit={submitHandler} className='search-form'>
               <FaSearch className='search-field-icon' />
 
