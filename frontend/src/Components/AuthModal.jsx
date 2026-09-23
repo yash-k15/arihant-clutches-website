@@ -86,11 +86,21 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
   const registerHandler = async (e) => {
     e.preventDefault();
 
+    if (!name.trim()) {
+      toast.warning('Please enter your name');
+      return;
+    }
+
+    if (!email.trim()) {
+      toast.warning('Please enter your email address');
+      return;
+    }
+
     try {
       const res = await registerPhone({
         phone,
-        name,
-        email,
+        name: name.trim(),
+        email: email.trim(),
       }).unwrap();
 
       dispatch(setCredentials(res));
@@ -256,15 +266,22 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
                 type='text'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                placeholder='Enter your name'
+                required
               />
             </Form.Group>
 
             <Form.Group className='mb-3'>
-              <Form.Label>Email (Optional)</Form.Label>
+              <Form.Label>Email</Form.Label>
+              <Form.Text className='auth-form-helper'>
+                Your order receipt will be sent to this address.
+              </Form.Text>
               <Form.Control
                 type='email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder='Enter your email address'
+                required
               />
             </Form.Group>
 

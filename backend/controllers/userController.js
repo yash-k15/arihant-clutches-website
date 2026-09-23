@@ -703,8 +703,14 @@ const verifyPhoneChangeOTP = asyncHandler(async (req, res, next) => {
 // @access      Public
 const registerWithPhone = asyncHandler(async (req, res, next) => {
   const { name } = req.body;
-  const email = req.body.email?.trim() || undefined;
+  const email = req.body.email?.trim();
   const phone = String(req.body.phone).trim();
+
+  if (!email) {
+    return res.status(400).json({
+      message: 'Email is required',
+    });
+  }
 
   const existingUser = await User.findOne({ phone });
 
@@ -714,7 +720,7 @@ const registerWithPhone = asyncHandler(async (req, res, next) => {
 
   const user = await User.create({
     name,
-    email: email || undefined,
+    email,
     phone,
     password: crypto.randomBytes(32).toString('hex'),
     phoneVerified: true,
