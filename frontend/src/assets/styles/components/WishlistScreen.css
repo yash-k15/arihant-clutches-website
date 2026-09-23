@@ -297,6 +297,112 @@
   transform: translateY(-1px);
 }
 
+/* ==============================================
+   Clear Wishlist Confirmation
+   ============================================== */
+
+.wishlist-confirmation-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(44, 34, 34, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+.wishlist-confirmation-modal {
+  width: min(100%, 440px);
+  padding: 32px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 40px rgba(44, 34, 34, 0.18);
+  text-align: center;
+}
+
+.wishlist-confirmation-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #f5eee5;
+  color: #b08d57;
+  font-size: 1.35rem;
+}
+
+.wishlist-confirmation-modal h2 {
+  margin: 0 0 10px;
+  color: #2c2222;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.wishlist-confirmation-modal p {
+  margin: 0 auto;
+  max-width: 340px;
+  color: #6f6258;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.wishlist-confirmation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.wishlist-confirmation-cancel,
+.wishlist-confirmation-clear {
+  min-width: 130px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.wishlist-confirmation-cancel {
+  border: 1px solid #e8ddcd;
+  background: #fff;
+  color: #2c2222;
+}
+
+.wishlist-confirmation-cancel:hover {
+  border-color: #b08d57;
+  background: #fdfaf5;
+  color: #2c2222;
+}
+
+.wishlist-confirmation-clear {
+  border: 1px solid #2c2222;
+  background: #2c2222;
+  color: #fff;
+}
+
+.wishlist-confirmation-clear:hover {
+  border-color: #b08d57;
+  background: #b08d57;
+  transform: translateY(-1px);
+}
+
+.wishlist-confirmation-cancel:disabled,
+.wishlist-confirmation-clear:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
 @media (max-width: 767.98px) {
   .wishlist-actions {
     flex-direction: column;
@@ -310,5 +416,19 @@
 
   .wishlist-grid {
     row-gap: 0px !important;
+  }
+
+    .wishlist-confirmation-modal {
+    padding: 26px 20px;
+    border-radius: 15px;
+  }
+
+  .wishlist-confirmation-actions {
+    flex-direction: column-reverse;
+  }
+
+  .wishlist-confirmation-cancel,
+  .wishlist-confirmation-clear {
+    width: 100%;
   }
 }

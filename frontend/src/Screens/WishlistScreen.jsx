@@ -40,6 +40,8 @@ const WishlistScreen = () => {
 
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
+  const [showClearConfirmation, setShowClearConfirmation] = useState(false);
+
   const guestWishlistLoaded = useRef(false);
 
   const ITEMS_PER_PAGE = 8;
@@ -280,7 +282,7 @@ const WishlistScreen = () => {
             <button
               type='button'
               className='wishlist-action-btn'
-              onClick={clearWishlistHandler}
+              onClick={() => setShowClearConfirmation(true)}
               disabled={isClearing}
             >
               <IoCloseSharp />
@@ -377,6 +379,59 @@ const WishlistScreen = () => {
             onPageChange={setPage}
           />
         </>
+      )}
+
+      {showClearConfirmation && (
+        <div
+          className='wishlist-confirmation-backdrop'
+          onClick={() => {
+            if (!isClearing) {
+              setShowClearConfirmation(false);
+            }
+          }}
+        >
+          <div
+            className='wishlist-confirmation-modal'
+            role='dialog'
+            aria-modal='true'
+            aria-labelledby='clear-wishlist-title'
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className='wishlist-confirmation-icon'>
+              <IoCloseSharp />
+            </div>
+
+            <h2 id='clear-wishlist-title'>Clear Wishlist?</h2>
+
+            <p>
+              Are you sure you want to remove all items from your wishlist? This
+              action cannot be undone.
+            </p>
+
+            <div className='wishlist-confirmation-actions'>
+              <button
+                type='button'
+                className='wishlist-confirmation-cancel'
+                onClick={() => setShowClearConfirmation(false)}
+                disabled={isClearing}
+              >
+                Cancel
+              </button>
+
+              <button
+                type='button'
+                className='wishlist-confirmation-clear'
+                onClick={async () => {
+                  await clearWishlistHandler();
+                  setShowClearConfirmation(false);
+                }}
+                disabled={isClearing}
+              >
+                {isClearing ? 'Clearing...' : 'Clear Wishlist'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
