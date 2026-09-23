@@ -390,11 +390,21 @@ const ProductScreen = () => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
+    if (!rating) {
+      toast.warning('Please select a rating');
+      return;
+    }
+
+    if (!comment.trim()) {
+      toast.warning('Please enter a review');
+      return;
+    }
+
     try {
       await createReview({
-        productId: product._id,
+        productSlug: product.slug,
         rating,
-        comment,
+        comment: comment.trim(),
       }).unwrap();
 
       toast.success('Review submitted successfully');
@@ -404,7 +414,7 @@ const ProductScreen = () => {
 
       refetch();
     } catch (err) {
-      toast.error(err?.data?.message || 'Unable to submit your review');
+      toast.error(err?.data?.error || 'Unable to submit your review');
     }
   };
 
