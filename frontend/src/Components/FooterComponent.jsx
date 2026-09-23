@@ -1,7 +1,8 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { FaInstagram } from 'react-icons/fa';
+
 import { useAuthModal } from './AuthModalContext.jsx';
 import { logout } from '../slices/authSlice.js';
 
@@ -21,20 +22,47 @@ const FooterComponent = () => {
   return (
     <footer className='footer-section'>
       <Container>
-        <Row className='gy-4'>
+        {/* SOCIAL */}
+        <div className='footer-social'>
+          <p className='footer-social-label'>FOLLOW US</p>
+
+          <a
+            href='https://www.instagram.com/_clutches_arihant_fashions/'
+            target='_blank'
+            rel='noreferrer'
+            className='footer-social-link'
+            aria-label='Instagram'
+          >
+            <FaInstagram />
+          </a>
+        </div>
+
+        <div className='footer-divider' />
+
+        {/* MAIN FOOTER */}
+        <Row className='footer-main gy-4'>
           {/* BRAND */}
-          <Col md={4}>
-            <h5 className='footer-heading'>Arihant Clutches</h5>
-            <p className='footer-text'>
-              Premium purses and clutches crafted for elegance and everyday
-              style.
-            </p>
+          <Col lg={4} md={6}>
+            <div className='footer-brand'>
+              <h5 className='footer-heading footer-brand-heading'>
+                Arihant Clutches
+              </h5>
+
+              <span className='footer-heading-accent' />
+
+              <p className='footer-text'>
+                Premium purses and clutches crafted for elegance and everyday
+                style.
+              </p>
+            </div>
           </Col>
 
-          {/* QUICK LINKS */}
-          <Col md={4}>
-            <h5 className='footer-heading'>Quick Links</h5>
-            <ul className='list-unstyled'>
+          {/* SHOP */}
+          <Col lg={2} md={6}>
+            <h5 className='footer-heading'>Shop</h5>
+            <span className='footer-heading-accent' />
+
+            <ul className='footer-links list-unstyled'>
               <li>
                 <Link to='/' className='footer-link'>
                   Home
@@ -42,32 +70,14 @@ const FooterComponent = () => {
               </li>
 
               <li>
+                <Link to='/products' className='footer-link'>
+                  Shop All
+                </Link>
+              </li>
+
+              <li>
                 <Link to='/cart' className='footer-link'>
                   Cart
-                </Link>
-              </li>
-
-              <li>
-                <Link to='/contact' className='footer-link'>
-                  Contact Us
-                </Link>
-              </li>
-
-              <li>
-                <Link to='/shipping-policy' className='footer-link'>
-                  Shipping Policy
-                </Link>
-              </li>
-
-              <li>
-                <Link to='/international-orders' className='footer-link'>
-                  International Orders
-                </Link>
-              </li>
-
-              <li>
-                <Link to='/wholesale-orders' className='footer-link'>
-                  Wholesale
                 </Link>
               </li>
 
@@ -94,44 +104,80 @@ const FooterComponent = () => {
                   </li>
                 </>
               ) : (
-                <>
-                  <li>
-                    <button
-                      type='button'
-                      className='footer-link footer-auth-btn'
-                      onClick={() => navigate('/profile')}
-                    >
-                      My Account
-                    </button>
-                  </li>
-
-                  <li>
-                    <button
-                      type='button'
-                      className='footer-link footer-auth-btn'
-                      onClick={logoutHandler}
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </>
+                <li>
+                  <button
+                    type='button'
+                    className='footer-link footer-auth-btn'
+                    onClick={() => navigate('/profile')}
+                  >
+                    My Account
+                  </button>
+                </li>
               )}
             </ul>
           </Col>
 
+          {/* INFORMATION */}
+          <Col lg={3} md={6}>
+            <h5 className='footer-heading'>Information</h5>
+            <span className='footer-heading-accent' />
+
+            <ul className='footer-links list-unstyled'>
+              <li>
+                <Link to='/shipping-policy' className='footer-link'>
+                  Shipping Policy
+                </Link>
+              </li>
+
+              <li>
+                <Link to='/international-orders' className='footer-link'>
+                  International Orders
+                </Link>
+              </li>
+
+              <li>
+                <Link to='/wholesale-orders' className='footer-link'>
+                  Wholesale
+                </Link>
+              </li>
+
+              <li>
+                <Link to='/contact' className='footer-link'>
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </Col>
+
           {/* CONTACT */}
-          <Col md={4}>
+          <Col lg={3} md={6}>
             <h5 className='footer-heading'>Contact</h5>
-            <p className='mb-1'>Sneha Kothari</p>
-            <p className='mb-1'>support@arihantclutches.com</p>
-            <p className='mb-0'>+91 99090 25236</p>
+            <span className='footer-heading-accent' />
+
+            <div className='footer-contact'>
+              <p className='footer-contact-name'>Sneha Kothari</p>
+
+              <a
+                href='mailto:support@arihantclutches.com'
+                className='footer-contact-link'
+              >
+                support@arihantclutches.com
+              </a>
+
+              <a href='tel:+919909025236' className='footer-contact-link'>
+                +91 99090 25236
+              </a>
+            </div>
           </Col>
         </Row>
 
-        <hr className='border-light my-4' />
+        <div className='footer-divider footer-divider-bottom' />
 
-        <div className='footer-bottom text-center'>
-          © {new Date().getFullYear()} Arihant Clutches. All rights reserved.
+        {/* FOOTER BOTTOM */}
+        <div className='footer-bottom'>
+          <span>
+            © {new Date().getFullYear()} Arihant Clutches. All rights reserved.
+          </span>
         </div>
       </Container>
     </footer>
