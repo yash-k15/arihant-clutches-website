@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-import { FaSearch, FaTimes } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
+import { BsSearch } from 'react-icons/bs';
 
 const SearchBox = () => {
   const navigate = useNavigate();
@@ -113,7 +114,7 @@ const SearchBox = () => {
             style={{ top: `${searchTop}px` }}
           >
             <Form onSubmit={submitHandler} className='search-form'>
-              <FaSearch className='search-field-icon' />
+              <BsSearch className='search-field-icon' />
 
               <Form.Control
                 ref={inputRef}
@@ -152,7 +153,7 @@ const SearchBox = () => {
           aria-expanded={isOpen}
           onClick={() => setIsOpen((prev) => !prev)}
         >
-          <FaSearch />
+          <BsSearch />
         </button>
       </div>
 
