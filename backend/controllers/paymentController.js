@@ -6,7 +6,7 @@ import razorpay from '../utils/razorpay.js';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
 import calculateOrderPricing from '../utils/orderPricing.js';
-//import sendEmail from '../utils/sendEmail.js';
+import sendEmail from '../utils/sendEmail.js';
 import orderConfirmationEmail from '../utils/emailTemplates/orderConfirmationEmail.js';
 
 const createOrder = asyncHandler(async (req, res, next) => {
@@ -198,22 +198,20 @@ const verifyPayment = asyncHandler(async (req, res, next) => {
     // =========================
     // 4. EMAIL
     // =========================
-    // Send order confirmation email only when the user has an email address.
-    // Email sending is currently disabled.
-    // try {
-    //   await sendEmail({
-    //     email: req.user.email,
 
-    //     subject: 'Order Confirmation from Arihant Clutches',
-
-    //     html: orderConfirmationEmail(
-    //       order,
-    //       isCOD ? 'Cash on Delivery' : razorpay_payment_id,
-    //     ),
-    //   });
-    // } catch (err) {
-    //   console.log('Order email failed:', err.message);
-    // }
+    try {
+      await sendEmail({
+        email: req.user.email,
+        subject: 'Order Confirmation from Arihant Clutches',
+        html: orderConfirmationEmail(
+          createdOrder,
+          isCOD ? 'Cash on Delivery' : razorpay_payment_id,
+          req.user.email,
+        ),
+      });
+    } catch (err) {
+      console.log('Order email failed:', err.message);
+    }
 
     // =========================
     // 5. RESPONSE

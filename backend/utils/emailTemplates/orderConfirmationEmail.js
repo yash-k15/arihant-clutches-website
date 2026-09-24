@@ -1,242 +1,699 @@
-const orderConfirmationEmail = (order, paymentId) => {
+const orderConfirmationEmail = (order, paymentId, customerEmail) => {
+  const isCOD = paymentId === 'Cash on Delivery';
+
+  const customerName = order.shippingAddress?.fullName || 'Customer';
+
+  const getOrdinal = (day) => {
+    if (day >= 11 && day <= 13) {
+      return `${day}th`;
+    }
+
+    switch (day % 10) {
+      case 1:
+        return `${day}st`;
+      case 2:
+        return `${day}nd`;
+      case 3:
+        return `${day}rd`;
+      default:
+        return `${day}th`;
+    }
+  };
+
+  const orderDateValue = order.createdAt
+    ? new Date(order.createdAt)
+    : new Date();
+
+  const orderDate = `${getOrdinal(
+    orderDateValue.getDate(),
+  )} ${orderDateValue.toLocaleDateString('en-IN', {
+    month: 'long',
+    year: 'numeric',
+  })}`;
+
+  const paymentMethod = isCOD ? 'Cash on Delivery' : 'Online Payment';
+
+  const shippingPrice = Number(order.shippingPrice || 0);
+  const subtotal = Number(order.itemsPrice || 0);
+  const total = Number(order.totalPrice || 0);
+
+  const formatPrice = (price) => `₹${Number(price).toLocaleString('en-IN')}`;
+
+  const logoUrl =
+    'https://res.cloudinary.com/doykjfgps/image/upload/v1790252476/Arihant_Clutches_Logo.png';
+
   return `
-    <div style="
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f9f9f9;
-    ">
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        />
+        <title>Order Confirmation - Arihant Clutches</title>
+      </head>
 
-      <div style="
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 10px;
-        border: 1px solid #e5e5e5;
+      <body style="
+        margin: 0;
+        padding: 0;
+        background-color: #f7f3ee;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #2c2222;
       ">
+        <table
+          width="100%"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
+          style="
+            background-color: #f7f3ee;
+            padding: 30px 15px;
+          "
+        >
+          <tr>
+            <td align="center">
 
-        <h1 style="
-          color: #222;
-          margin-bottom: 10px;
-        ">
-          Thank You For Your Order!
-        </h1>
+              <!-- Main Container -->
+              <table
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="
+                  max-width: 680px;
+                  background-color: #ffffff;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  border: 1px solid #e8ddcd;
+                "
+              >
 
-        <p style="
-          font-size: 16px;
-          color: #555;
-        ">
-          Your order has been placed successfully.
-        </p>
+                <!-- Header -->
+                <tr>
+                  <td
+                    align="center"
+                    style="
+                      background-color: #2c2222;
+                      padding: 28px 25px 24px;
+                    "
+                  >
+                    <!-- Logo Container -->
+                    <table
+                      cellpadding="0"
+                      cellspacing="0"
+                      border="0"
+                      style="
+                        background-color: #fdfaf5;
+                        border-radius: 10px;
+                        margin: 0 auto;
+                      "
+                    >
+                      <tr>
+                        <td
+                          align="center"
+                          style="
+                            padding: 12px 20px;
+                          "
+                        >
+                          <img
+                            src="${logoUrl}"
+                            alt="Arihant Clutches"
+                            width="220"
+                            style="
+                              display: block;
+                              width: 220px;
+                              max-width: 100%;
+                              height: auto;
+                              margin: 0 auto;
+                            "
+                          />
+                        </td>
+                      </tr>
+                    </table>
 
-        <hr style="
-          margin: 25px 0;
-          border: none;
-          border-top: 1px solid #eee;
-        ">
-
-        <h2 style="
-          color: #333;
-          margin-bottom: 15px;
-        ">
-          Order Details
-        </h2>
-
-        <p>
-          <strong>Order ID:</strong>
-          ${order._id}
-        </p>
-
-        <p>
-          <strong>Payment ID:</strong>
-          ${paymentId}
-        </p>
-
-        <p>
-          <strong>Order Date:</strong>
-          ${new Date().toLocaleDateString()}
-        </p>
-
-        <hr style="
-          margin: 25px 0;
-          border: none;
-          border-top: 1px solid #eee;
-        ">
-
-        <h2 style="
-          color: #333;
-          margin-bottom: 15px;
-        ">
-          Items Ordered
-        </h2>
-
-        <table style="
-          width: 100%;
-          border-collapse: collapse;
-        ">
-
-          <thead>
-            <tr style="
-              background-color: #f1f1f1;
-            ">
-              <th style="
-                text-align: left;
-                padding: 12px;
-                border: 1px solid #ddd;
-              ">
-                Product
-              </th>
-
-              <th style="
-                text-align: center;
-                padding: 12px;
-                border: 1px solid #ddd;
-              ">
-                Qty
-              </th>
-
-              <th style="
-                text-align: right;
-                padding: 12px;
-                border: 1px solid #ddd;
-              ">
-                Price
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-            ${order.orderItems
-              .map(
-                (item) => `
-                  <tr>
-                    <td style="
-                      padding: 12px;
-                      border: 1px solid #ddd;
+                    <div style="
+                      color: #fdfaf5;
+                      font-size: 13px;
+                      margin-top: 16px;
+                      letter-spacing: 0.3px;
                     ">
-                      ${item.name}
-                    </td>
+                      Thank you for shopping with us
+                    </div>
+                  </td>
+                </tr>
 
-                    <td style="
-                      text-align: center;
-                      padding: 12px;
-                      border: 1px solid #ddd;
+                <!-- Greeting -->
+                <tr>
+                  <td style="
+                    padding: 35px 35px 20px;
+                  ">
+                    <h1 style="
+                      margin: 0 0 12px;
+                      color: #2c2222;
+                      font-size: 26px;
+                      line-height: 1.3;
                     ">
-                      ${item.qty}
-                    </td>
+                      Thank You for Your Order!
+                    </h1>
 
-                    <td style="
-                      text-align: right;
-                      padding: 12px;
-                      border: 1px solid #ddd;
+                    <p style="
+                      margin: 0;
+                      color: #6f6258;
+                      font-size: 15px;
+                      line-height: 1.6;
                     ">
-                      ₹${item.price}
-                    </td>
-                  </tr>
-                `,
-              )
-              .join('')}
+                      Hi ${customerName}, your order has been placed
+                      successfully. We've received your order and will
+                      begin preparing it shortly.
+                    </p>
 
-          </tbody>
+                    <p style="
+                      margin: 10px 0 0;
+                      color: #8a7b6d;
+                      font-size: 13px;
+                      line-height: 1.6;
+                    ">
+                      You can view your orders anytime from your profile.
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Order Information -->
+                <tr>
+                  <td style="
+                    padding: 10px 35px 25px;
+                  ">
+                    <table
+                      width="100%"
+                      cellpadding="0"
+                      cellspacing="0"
+                      border="0"
+                      style="
+                        background-color: #fdfaf5;
+                        border: 1px solid #e8ddcd;
+                        border-radius: 10px;
+                      "
+                    >
+                      <!-- Order ID / Date -->
+                      <tr>
+                        <td style="
+                          width: 50%;
+                          padding: 18px;
+                          vertical-align: top;
+                        ">
+                          <div style="
+                            color: #9a8979;
+                            font-size: 11px;
+                            font-weight: 700;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            margin-bottom: 7px;
+                          ">
+                            Order Number
+                          </div>
+
+                          <div style="
+                            color: #2c2222;
+                            font-size: 15px;
+                            font-weight: 600;
+                            word-break: break-all;
+                          ">
+                            ${order._id}
+                          </div>
+                        </td>
+
+                        <td style="
+                          width: 50%;
+                          padding: 18px;
+                          vertical-align: top;
+                        ">
+                          <div style="
+                            color: #9a8979;
+                            font-size: 11px;
+                            font-weight: 700;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            margin-bottom: 7px;
+                          ">
+                            Order Date
+                          </div>
+
+                          <div style="
+                            color: #2c2222;
+                            font-size: 15px;
+                            font-weight: 600;
+                          ">
+                            ${orderDate}
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- Payment -->
+                      <tr>
+                        <td style="
+                          padding: 0 18px 18px;
+                          vertical-align: top;
+                        ">
+                          <div style="
+                            color: #9a8979;
+                            font-size: 11px;
+                            font-weight: 700;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            margin-bottom: 6px;
+                          ">
+                            Payment Method
+                          </div>
+
+                          <div style="
+                            color: #2c2222;
+                            font-size: 15px;
+                            font-weight: 600;
+                          ">
+                            ${paymentMethod}
+                          </div>
+                        </td>
+
+                        ${
+                          !isCOD
+                            ? `
+                              <td style="
+                                padding: 0 18px 18px;
+                                vertical-align: top;
+                              ">
+                                <div style="
+                                  color: #9a8979;
+                                  font-size: 11px;
+                                  font-weight: 700;
+                                  letter-spacing: 1px;
+                                  text-transform: uppercase;
+                                  margin-bottom: 6px;
+                                ">
+                                  Payment ID
+                                </div>
+
+                                <div style="
+                                  color: #2c2222;
+                                  font-size: 12px;
+                                  font-weight: 600;
+                                  word-break: break-all;
+                                ">
+                                  ${paymentId}
+                                </div>
+                              </td>
+                            `
+                            : '<td></td>'
+                        }
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Items -->
+                <tr>
+                  <td style="
+                    padding: 5px 35px 25px;
+                  ">
+                    <h2 style="
+                      margin: 0 0 15px;
+                      color: #2c2222;
+                      font-size: 18px;
+                    ">
+                      Your Items
+                    </h2>
+
+                    <table
+                      width="100%"
+                      cellpadding="0"
+                      cellspacing="0"
+                      border="0"
+                      style="
+                        border-collapse: collapse;
+                      "
+                    >
+                      <thead>
+                        <tr style="
+                          border-bottom: 2px solid #e8ddcd;
+                        ">
+                          <th
+                            align="left"
+                            style="
+                              padding: 10px 5px;
+                              color: #9a8979;
+                              font-size: 11px;
+                              text-transform: uppercase;
+                              letter-spacing: 0.5px;
+                            "
+                          >
+                            Product
+                          </th>
+
+                          <th
+                            align="center"
+                            style="
+                              padding: 10px 5px;
+                              color: #9a8979;
+                              font-size: 11px;
+                              text-transform: uppercase;
+                              letter-spacing: 0.5px;
+                            "
+                          >
+                            Qty
+                          </th>
+
+                          <th
+                            align="right"
+                            style="
+                              padding: 10px 5px;
+                              color: #9a8979;
+                              font-size: 11px;
+                              text-transform: uppercase;
+                              letter-spacing: 0.5px;
+                            "
+                          >
+                            Price
+                          </th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        ${order.orderItems
+                          .map(
+                            (item) => `
+                              <tr style="
+                                border-bottom: 1px solid #eee6dc;
+                              ">
+                                <td style="
+                                  padding: 15px 5px;
+                                  color: #2c2222;
+                                  font-size: 14px;
+                                ">
+                                  <div style="
+                                    font-weight: 600;
+                                    margin-bottom: 4px;
+                                  ">
+                                    ${item.name}
+                                  </div>
+
+                                  ${
+                                    item.color
+                                      ? `
+                                        <div style="
+                                          color: #8a7b6d;
+                                          font-size: 12px;
+                                        ">
+                                          Color: ${item.color}
+                                        </div>
+                                      `
+                                      : ''
+                                  }
+                                </td>
+
+                                <td
+                                  align="center"
+                                  style="
+                                    padding: 15px 5px;
+                                    color: #6f6258;
+                                    font-size: 14px;
+                                  "
+                                >
+                                  ${item.qty}
+                                </td>
+
+                                <td
+                                  align="right"
+                                  style="
+                                    padding: 15px 5px;
+                                    color: #2c2222;
+                                    font-size: 14px;
+                                    font-weight: 600;
+                                  "
+                                >
+                                  ${formatPrice(item.price * item.qty)}
+                                </td>
+                              </tr>
+                            `,
+                          )
+                          .join('')}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Order Summary -->
+                <tr>
+                  <td style="
+                    padding: 5px 35px 30px;
+                  ">
+                    <h2 style="
+                      margin: 0 0 15px;
+                      color: #2c2222;
+                      font-size: 18px;
+                    ">
+                      Order Summary
+                    </h2>
+
+                    <table
+                      width="100%"
+                      cellpadding="0"
+                      cellspacing="0"
+                      border="0"
+                    >
+                      <tr>
+                        <td style="
+                          padding: 6px 0;
+                          color: #6f6258;
+                          font-size: 14px;
+                        ">
+                          Subtotal
+                        </td>
+
+                        <td
+                          align="right"
+                          style="
+                            padding: 6px 0;
+                            color: #2c2222;
+                            font-size: 14px;
+                          "
+                        >
+                          ${formatPrice(subtotal)}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="
+                          padding: 6px 0;
+                          color: #6f6258;
+                          font-size: 14px;
+                        ">
+                          Shipping
+                        </td>
+
+                        <td
+                          align="right"
+                          style="
+                            padding: 6px 0;
+                            color: #2c2222;
+                            font-size: 14px;
+                          "
+                        >
+                          ${formatPrice(shippingPrice)}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td
+                          colspan="2"
+                          style="
+                            padding-top: 15px;
+                            border-top: 1px solid #e8ddcd;
+                          "
+                        ></td>
+                      </tr>
+
+                      <tr>
+                        <td style="
+                          padding: 5px 0;
+                          color: #2c2222;
+                          font-size: 17px;
+                          font-weight: 700;
+                        ">
+                          Total
+                        </td>
+
+                        <td
+                          align="right"
+                          style="
+                            padding: 5px 0;
+                            color: #b08d57;
+                            font-size: 20px;
+                            font-weight: 700;
+                          "
+                        >
+                          ${formatPrice(total)}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Shipping Address -->
+                <tr>
+                  <td style="
+                    padding: 0 35px 30px;
+                  ">
+                    <h2 style="
+                      margin: 0 0 15px;
+                      color: #2c2222;
+                      font-size: 18px;
+                    ">
+                      Shipping Address
+                    </h2>
+
+                    <table
+                      width="100%"
+                      cellpadding="0"
+                      cellspacing="0"
+                      border="0"
+                      style="
+                        background-color: #fdfaf5;
+                        border: 1px solid #e8ddcd;
+                        border-radius: 10px;
+                      "
+                    >
+                      <tr>
+                        <td style="
+                          padding: 18px;
+                          color: #6f6258;
+                          font-size: 14px;
+                          line-height: 1.7;
+                        ">
+                          <strong style="
+                            color: #2c2222;
+                          ">
+                            ${order.shippingAddress.fullName}
+                          </strong>
+
+                          <br />
+
+                          ${order.shippingAddress.addressLine1}
+
+                          <br />
+
+                          ${
+                            order.shippingAddress.addressLine2
+                              ? `${order.shippingAddress.addressLine2}<br />`
+                              : ''
+                          }
+
+                          ${order.shippingAddress.city},
+                          ${order.shippingAddress.state}
+
+                          <br />
+
+                          ${order.shippingAddress.postalCode},
+                          ${order.shippingAddress.country}
+
+                          <br />
+
+                          <span style="
+                            color: #8a7b6d;
+                          ">
+                            Phone: ${order.shippingAddress.phone}
+                          </span>
+
+                          <br />
+
+                          <span style="
+                            color: #8a7b6d;
+                          ">
+                            Email: ${customerEmail}
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Support -->
+                <tr>
+                  <td
+                    align="center"
+                    style="
+                      padding: 5px 35px 35px;
+                    "
+                  >
+                    <div style="
+                      height: 1px;
+                      background-color: #e8ddcd;
+                      margin-bottom: 25px;
+                    "></div>
+
+                    <p style="
+                      margin: 0 0 8px;
+                      color: #2c2222;
+                      font-size: 14px;
+                      font-weight: 600;
+                    ">
+                      Need help with your order?
+                    </p>
+
+                    <p style="
+                      margin: 0;
+                      color: #8a7b6d;
+                      font-size: 13px;
+                      line-height: 1.6;
+                    ">
+                      Contact us at
+                      <a
+                        href="mailto:arihantfashionsindia@gmail.com"
+                        style="
+                          color: #b08d57;
+                          text-decoration: none;
+                          font-weight: 600;
+                        "
+                      >
+                        arihantfashionsindia@gmail.com
+                      </a>
+                    </p>
+                  </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                  <td
+                    align="center"
+                    style="
+                      background-color: #2c2222;
+                      padding: 22px;
+                    "
+                  >
+                    <div style="
+                      color: #b08d57;
+                      font-size: 14px;
+                      font-weight: 700;
+                      letter-spacing: 0.8px;
+                      margin-bottom: 6px;
+                    ">
+                      ARIHANT CLUTCHES
+                    </div>
+
+                    <div style="
+                      color: #cfc4b8;
+                      font-size: 11px;
+                    ">
+                      Thank you for choosing Arihant Clutches.
+                    </div>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
         </table>
-
-        <hr style="
-          margin: 25px 0;
-          border: none;
-          border-top: 1px solid #eee;
-        ">
-
-        <h2 style="
-          color: #333;
-          margin-bottom: 15px;
-        ">
-          Payment Summary
-        </h2>
-
-        <p>
-          <strong>Items Price:</strong>
-          ₹${order.itemsPrice}
-        </p>
-
-        <p>
-          <strong>Shipping:</strong>
-          ₹${order.shippingPrice}
-        </p>
-
-        <p>
-          <strong>Tax:</strong>
-          ₹${order.taxPrice}
-        </p>
-
-        <p style="
-          font-size: 18px;
-          font-weight: bold;
-          margin-top: 15px;
-        ">
-          Total: ₹${order.totalPrice}
-        </p>
-
-        <hr style="
-          margin: 25px 0;
-          border: none;
-          border-top: 1px solid #eee;
-        ">
-
-        <h2 style="
-          color: #333;
-          margin-bottom: 15px;
-        ">
-          Shipping Address
-        </h2>
-
-        <p style="margin: 0 0 4px;">
-          ${order.shippingAddress.fullName}
-        </p>
-
-        <p style="margin: 0 0 4px;">
-          ${order.shippingAddress.phone}
-        </p>
-
-        <p style="margin: 0 0 4px;">
-          ${order.shippingAddress.addressLine1}
-        </p>
-
-        ${
-          order.shippingAddress.addressLine2
-            ? `
-              <p style="margin: 0 0 4px;">
-                ${order.shippingAddress.addressLine2}
-              </p>
-            `
-            : ''
-        }
-
-        <p style="margin: 0 0 4px;">
-          ${order.shippingAddress.city}, ${order.shippingAddress.state}
-        </p>
-
-        <p style="margin: 0;">
-          ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}
-        </p>
-
-        <hr style="
-          margin: 25px 0;
-          border: none;
-          border-top: 1px solid #eee;
-        ">
-
-        <p style="
-          color: #777;
-          font-size: 14px;
-          margin-top: 30px;
-        ">
-          If you have any questions regarding your order,
-          please contact our support team.
-        </p>
-
-      </div>
-    </div>
+      </body>
+    </html>
   `;
 };
 
