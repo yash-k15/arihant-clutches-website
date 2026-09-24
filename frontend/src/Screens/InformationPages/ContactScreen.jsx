@@ -1,11 +1,82 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { FaInstagram, FaPhoneAlt, FaWhatsapp } from 'react-icons/fa';
 import { FiArrowRight, FiChevronDown, FiMail } from 'react-icons/fi';
+
+import { useSendContactMessageMutation } from '../../slices/contactApiSlice.js';
+
+import { toast } from 'sonner';
 
 import '../../assets/styles/components/ContactScreen.css';
 
 const ContactScreen = () => {
   const formRef = useRef(null);
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [sendContactMessage, { isLoading: sendingMessage }] =
+    useSendContactMessageMutation();
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (userInfo) {
+      setName(userInfo.name || '');
+      setEmail(userInfo.email || '');
+      setPhone(userInfo.phone || '');
+    } else {
+      setName('');
+      setEmail('');
+      setPhone('');
+    }
+  }, [userInfo]);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    if (!name.trim()) {
+      toast.warning('Please enter your name');
+      return;
+    }
+
+    if (!email.trim()) {
+      toast.warning('Please enter your email address');
+      return;
+    }
+
+    if (!subject) {
+      toast.warning('Please select a subject');
+      return;
+    }
+
+    if (!message.trim()) {
+      toast.warning('Please enter your message');
+      return;
+    }
+
+    try {
+      await sendContactMessage({
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        subject,
+        message: message.trim(),
+      }).unwrap();
+
+      toast.success('Message sent successfully');
+
+      setSubject('');
+      setMessage('');
+    } catch (err) {
+      toast.error(
+        err?.data?.message || 'Unable to send your message. Please try again.',
+      );
+    }
+  };
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({
@@ -141,24 +212,39 @@ const ContactScreen = () => {
           </p>
         </div>
 
-        <form className='contact-form'>
+        <form className='contact-form' onSubmit={submitHandler}>
           <div className='contact-form-grid'>
-            <input type='text' placeholder='Your Name' aria-label='Your Name' />
+            <input
+              type='text'
+              placeholder='Your Name'
+              aria-label='Your Name'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
 
             <input
               type='email'
               placeholder='Email Address'
               aria-label='Email Address'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              readOnly={!!userInfo}
             />
 
             <input
               type='tel'
               placeholder='Phone Number'
               aria-label='Phone Number'
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
 
             <div className='contact-form-select'>
-              <select defaultValue='' aria-label='Subject'>
+              <select
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                aria-label='Subject'
+              >
                 <option value='' disabled>
                   Subject
                 </option>
@@ -178,10 +264,16 @@ const ContactScreen = () => {
             placeholder='Your Message'
             aria-label='Your Message'
             rows='7'
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           />
 
-          <button type='submit' className='contact-form-submit'>
-            SEND MESSAGE
+          <button
+            type='submit'
+            className='contact-form-submit'
+            disabled={sendingMessage}
+          >
+            {sendingMessage ? 'SENDING...' : 'SEND MESSAGE'}
             <FiArrowRight />
           </button>
         </form>
