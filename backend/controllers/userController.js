@@ -6,6 +6,7 @@ import ErrorResponse from '../utils/errorResponse.js';
 import generateToken from '../utils/generateToken.js';
 import resetPasswordEmail from '../utils/emailTemplates/resetPasswordEmail.js';
 import jwt from 'jsonwebtoken';
+import escapeRegex from '../utils/escapeRegex.js';
 
 // @desc    Auth user and get token
 // @route   POST /api/users/login
@@ -399,7 +400,7 @@ const getUsers = asyncHandler(async (req, res, next) => {
   // Search
   if (req.query.keyword) {
     const searchRegex = {
-      $regex: req.query.keyword,
+      $regex: escapeRegex(req.query.keyword),
       $options: 'i',
     };
 

@@ -3,6 +3,7 @@ import ErrorResponse from '../utils/errorResponse.js';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
 import User from '../models/userModel.js';
+import escapeRegex from '../utils/escapeRegex.js';
 
 // @desc    Create new Order
 // @route   POST /api/orders
@@ -142,7 +143,7 @@ const getOrders = asyncHandler(async (req, res, next) => {
   // Search
   if (req.query.keyword) {
     const searchRegex = {
-      $regex: req.query.keyword,
+      $regex: escapeRegex(req.query.keyword),
       $options: 'i',
     };
 
@@ -170,7 +171,7 @@ const getOrders = asyncHandler(async (req, res, next) => {
       $expr: {
         $regexMatch: {
           input: { $toString: '$_id' },
-          regex: req.query.keyword,
+          regex: escapeRegex(req.query.keyword),
           options: 'i',
         },
       },

@@ -2,6 +2,7 @@ import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import Product, { Category } from '../models/productModel.js';
 import slugify from 'slugify';
+import escapeRegex from '../utils/escapeRegex.js';
 
 // @desc    Get all Products
 // @route   GET /api/products
@@ -20,7 +21,7 @@ const getProducts = asyncHandler(async (req, res, next) => {
 
   if (req.query.keyword) {
     const searchRegex = {
-      $regex: req.query.keyword,
+      $regex: escapeRegex(req.query.keyword),
       $options: 'i',
     };
 
@@ -35,7 +36,7 @@ const getProducts = asyncHandler(async (req, res, next) => {
 
   if (req.query.adminSearch) {
     const searchRegex = {
-      $regex: req.query.adminSearch,
+      $regex: escapeRegex(req.query.adminSearch),
       $options: 'i',
     };
 
@@ -419,7 +420,7 @@ const getCategoryCounts = asyncHandler(async (req, res) => {
 
   if (req.query.keyword) {
     filters.name = {
-      $regex: req.query.keyword,
+      $regex: escapeRegex(req.query.keyword),
       $options: 'i',
     };
   }
@@ -506,7 +507,10 @@ const createCategory = asyncHandler(async (req, res) => {
   const trimmedName = name.trim();
 
   const existingCategory = await Category.findOne({
-    name: { $regex: `^${trimmedName}$`, $options: 'i' },
+    name: {
+      $regex: `^${escapeRegex(trimmedName)}$`,
+      $options: 'i',
+    },
   });
 
   if (existingCategory) {
@@ -545,7 +549,10 @@ const updateCategory = asyncHandler(async (req, res, next) => {
   const trimmedName = name.trim();
 
   const existingCategory = await Category.findOne({
-    name: { $regex: `^${trimmedName}$`, $options: 'i' },
+    name: {
+      $regex: `^${escapeRegex(trimmedName)}$`,
+      $options: 'i',
+    },
     _id: { $ne: category._id },
   });
 
