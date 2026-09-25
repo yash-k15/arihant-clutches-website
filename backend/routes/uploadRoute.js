@@ -7,6 +7,8 @@ import slugify from 'slugify';
 import cloudinary from '../config/cloudinary.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 
+import { protect, admin } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
 
 const storage = multer.memoryStorage();
@@ -78,7 +80,7 @@ const uploadToCloudinary = (fileBuffer, folder, publicId, resourceType) =>
 /*
  * Upload product images
  */
-router.post('/', (req, res) => {
+router.post('/', protect, admin, (req, res) => {
   uploadMultipleImages(req, res, async function (err) {
     if (err) {
       return res.status(400).send({
@@ -141,7 +143,7 @@ router.post('/', (req, res) => {
 /*
  * Upload product video
  */
-router.post('/video', (req, res) => {
+router.post('/video', protect, admin, (req, res) => {
   uploadVideo(req, res, async function (err) {
     if (err) {
       return res.status(400).send({
@@ -220,7 +222,7 @@ const deleteProductImage = asyncHandler(async (req, res) => {
   });
 });
 
-router.delete('/', deleteProductImage);
+router.delete('/', protect, admin, deleteProductImage);
 
 /*
  * Delete product video
@@ -243,6 +245,6 @@ const deleteProductVideo = asyncHandler(async (req, res) => {
   });
 });
 
-router.delete('/video', deleteProductVideo);
+router.delete('/video', protect, admin, deleteProductVideo);
 
 export default router;
