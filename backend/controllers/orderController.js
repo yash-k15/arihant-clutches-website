@@ -92,6 +92,13 @@ const getOrderById = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Order not found', 404));
   }
 
+  if (
+    !req.user.isAdmin &&
+    order.user._id.toString() !== req.user._id.toString()
+  ) {
+    return next(new ErrorResponse('Not authorized to view this order', 403));
+  }
+
   res.status(200).json(order);
 });
 
