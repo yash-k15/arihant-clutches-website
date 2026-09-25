@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import {
   FiEdit2,
@@ -13,6 +13,8 @@ import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import Message from '../Components/Message.jsx';
 import Loader from '../Components/Loader.jsx';
+import Paginate from '../Components/Paginate.jsx';
+
 import {
   useProfileMutation,
   useSendOtpMutation,
@@ -41,6 +43,9 @@ const ProfileScreen = () => {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
   const [openAddressMenu, setOpenAddressMenu] = useState(null);
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const ordersSectionRef = useRef(null);
 
   const [isChangingPhone, setIsChangingPhone] = useState(false);
   const [newPhone, setNewPhone] = useState('');
@@ -87,7 +92,13 @@ const ProfileScreen = () => {
   const [deleteUserAddress, { isLoading: deletingAddress }] =
     useDeleteUserAddressMutation();
 
-  const { data: orders, isLoading, error } = useGetMyOrdersQuery();
+  const {
+    data: ordersData,
+    isLoading,
+    error,
+  } = useGetMyOrdersQuery(pageNumber);
+
+  const orders = ordersData?.orders || [];
 
   useEffect(() => {
     if (userInfo) {
@@ -813,7 +824,7 @@ const ProfileScreen = () => {
         </section>
       )}
 
-      <section className='profile-orders-section'>
+      <section ref={ordersSectionRef} className='profile-orders-section'>
         <div className='profile-section-heading'>
           <div>
             <h2>My Orders</h2>
@@ -821,7 +832,14 @@ const ProfileScreen = () => {
           </div>
           {orders?.length > 0 && (
             <span className='profile-order-count'>
-              {orders.length} {orders.length === 1 ? 'Order' : 'Orders'}
+              {ordersData?.pages > 1
+                ? `Showing ${(ordersData.page - 1) * 5 + 1}–${Math.min(
+                    ordersData.page * 5,
+                    ordersData.totalOrders,
+                  )} of ${ordersData.totalOrders} orders`
+                : `${ordersData.totalOrders} ${
+                    ordersData.totalOrders === 1 ? 'Order' : 'Orders'
+                  }`}
             </span>
           )}
         </div>
@@ -846,85 +864,100 @@ const ProfileScreen = () => {
             </Link>
           </div>
         ) : (
-          <div className='profile-orders-list'>
-            {orders.map((order) => {
-              const paymentStatus = getPaymentStatus(order);
-              const deliveryStatus = getDeliveryStatus(order);
-              const PaymentIcon = paymentStatus.icon;
-              const DeliveryIcon = deliveryStatus.icon;
+          <>
+            <div className='profile-orders-list'>
+              {orders.map((order) => {
+                const paymentStatus = getPaymentStatus(order);
+                const deliveryStatus = getDeliveryStatus(order);
+                const PaymentIcon = paymentStatus.icon;
+                const DeliveryIcon = deliveryStatus.icon;
 
-              return (
-                <article className='profile-order-card' key={order._id}>
-                  <div className='profile-order-header'>
-                    <div>
-                      <span className='profile-order-label'>Order</span>
-                      <div className='profile-order-id-wrapper'>
-                        <strong className='profile-order-id'>
-                          #{order._id.slice(-8)}
+                return (
+                  <article className='profile-order-card' key={order._id}>
+                    <div className='profile-order-header'>
+                      <div>
+                        <span className='profile-order-label'>Order</span>
+                        <div className='profile-order-id-wrapper'>
+                          <strong className='profile-order-id'>
+                            #{order._id.slice(-8)}
+                          </strong>
+
+                          <button
+                            type='button'
+                            className='profile-order-copy-button'
+                            onClick={() => copyOrderId(order._id)}
+                            aria-label='Copy Order ID'
+                            title='Copy Order ID'
+                          >
+                            <FiCopy />
+                          </button>
+                        </div>
+                      </div>
+                      <span className='profile-order-date'>
+                        {new Date(order.createdAt).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </div>
+
+                    <div className='profile-order-details'>
+                      <div className='profile-order-detail'>
+                        <span>Total</span>
+                        <strong>
+                          ₹{Number(order.totalPrice).toLocaleString('en-IN')}
                         </strong>
+                      </div>
 
-                        <button
-                          type='button'
-                          className='profile-order-copy-button'
-                          onClick={() => copyOrderId(order._id)}
-                          aria-label='Copy Order ID'
-                          title='Copy Order ID'
+                      <div className='profile-order-detail'>
+                        <span>Payment</span>
+                        <span
+                          className={`profile-status ${paymentStatus.className}`}
                         >
-                          <FiCopy />
-                        </button>
+                          <PaymentIcon />
+                          {paymentStatus.label}
+                        </span>
+                      </div>
+
+                      <div className='profile-order-detail'>
+                        <span>Delivery</span>
+                        <span
+                          className={`profile-status ${deliveryStatus.className}`}
+                        >
+                          <DeliveryIcon />
+                          {deliveryStatus.label}
+                        </span>
                       </div>
                     </div>
-                    <span className='profile-order-date'>
-                      {new Date(order.createdAt).toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                      })}
-                    </span>
-                  </div>
 
-                  <div className='profile-order-details'>
-                    <div className='profile-order-detail'>
-                      <span>Total</span>
-                      <strong>
-                        ₹{Number(order.totalPrice).toLocaleString('en-IN')}
-                      </strong>
-                    </div>
-
-                    <div className='profile-order-detail'>
-                      <span>Payment</span>
-                      <span
-                        className={`profile-status ${paymentStatus.className}`}
+                    <div className='profile-order-footer'>
+                      <Link
+                        to={`/order/${order._id}`}
+                        className='profile-view-order-button'
                       >
-                        <PaymentIcon />
-                        {paymentStatus.label}
-                      </span>
+                        View Order
+                        <span aria-hidden='true'>→</span>
+                      </Link>
                     </div>
+                  </article>
+                );
+              })}
+            </div>
+            <Paginate
+              pages={ordersData?.pages || 1}
+              page={ordersData?.page || 1}
+              isClientSide
+              onPageChange={(newPage) => {
+                setPageNumber(newPage);
 
-                    <div className='profile-order-detail'>
-                      <span>Delivery</span>
-                      <span
-                        className={`profile-status ${deliveryStatus.className}`}
-                      >
-                        <DeliveryIcon />
-                        {deliveryStatus.label}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className='profile-order-footer'>
-                    <Link
-                      to={`/order/${order._id}`}
-                      className='profile-view-order-button'
-                    >
-                      View Order
-                      <span aria-hidden='true'>→</span>
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+                ordersSectionRef.current?.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                });
+              }}
+            />
+          </>
         )}
       </section>
     </div>
