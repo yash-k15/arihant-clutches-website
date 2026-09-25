@@ -26,14 +26,19 @@ import {
   changeAdminPassword,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
+import {
+  authLimiter,
+  otpLimiter,
+  passwordResetLimiter,
+} from '../middleware/rateLimitMiddleware.js';
 
 import { sendMSG91OTP } from '../utils/msg91Service.js';
 
 const router = express.Router();
 
-router.post('/login', authUser);
+router.post('/login', authLimiter, authUser);
 
-router.route('/').post(registerUser).get(protect, admin, getUsers);
+router.route('/').post(authLimiter, registerUser).get(protect, admin, getUsers);
 
 router.post('/logout', logoutUser);
 
@@ -57,14 +62,25 @@ router.put('/addresses/:addressId/default', protect, setDefaultUserAddress);
 router.put('/change-phone', protect, changeUserPhone);
 
 router.post('/verify-phone-change-otp', protect, verifyPhoneChangeOTP);
-router.post('/send-password-change-otp', protect, sendPasswordChangeOTP);
-router.post('/verify-password-change-otp', protect, verifyPasswordChangeOTP);
+router.post(
+  '/send-password-change-otp',
+  protect,
+  otpLimiter,
+  sendPasswordChangeOTP,
+);
+
+router.post(
+  '/verify-password-change-otp',
+  protect,
+  otpLimiter,
+  verifyPasswordChangeOTP,
+);
 
 router.put('/change-password', protect, changeAdminPassword);
 
-router.post('/send-otp', sendOTP);
-router.post('/verify-otp', verifyOTP);
-router.post('/register-phone', registerWithPhone);
+router.post('/send-otp', otpLimiter, sendOTP);
+router.post('/verify-otp', otpLimiter, verifyOTP);
+router.post('/register-phone', authLimiter, registerWithPhone);
 
 router.get('/test-msg91', async (req, res) => {
   const result = await sendMSG91OTP('9167015147');
@@ -78,7 +94,7 @@ router
   .put(protect, admin, updateUser)
   .delete(protect, admin, deleteUser);
 
-router.post('/forgotpassword', forgotPassword);
-router.put('/resetpassword/:token', resetPassword);
+router.post('/forgotpassword', passwordResetLimiter, forgotPassword);
+router.put('/resetpassword/:token', passwordResetLimiter, resetPassword);
 
 export default router;
