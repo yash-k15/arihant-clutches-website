@@ -10,7 +10,6 @@ import { useGetCategoriesQuery } from '../slices/productsApiSlice.js';
 import { logout } from '../slices/authSlice.js';
 
 import SearchBox from './SearchBox.jsx';
-import logo from '../assets/Arihant_Clutches_Logo.png';
 import { useCartDrawer } from './CartDrawerContext.jsx';
 import { useAuthModal } from './AuthModalContext.jsx';
 import AnnouncementBar from './AnnouncementBar.jsx';
@@ -18,6 +17,9 @@ import AnnouncementBar from './AnnouncementBar.jsx';
 import '../assets/styles/components/Header.css';
 import '../assets/styles/components/SearchBox.css';
 // import { clearCartItems } from '../slices/cartSlice.js';
+
+const LOGO_URL =
+  'https://res.cloudinary.com/doykjfgps/image/upload/v1790252476/Arihant_Clutches_Logo.png';
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -76,7 +78,7 @@ const Header = () => {
                 {/* Brand */}
                 <Link to='/' className='header-brand'>
                   <img
-                    src={logo}
+                    src={LOGO_URL}
                     alt='Arihant Clutches'
                     className='header-logo'
                   />
@@ -236,7 +238,7 @@ const Header = () => {
 
               <Link to='/' className='mobile-brand'>
                 <img
-                  src={logo}
+                  src={LOGO_URL}
                   alt='Arihant Clutches'
                   className='mobile-logo'
                 />
@@ -283,7 +285,7 @@ const Header = () => {
           <Offcanvas.Header closeButton>
             <Offcanvas.Title className='mobile-drawer-brand'>
               <img
-                src={logo}
+                src={LOGO_URL}
                 alt='Arihant Clutches'
                 className='mobile-drawer-logo'
               />
