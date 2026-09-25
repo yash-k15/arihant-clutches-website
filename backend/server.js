@@ -2,6 +2,7 @@ import './config/env.js';
 import path from 'path';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.js';
@@ -21,6 +22,8 @@ const port = process.env.PORT || 4000;
 connectDB();
 
 const app = express();
+
+app.use(helmet());
 
 app.use(
   cors({
