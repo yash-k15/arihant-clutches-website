@@ -74,7 +74,9 @@ const ProfileScreen = () => {
     useChangePasswordMutation();
 
   const { data: addressData, isLoading: loadingAddresses } =
-    useGetUserAddressesQuery();
+    useGetUserAddressesQuery(userInfo?._id, {
+      skip: !userInfo?._id,
+    });
 
   const [addUserAddress, { isLoading: addingAddress }] =
     useAddUserAddressMutation();

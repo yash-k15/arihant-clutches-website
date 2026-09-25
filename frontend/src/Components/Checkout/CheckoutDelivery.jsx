@@ -24,11 +24,11 @@ const CheckoutDelivery = ({ onContinue }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const { shippingAddress } = useSelector((state) => state.cart);
 
-  const isCustomer = userInfo && !userInfo.isAdmin;
+  const isCustomer = !!userInfo;
 
   const { data: addressData, isLoading: isAddressesLoading } =
-    useGetUserAddressesQuery(undefined, {
-      skip: !isCustomer,
+    useGetUserAddressesQuery(userInfo?._id, {
+      skip: !isCustomer || !userInfo?._id,
     });
 
   const [addUserAddress, { isLoading: isSavingAddress }] =
