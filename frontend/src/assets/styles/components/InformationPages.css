@@ -5,7 +5,7 @@
 .info-page {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2.5rem 1.5rem 0rem;
+  padding: 2.5rem 1.5rem 0;
   color: #2c2222;
 }
 
@@ -63,9 +63,263 @@
   margin-bottom: 0;
 }
 
-/* =========================
+
+/* ========================================
+   Information Page Refresh
+======================================== */
+
+
+/* ========================================
+   Shared Order / Shipping Header
+======================================== */
+
+.info-page-orders .info-page-header,
+.info-page-shipping .info-page-header {
+  margin-bottom: 3.5rem;
+}
+
+.info-page-orders .info-page-header h1,
+.info-page-shipping .info-page-header h1 {
+  margin-bottom: 0.85rem;
+  font-size: 2.6rem;
+  letter-spacing: -0.02em;
+}
+
+.info-page-orders .info-page-header p,
+.info-page-shipping .info-page-header p {
+  max-width: 680px;
+}
+
+
+/* ========================================
+   Order Page Eyebrow
+======================================== */
+
+.info-page-orders .info-page-eyebrow {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #b08d57;
+}
+
+
+/* ========================================
+   Shipping Policy
+======================================== */
+
+.info-page-shipping {
+  max-width: 900px;
+}
+
+.info-page-shipping .info-page-header {
+  text-align: left;
+}
+
+.info-page-shipping .info-page-header h1 {
+  margin-bottom: 0;
+}
+
+.info-page-shipping .info-page-content {
+  gap: 0;
+}
+
+.info-page-shipping .info-page-section {
+  padding: 1.75rem 0;
+  border-bottom: 1px solid #e8ddcd;
+}
+
+.info-page-shipping .info-page-section:first-child {
+  padding-top: 0;
+}
+
+.info-page-shipping .info-page-section:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.info-page-shipping .info-page-section h2 {
+  margin-bottom: 0.8rem;
+  font-size: 1.25rem;
+}
+
+.info-page-shipping .info-page-section p {
+  max-width: 780px;
+}
+
+.info-page-shipping .info-page-section strong {
+  color: #2c2222;
+}
+
+
+/* ========================================
+   International / Wholesale
+======================================== */
+
+.info-page-orders {
+  max-width: 1000px;
+}
+
+.info-page-orders .info-page-content {
+  gap: 1.5rem;
+}
+
+.info-page-orders .info-page-section {
+  position: relative;
+  padding: 0;
+  border: none;
+}
+
+
+/* Main feature sections */
+
+.info-page-orders .info-page-feature {
+  padding: 1.75rem 1.8rem;
+  border: 1px solid #e8ddcd;
+  border-radius: 14px;
+  background: #fffdf9;
+  box-shadow: 0 8px 24px rgba(44, 34, 34, 0.04);
+}
+
+.info-page-orders .info-page-feature h2 {
+  margin-bottom: 0.75rem;
+}
+
+.info-page-orders .info-page-feature p {
+  max-width: 760px;
+}
+
+
+/* Two-column cards */
+
+.info-page-orders .info-page-section-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.info-page-orders .info-page-card {
+  padding: 1.75rem;
+  border: 1px solid #e8ddcd;
+  border-radius: 14px;
+  background: #fffdf9;
+  box-shadow: 0 8px 24px rgba(44, 34, 34, 0.04);
+}
+
+.info-page-orders .info-page-card h2 {
+  margin-bottom: 0.75rem;
+}
+
+.info-page-orders .info-page-card p {
+  max-width: 760px;
+}
+
+
+/* ========================================
+   Contact CTA
+======================================== */
+
+.info-page-orders .info-page-contact {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+  gap: 2rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 2.25rem;
+  border-radius: 16px;
+  background: #2c2222;
+  box-shadow: 0 12px 30px rgba(44, 34, 34, 0.12);
+}
+
+.info-page-orders .info-page-contact > div:first-child {
+  grid-column: 1 / -1;
+}
+
+.info-page-orders .info-page-contact .info-page-eyebrow {
+  margin-bottom: 0.65rem;
+}
+
+.info-page-orders .info-page-contact h2 {
+  margin: 0 0 0.7rem;
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: #fdfaf5;
+}
+
+.info-page-orders .info-page-contact p {
+  max-width: 650px;
+  margin: 0;
+  color: rgba(253, 250, 245, 0.72);
+  line-height: 1.7;
+}
+
+.info-page-orders .info-page-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.info-page-orders .info-page-contact-details a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: #fdfaf5;
+  text-decoration: none;
+}
+
+.info-page-orders .info-page-contact-details a:hover {
+  color: #b08d57;
+}
+
+.info-page-orders .info-page-contact-details strong {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #b08d57;
+}
+
+.info-page-orders .info-page-contact-details span {
+  font-size: 0.9rem;
+}
+
+.info-page-orders .info-page-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  justify-self: end;
+  min-width: 145px;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #b08d57;
+  border-radius: 10px;
+  background: #b08d57;
+  color: #2c2222;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.info-page-orders .info-page-contact-btn span {
+  font-size: 1rem;
+}
+
+.info-page-orders .info-page-contact-btn:hover {
+  background: transparent;
+  color: #fdfaf5;
+  transform: translateY(-1px);
+}
+
+
+/* ========================================
    Mobile
-========================= */
+======================================== */
 
 @media (max-width: 767px) {
   .info-page {
@@ -99,5 +353,111 @@
   .info-page-section p {
     font-size: 0.9rem;
     line-height: 1.7;
+  }
+
+
+  /* ========================================
+     Shipping Policy - Mobile
+  ======================================== */
+
+  .info-page-shipping {
+    padding-top: 2rem;
+  }
+
+  .info-page-shipping .info-page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .info-page-shipping .info-page-header h1 {
+    font-size: 2rem;
+  }
+
+  .info-page-shipping .info-page-section {
+    padding: 1.5rem 0;
+  }
+
+  .info-page-shipping .info-page-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .info-page-shipping .info-page-section p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+
+  /* ========================================
+     International / Wholesale - Mobile
+  ======================================== */
+
+  .info-page-orders {
+    padding-top: 2rem;
+  }
+
+  .info-page-orders .info-page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .info-page-orders .info-page-header h1 {
+    font-size: 2rem;
+  }
+
+  .info-page-orders .info-page-content {
+    gap: 1.15rem;
+  }
+
+  .info-page-orders .info-page-feature {
+    padding: 1.35rem;
+    border-radius: 12px;
+  }
+
+  .info-page-orders .info-page-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .info-page-orders .info-page-section p {
+    max-width: none;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .info-page-orders .info-page-section-grid {
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+  }
+
+  .info-page-orders .info-page-card {
+    padding: 1.35rem;
+    border-radius: 12px;
+  }
+
+
+  /* ========================================
+     Contact CTA - Mobile
+  ======================================== */
+
+  .info-page-orders .info-page-contact {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    padding: 1.6rem;
+    border-radius: 14px;
+  }
+
+  .info-page-orders .info-page-contact > div:first-child {
+    grid-column: auto;
+  }
+
+  .info-page-orders .info-page-contact h2 {
+    font-size: 1.3rem;
+  }
+
+  .info-page-orders .info-page-contact-details {
+    gap: 1rem;
+  }
+
+  .info-page-orders .info-page-contact-btn {
+    width: 100%;
+    justify-self: stretch;
   }
 }

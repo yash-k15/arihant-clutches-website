@@ -2,7 +2,7 @@ import '../../assets/styles/components/InformationPages.css';
 
 const ShippingPolicyScreen = () => {
   return (
-    <div className='info-page'>
+    <div className='info-page info-page-shipping'>
       <div className='info-page-header'>
         <h1>Shipping Policy</h1>
       </div>

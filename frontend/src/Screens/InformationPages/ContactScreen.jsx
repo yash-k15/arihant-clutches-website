@@ -119,7 +119,7 @@ const ContactScreen = () => {
 
           <h2>Email Us</h2>
 
-          <p className='contact-card-value'>hello@arihantclutches.com</p>
+          <p className='contact-card-value'>arihantfashionsindia@gmail.com</p>
 
           <p className='contact-card-description'>
             Send us your query and our team will get back to you.

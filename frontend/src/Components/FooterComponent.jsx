@@ -1,23 +1,17 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { FaInstagram } from 'react-icons/fa';
 
 import { useAuthModal } from './AuthModalContext.jsx';
-import { logout } from '../slices/authSlice.js';
 
 import '../assets/styles/components/Footer.css';
 
 const FooterComponent = () => {
   const { userInfo } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const { openAuth } = useAuthModal();
-
-  const logoutHandler = () => {
-    dispatch(logout());
-    navigate('/');
-  };
 
   return (
     <footer className='footer-section'>
@@ -158,10 +152,10 @@ const FooterComponent = () => {
               <p className='footer-contact-name'>Sneha Kothari</p>
 
               <a
-                href='mailto:support@arihantclutches.com'
+                href='mailto:arihantfashionsindia@gmail.com'
                 className='footer-contact-link'
               >
-                support@arihantclutches.com
+                arihantfashionsindia@gmail.com
               </a>
 
               <a href='tel:+919909025236' className='footer-contact-link'>
