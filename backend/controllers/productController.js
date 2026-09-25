@@ -10,10 +10,10 @@ import escapeRegex from '../utils/escapeRegex.js';
 const getProducts = asyncHandler(async (req, res, next) => {
   const pageSize =
     req.query.admin === 'true'
-      ? process.env.ADMIN_PRODUCTS_PER_PAGE
+      ? Number(process.env.ADMIN_PRODUCTS_PER_PAGE) || 10
       : req.query.home === 'true'
-        ? process.env.HOME_PRODUCTS_LIMIT
-        : process.env.PRODUCTS_PER_PAGE;
+        ? Number(process.env.HOME_PRODUCTS_LIMIT) || 10
+        : Number(process.env.PRODUCTS_PER_PAGE) || 10;
 
   const page = Number(req.query.pageNumber) || 1;
 

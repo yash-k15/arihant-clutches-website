@@ -57,7 +57,7 @@ const addOrderItems = asyncHandler(async (req, res, next) => {
 // @route   GET /api/orders/myorders
 // @access  Private
 const getMyOrders = asyncHandler(async (req, res, next) => {
-  const pageSize = process.env.CUSTOMER_ORDERS_PER_PAGE;
+  const pageSize = Number(process.env.CUSTOMER_ORDERS_PER_PAGE) || 10;
   const page = Number(req.query.pageNumber) || 1;
 
   const count = await Order.countDocuments({
@@ -135,7 +135,7 @@ const updateOrderToDelivered = asyncHandler(async (req, res, next) => {
 // @route   GET /api/orders
 // @access  Private/Admin
 const getOrders = asyncHandler(async (req, res, next) => {
-  const pageSize = process.env.ADMIN_ORDERS_PER_PAGE;
+  const pageSize = Number(process.env.ADMIN_ORDERS_PER_PAGE) || 10;
   const page = Number(req.query.pageNumber) || 1;
 
   const filters = {};

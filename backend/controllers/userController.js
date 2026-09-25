@@ -392,7 +392,7 @@ const changeUserPhone = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users
 // @access  Private/admin
 const getUsers = asyncHandler(async (req, res, next) => {
-  const pageSize = process.env.ADMIN_USERS_PER_PAGE;
+  const pageSize = Number(process.env.ADMIN_USERS_PER_PAGE) || 10;
   const page = Number(req.query.pageNumber) || 1;
 
   const filters = {};
