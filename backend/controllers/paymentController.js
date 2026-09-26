@@ -64,6 +64,45 @@ const verifyPayment = asyncHandler(async (req, res, next) => {
       razorpay_signature = null,
     } = paymentData;
 
+    if (!isCOD && razorpay_payment_id) {
+      const existingOrder = await Order.findOne({
+        'paymentResult.id': razorpay_payment_id,
+      });
+
+      if (existingOrder) {
+        // Payment was already fully processed.
+        if (existingOrder.isPaid) {
+          return res.json({
+            success: true,
+            order: existingOrder,
+          });
+        }
+
+        // An order exists but payment capture was not completed.
+        // Retry capture so a transient failure can recover.
+        await razorpay.payments.capture(
+          razorpay_payment_id,
+          Math.round(existingOrder.totalPrice * 100),
+          'INR',
+        );
+
+        existingOrder.isPaid = true;
+        existingOrder.paidAt = Date.now();
+        existingOrder.paymentResult = {
+          id: razorpay_payment_id,
+          status: 'CAPTURED',
+          update_time: new Date().toISOString(),
+        };
+
+        await existingOrder.save();
+
+        return res.json({
+          success: true,
+          order: existingOrder,
+        });
+      }
+    }
+
     // =========================
     // 1. VERIFY PAYMENT (ONLINE ONLY)
     // =========================
@@ -222,6 +261,27 @@ const verifyPayment = asyncHandler(async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
+
+    // Another request may have processed this payment first.
+    if (error?.code === 11000 && razorpay_payment_id) {
+      const existingOrder = await Order.findOne({
+        'paymentResult.id': razorpay_payment_id,
+      });
+
+      if (existingOrder) {
+        if (existingOrder.isPaid) {
+          return res.json({
+            success: true,
+            order: existingOrder,
+          });
+        }
+
+        return res.status(409).json({
+          success: false,
+          message: 'Payment is already being processed. Please try again.',
+        });
+      }
+    }
 
     res.status(400).json({
       success: false,

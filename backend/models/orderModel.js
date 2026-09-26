@@ -129,6 +129,8 @@ const orderSchema = new mongoose.Schema(
   },
 );
 
+orderSchema.index({ 'paymentResult.id': 1 }, { unique: true, sparse: true });
+
 const Order = new mongoose.model('Order', orderSchema);
 
 export default Order;
