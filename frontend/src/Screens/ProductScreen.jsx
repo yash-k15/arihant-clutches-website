@@ -39,7 +39,7 @@ import {
 import { addToCart } from '../slices/cartSlice.js';
 
 import { FaEdit, FaRegHeart, FaHeart, FaRegPlayCircle } from 'react-icons/fa';
-import { IoShareOutline } from 'react-icons/io5';
+import { IoShareOutline, IoAddOutline } from 'react-icons/io5';
 
 import { getCloudinaryImage } from '../utils/cloudinary.js';
 
@@ -76,6 +76,9 @@ const ProductScreen = () => {
   const [isModalVideoPlaying, setIsModalVideoPlaying] = useState(false);
 
   const [isLinkCopied, setIsLinkCopied] = useState(false);
+
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
+  const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
 
   const {
     data: product,
@@ -690,47 +693,83 @@ const ProductScreen = () => {
               {/* Description                             */}
               {/* -------------------------------------- */}
 
-              <div className='product-detail-section'>
-                <h2 className='section-title'>Description</h2>
+              <div className='product-detail-section collapsible-section'>
+                <button
+                  type='button'
+                  className='collapsible-section-title'
+                  onClick={() => setIsDescriptionOpen((isOpen) => !isOpen)}
+                  aria-expanded={isDescriptionOpen}
+                >
+                  <span>Description</span>
 
-                <p className='product-description'>{product.description}</p>
+                  <IoAddOutline className={isDescriptionOpen ? 'open' : ''} />
+                </button>
+
+                <div
+                  className={`collapsible-section-content ${
+                    isDescriptionOpen ? 'open' : ''
+                  }`}
+                >
+                  <div className='collapsible-section-content-inner'>
+                    <p className='product-description'>{product.description}</p>
+                  </div>
+                </div>
               </div>
 
               {/* -------------------------------------- */}
               {/* Product details                         */}
               {/* -------------------------------------- */}
 
-              <div className='product-detail-section'>
-                <h2 className='section-title'>Product Details</h2>
+              <div className='product-detail-section collapsible-section'>
+                <button
+                  type='button'
+                  className='collapsible-section-title'
+                  onClick={() => setIsProductDetailsOpen((isOpen) => !isOpen)}
+                  aria-expanded={isProductDetailsOpen}
+                >
+                  <span>Product Details</span>
 
-                <div className='product-meta'>
-                  {product.material && (
-                    <div className='product-meta-row'>
-                      <span>Material</span>
-                      <span>{product.material}</span>
-                    </div>
-                  )}
+                  <IoAddOutline
+                    className={isProductDetailsOpen ? 'open' : ''}
+                  />
+                </button>
 
-                  {product.dimensions && (
-                    <div className='product-meta-row'>
-                      <span>Dimensions</span>
-                      <span>{product.dimensions}</span>
-                    </div>
-                  )}
+                <div
+                  className={`collapsible-section-content ${
+                    isProductDetailsOpen ? 'open' : ''
+                  }`}
+                >
+                  <div className='collapsible-section-content-inner'>
+                    <div className='product-meta'>
+                      {product.material && (
+                        <div className='product-meta-row'>
+                          <span>Material</span>
+                          <span>{product.material}</span>
+                        </div>
+                      )}
 
-                  {product.weight && (
-                    <div className='product-meta-row'>
-                      <span>Weight</span>
-                      <span>{product.weight}</span>
-                    </div>
-                  )}
+                      {product.dimensions && (
+                        <div className='product-meta-row'>
+                          <span>Dimensions</span>
+                          <span>{product.dimensions}</span>
+                        </div>
+                      )}
 
-                  {product.category && (
-                    <div className='product-meta-row'>
-                      <span>Category</span>
-                      <span>{product.category}</span>
+                      {product.weight && (
+                        <div className='product-meta-row'>
+                          <span>Weight</span>
+                          <span>{product.weight}</span>
+                        </div>
+                      )}
+
+                      {product.category && (
+                        <div className='product-meta-row'>
+                          <span>Category</span>
+                          <span>{product.category}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>

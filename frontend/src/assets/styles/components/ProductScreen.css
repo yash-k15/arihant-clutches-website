@@ -305,6 +305,76 @@
   line-height: 1.8;
 }
 
+/* =========================================================
+   COLLAPSIBLE PRODUCT INFORMATION
+   ========================================================= */
+
+.collapsible-section {
+  padding: 0;
+}
+
+.collapsible-section-title {
+  width: 100%;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: #2c2222;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  line-height: 1.2;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.collapsible-section-title svg {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  stroke-width: 1.5;
+  transition: transform 0.3s ease;
+}
+
+.collapsible-section-title svg.open {
+  transform: rotate(45deg);
+}
+
+.collapsible-section-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.35s ease,
+    opacity 0.25s ease;
+}
+
+.collapsible-section-content.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.collapsible-section-content-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.collapsible-section .product-description {
+  padding: 0 0 20px;
+}
+
+.collapsible-section .product-meta {
+  padding: 0 0 20px;
+}
+
 
 /* =========================================================
    VARIANT SELECTOR
@@ -386,7 +456,7 @@
    ========================================================= */
 
 .purchase-section {
-  padding: 25px 0 0 0;
+  padding: 25px 0 10px 0;
   border-bottom: 1px solid #e8e3dc;
 }
 
