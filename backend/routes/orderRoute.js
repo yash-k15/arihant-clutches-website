@@ -1,6 +1,5 @@
 import express from 'express';
 import {
-  addOrderItems,
   getMyOrders,
   getOrderById,
   updateOrderToPaid,
@@ -12,7 +11,7 @@ import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.route('/').post(protect, addOrderItems).get(protect, admin, getOrders);
+router.route('/').get(protect, admin, getOrders);
 
 router.route('/mine').get(protect, getMyOrders);
 

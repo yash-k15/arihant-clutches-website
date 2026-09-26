@@ -5,54 +5,6 @@ import Product from '../models/productModel.js';
 import User from '../models/userModel.js';
 import escapeRegex from '../utils/escapeRegex.js';
 
-// @desc    Create new Order
-// @route   POST /api/orders
-// @access  Private
-const addOrderItems = asyncHandler(async (req, res, next) => {
-  const {
-    orderItems,
-    shippingAddress,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    paymentMethod,
-    totalPrice,
-  } = req.body;
-
-  if (orderItems && orderItems.length === 0) {
-    return next(new ErrorResponse('No order item', 400));
-  }
-
-  const order = new Order({
-    orderItems: orderItems.map((item) => ({
-      product: item.product,
-      slug: item.slug,
-      variantId: item.variantId,
-      name: item.name,
-      image: item.image,
-      color: item.color,
-      price: item.price,
-      qty: item.qty,
-    })),
-    user: req.user._id,
-    shippingAddress,
-    paymentMethod,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    totalPrice,
-  });
-
-  if (!['COD', 'ONLINE'].includes(paymentMethod)) {
-    res.status(400);
-    throw new Error('Invalid payment method');
-  }
-
-  const createdOrder = await order.save();
-
-  res.status(201).json(createdOrder);
-});
-
 // @desc    Get logged in user order
 // @route   GET /api/orders/myorders
 // @access  Private
@@ -303,7 +255,6 @@ const checkStock = asyncHandler(async (req, res) => {
 });
 
 export {
-  addOrderItems,
   getMyOrders,
   getOrderById,
   updateOrderToPaid,
