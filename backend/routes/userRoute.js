@@ -32,8 +32,6 @@ import {
   passwordResetLimiter,
 } from '../middleware/rateLimitMiddleware.js';
 
-import { sendMSG91OTP } from '../utils/msg91Service.js';
-
 const router = express.Router();
 
 router.post('/login', authLimiter, authUser);
@@ -81,12 +79,6 @@ router.put('/change-password', protect, changeAdminPassword);
 router.post('/send-otp', otpLimiter, sendOTP);
 router.post('/verify-otp', otpLimiter, verifyOTP);
 router.post('/register-phone', authLimiter, registerWithPhone);
-
-router.get('/test-msg91', async (req, res) => {
-  const result = await sendMSG91OTP('9167015147');
-
-  res.json(result);
-});
 
 router
   .route('/:id')
