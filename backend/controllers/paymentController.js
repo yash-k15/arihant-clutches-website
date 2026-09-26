@@ -49,9 +49,30 @@ const createOrder = asyncHandler(async (req, res, next) => {
 // @access  Private
 const verifyPayment = asyncHandler(async (req, res, next) => {
   try {
-    const { paymentData = {}, orderData } = req.body;
+    const { paymentData = {}, orderData, idempotencyKey } = req.body;
 
     const isCOD = orderData.paymentMethod === 'COD';
+
+    if (isCOD && !idempotencyKey) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing idempotency key',
+      });
+    }
+
+    if (isCOD) {
+      const existingOrder = await Order.findOne({
+        idempotencyKey,
+        user: req.user._id,
+      });
+
+      if (existingOrder) {
+        return res.json({
+          success: true,
+          order: existingOrder,
+        });
+      }
+    }
 
     const pricing = await calculateOrderPricing(
       orderData.orderItems,
@@ -183,6 +204,7 @@ const verifyPayment = asyncHandler(async (req, res, next) => {
             _id: undefined,
           })),
           user: req.user._id,
+          idempotencyKey: isCOD ? idempotencyKey : undefined,
           shippingAddress: orderData.shippingAddress,
           paymentMethod: orderData.paymentMethod,
           itemsPrice: pricing.itemsPrice,

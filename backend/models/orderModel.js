@@ -74,6 +74,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
       enum: ['COD', 'ONLINE'],
     },
+    idempotencyKey: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
     paymentResult: {
       id: {
         type: String,

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,6 +16,8 @@ import '../assets/styles/components/PaymentButton.css';
 const PaymentButton = ({ disabled }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const codIdempotencyKeyRef = useRef(crypto.randomUUID());
 
   const cart = useSelector((state) => state.cart);
   const userInfo = useSelector((state) => state.auth);
@@ -43,6 +46,7 @@ const PaymentButton = ({ disabled }) => {
       // ---------- COD ----------
       if (cart.paymentMethod === 'COD') {
         const orderPromise = verifyPayment({
+          idempotencyKey: codIdempotencyKeyRef.current,
           orderData: {
             orderItems: cart.cartItems.map((item) => ({
               product: item._id,
