@@ -99,6 +99,33 @@
   line-height: 1.8;
 }
 
+.footer-developer {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.footer-developer-credit {
+  margin: 0 0 4px;
+  color: #bfbfbf;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.footer-developer-link {
+  width: fit-content;
+  color: #a9a9a9;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-developer-link:hover {
+  color: #b08d57;
+}
+
 /* =========================================
    Links
    ========================================= */
@@ -288,4 +315,16 @@
     font-size: 0.74rem;
     line-height: 1.5;
   }
+
+  .footer-developer {
+  margin-top: 22px;
+}
+
+.footer-developer-credit {
+  font-size: 0.72rem;
+}
+
+.footer-developer-link {
+  font-size: 0.7rem;
+}
 }

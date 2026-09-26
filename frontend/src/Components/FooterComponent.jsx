@@ -48,6 +48,23 @@ const FooterComponent = () => {
                 Premium purses and clutches crafted for elegance and everyday
                 style.
               </p>
+
+              <div className='footer-developer'>
+                <p className='footer-developer-credit'>
+                  Website is designed and developed by Yash Kothari
+                </p>
+
+                <a
+                  href='mailto:kothariyash49@gmail.com'
+                  className='footer-developer-link'
+                >
+                  kothariyash49@gmail.com
+                </a>
+
+                <a href='tel:+919167015147' className='footer-developer-link'>
+                  +91 9167015147
+                </a>
+              </div>
             </div>
           </Col>
 
