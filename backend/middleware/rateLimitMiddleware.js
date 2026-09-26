@@ -30,4 +30,14 @@ const passwordResetLimiter = rateLimit({
   },
 });
 
-export { authLimiter, otpLimiter, passwordResetLimiter };
+const contactLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 5,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: {
+    message: 'Too many contact form submissions. Please try again later.',
+  },
+});
+
+export { authLimiter, otpLimiter, passwordResetLimiter, contactLimiter };
