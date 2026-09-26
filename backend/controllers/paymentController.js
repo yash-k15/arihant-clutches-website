@@ -312,4 +312,74 @@ const verifyPayment = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { createOrder, verifyPayment };
+const handleRazorpayWebhook = asyncHandler(async (req, res) => {
+  const webhookSignature = req.headers['x-razorpay-signature'];
+
+  if (!webhookSignature || !req.rawBody) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid webhook request',
+    });
+  }
+
+  const expectedSignature = crypto
+    .createHmac('sha256', process.env.RAZORPAY_WEBHOOK_SECRET)
+    .update(req.rawBody)
+    .digest('hex');
+
+  const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf8');
+  const webhookSignatureBuffer = Buffer.from(webhookSignature, 'utf8');
+
+  if (
+    expectedSignatureBuffer.length !== webhookSignatureBuffer.length ||
+    !crypto.timingSafeEqual(expectedSignatureBuffer, webhookSignatureBuffer)
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid webhook signature',
+    });
+  }
+
+  const event = req.body.event;
+
+  if (event === 'payment.captured') {
+    const payment = req.body.payload?.payment?.entity;
+
+    if (!payment?.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment information missing',
+      });
+    }
+
+    const order = await Order.findOne({
+      'paymentResult.id': payment.id,
+    });
+
+    if (!order) {
+      return res.status(200).json({
+        success: true,
+        message: 'Order not found',
+      });
+    }
+
+    if (!order.isPaid) {
+      order.isPaid = true;
+      order.paidAt = new Date();
+
+      order.paymentResult = {
+        id: payment.id,
+        status: 'CAPTURED',
+        update_time: new Date().toISOString(),
+      };
+
+      await order.save();
+    }
+  }
+
+  return res.status(200).json({
+    success: true,
+  });
+});
+
+export { createOrder, verifyPayment, handleRazorpayWebhook };

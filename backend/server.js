@@ -35,7 +35,17 @@ app.use(
 );
 
 // Body parser
-app.use(express.json());
+// Body parser
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      if (req.originalUrl === '/api/payment/webhook') {
+        req.rawBody = buf;
+      }
+    },
+  }),
+);
+
 app.use(express.urlencoded({ extended: true }));
 
 // Cookie parser middleware
