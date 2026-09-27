@@ -28,22 +28,13 @@ const authUser = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email }).select('+password');
 
   if (!user) {
-    return next(new ErrorResponse('Invalid email or password'), 401);
+    return next(new ErrorResponse('Invalid email or password', 401));
   }
 
   const passwordMatch = await user.matchPassword(password);
 
   if (!passwordMatch) {
-    return next(new ErrorResponse('Invalid email or password'), 401);
-  }
-
-  if (!user.isAdmin) {
-    return next(
-      new ErrorResponse(
-        'Email and password login is only available for administrators',
-        403,
-      ),
-    );
+    return next(new ErrorResponse('Invalid email or password', 401));
   }
 
   generateToken(res, user._id);
