@@ -35,6 +35,7 @@ import ContactScreen from './Screens/InformationPages/ContactScreen.jsx';
 import ShippingPolicyScreen from './Screens/InformationPages/ShippingPolicyScreen.jsx';
 import CarouselScreen from './Screens/admin/CarouselScreen.jsx';
 import DashboardScreen from './Screens/admin/DashboardScreen.jsx';
+import ResetPasswordScreen from './Screens/ResetPasswordScreen.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -71,6 +72,7 @@ const router = createBrowserRouter(
       />
       <Route path='/cart' element={<CartScreen />} />
       <Route path='/admin/login' element={<AdminLoginScreen />} />
+      <Route path='/resetpassword/:token' element={<ResetPasswordScreen />} />
       <Route path='/wishlist' element={<WishlistScreen />} />
       <Route path='/wishlist/:shareToken' element={<SharedWishlistScreen />} />
 
