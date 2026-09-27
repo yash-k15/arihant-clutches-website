@@ -25,6 +25,7 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [verificationToken, setVerificationToken] = useState('');
   const [phone, setPhone] = useState('');
+  const [resendTimer, setResendTimer] = useState(0);
 
   const firstOtpInputRef = useRef(null);
 
@@ -48,6 +49,16 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
       }, 0);
     }
   }, [step]);
+
+  useEffect(() => {
+    if (resendTimer <= 0) return;
+
+    const timer = setInterval(() => {
+      setResendTimer((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [resendTimer]);
 
   // ================================
   // Password Login
@@ -96,9 +107,31 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
 
       toast.success('OTP sent to your email');
       setOtp(['', '', '', '', '', '']);
+      setResendTimer(60);
       setStep('otp');
     } catch (err) {
       toast.error(err?.data?.message || 'Failed to send OTP');
+    }
+  };
+
+  const resendOtpHandler = async () => {
+    if (resendTimer > 0 || sendingOtp) return;
+
+    try {
+      await sendOtp({
+        email: email.trim().toLowerCase(),
+      }).unwrap();
+
+      toast.success('A new OTP has been sent to your email');
+
+      setOtp(['', '', '', '', '', '']);
+      setResendTimer(60);
+
+      setTimeout(() => {
+        firstOtpInputRef.current?.focus();
+      }, 0);
+    } catch (err) {
+      toast.error(err?.data?.message || 'Failed to resend OTP');
     }
   };
 
@@ -320,6 +353,7 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
     setOtp(['', '', '', '', '', '']);
     setVerificationToken('');
     setPhone('');
+    setResendTimer(0);
     setStep('login');
   };
 
@@ -505,6 +539,19 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
             </Button>
 
             <div className='auth-modal-footer'>
+              {resendTimer > 0 ? (
+                <span>Resend OTP in {resendTimer}s</span>
+              ) : (
+                <button
+                  type='button'
+                  className='auth-modal-link'
+                  onClick={resendOtpHandler}
+                  disabled={sendingOtp}
+                >
+                  {sendingOtp ? 'Sending...' : 'Resend OTP'}
+                </button>
+              )}
+
               <button
                 type='button'
                 className='auth-modal-link'
