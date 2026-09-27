@@ -7,6 +7,17 @@ import generateToken from '../utils/generateToken.js';
 import resetPasswordEmail from '../utils/emailTemplates/resetPasswordEmail.js';
 import jwt from 'jsonwebtoken';
 import escapeRegex from '../utils/escapeRegex.js';
+import EmailOTP from '../models/emailOtpModel.js';
+import otpEmail from '../utils/emailTemplates/otpEmail.js';
+
+import {
+  generateOTP,
+  hashOTP,
+  verifyOTP as verifyOtpHash,
+  OTP_EXPIRY_MINUTES,
+  OTP_RESEND_COOLDOWN_SECONDS,
+  MAX_OTP_ATTEMPTS,
+} from '../utils/otp.js';
 
 // @desc    Auth user and get token
 // @route   POST /api/users/login
@@ -582,60 +593,250 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   });
 });
 
+/* ================================
+   Phone based sendOTP
+================================ */
 // @desc        Send OTP
 // @route       POST /api/users/send-otp
 // @access      Public
+// const sendOTP = asyncHandler(async (req, res, next) => {
+//   const phone = String(req.body.phone).trim();
+//   const { purpose } = req.body;
+
+//   if (!phone) {
+//     return next(new ErrorResponse('Phone number is required', 400));
+//   }
+
+//   if (!/^[6-9]\d{9}$/.test(phone)) {
+//     return next(new ErrorResponse('Enter a valid mobile number', 400));
+//     return;
+//   }
+
+//   if (purpose === 'phone-change') {
+//     const existingUser = await User.findOne({ phone });
+
+//     if (existingUser) {
+//       return next(new ErrorResponse('Phone number already registered', 400));
+//     }
+//   }
+
+//   res.status(200).json({
+//     success: true,
+//     message: 'OTP sent successfully',
+//   });
+// });
+
+/* ================================
+   Email based sendOTP
+================================ */
+// @desc    Send Email OTP for login
+// @route   POST /api/users/send-otp
+// @access  Public
 const sendOTP = asyncHandler(async (req, res, next) => {
-  const phone = String(req.body.phone).trim();
-  const { purpose } = req.body;
+  const email = req.body.email?.trim().toLowerCase();
 
-  if (!phone) {
-    return next(new ErrorResponse('Phone number is required', 400));
+  if (!email) {
+    return next(new ErrorResponse('Email is required', 400));
   }
 
-  if (!/^[6-9]\d{9}$/.test(phone)) {
-    return next(new ErrorResponse('Enter a valid mobile number', 400));
-    return;
+  // Check whether an account exists with this email
+  const user = await User.findOne({ email });
+
+  // Return a generic response to avoid unnecessary email enumeration
+  if (!user) {
+    return res.status(200).json({
+      success: true,
+      message: 'If an account exists for this email, an OTP has been sent.',
+    });
   }
 
-  if (purpose === 'phone-change') {
-    const existingUser = await User.findOne({ phone });
+  // Check resend cooldown
+  const existingOtp = await EmailOTP.findOne({ email });
 
-    if (existingUser) {
-      return next(new ErrorResponse('Phone number already registered', 400));
+  if (existingOtp) {
+    const elapsedSeconds =
+      (Date.now() - existingOtp.lastSentAt.getTime()) / 1000;
+
+    if (elapsedSeconds < OTP_RESEND_COOLDOWN_SECONDS) {
+      const remainingSeconds = Math.ceil(
+        OTP_RESEND_COOLDOWN_SECONDS - elapsedSeconds,
+      );
+
+      return next(
+        new ErrorResponse(
+          `Please wait ${remainingSeconds} seconds before requesting another OTP`,
+          429,
+        ),
+      );
     }
   }
 
-  res.status(200).json({
-    success: true,
-    message: 'OTP sent successfully',
-  });
+  // Generate a secure 6-digit OTP
+  const otp = generateOTP();
+
+  // Hash OTP before storing it
+  const otpHash = hashOTP(otp);
+
+  const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
+
+  // Replace any existing OTP for this email
+  await EmailOTP.findOneAndUpdate(
+    { email },
+    {
+      email,
+      otpHash,
+      expiresAt,
+      attempts: 0,
+      lastSentAt: new Date(),
+    },
+    {
+      upsert: true,
+      new: true,
+      setDefaultsOnInsert: true,
+    },
+  );
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Your Arihant Fashion Login OTP',
+      html: otpEmail(otp, OTP_EXPIRY_MINUTES),
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'If an account exists for this email, an OTP has been sent.',
+    });
+  } catch (err) {
+    console.error('Email OTP delivery failed:', err);
+
+    // Remove the OTP if email delivery failed
+    await EmailOTP.deleteOne({ email });
+
+    return next(new ErrorResponse('Unable to send OTP email', 500));
+  }
 });
 
+/* ================================
+   Phone based verifyOTP
+================================ */
+// @desc        Verify OTP
+// @route       POST /api/users/verify-otp
+// @access      Public
+// const verifyOTP = asyncHandler(async (req, res, next) => {
+//   const { otp } = req.body;
+//   const phone = String(req.body.phone).trim();
+
+//   if (String(otp) !== '123456') {
+//     return next(new ErrorResponse('Invalid OTP', 400));
+//   }
+
+//   const user = await User.findOne({ phone });
+
+//   if (!user) {
+//     return res.status(200).json({
+//       isNewUser: true,
+//       phone,
+//     });
+//   }
+
+//   generateToken(res, user._id);
+
+//   res.status(200).json({
+//     isNewUser: false,
+//     _id: user._id,
+//     name: user.name,
+//     email: user.email,
+//     phone: user.phone,
+//     isAdmin: user.isAdmin,
+//   });
+// });
+
+/* ================================
+   Email based verifyOTP
+================================ */
 // @desc        Verify OTP
 // @route       POST /api/users/verify-otp
 // @access      Public
 const verifyOTP = asyncHandler(async (req, res, next) => {
-  const { otp } = req.body;
-  const phone = String(req.body.phone).trim();
+  const email = req.body.email?.trim().toLowerCase();
+  const otp = req.body.otp?.trim();
 
-  if (String(otp) !== '123456') {
+  if (!email || !otp) {
+    return next(new ErrorResponse('Email and OTP are required', 400));
+  }
+
+  if (!/^\d{6}$/.test(otp)) {
     return next(new ErrorResponse('Invalid OTP', 400));
   }
 
-  const user = await User.findOne({ phone });
+  const otpRecord = await EmailOTP.findOne({ email });
 
-  if (!user) {
-    return res.status(200).json({
-      isNewUser: true,
-      phone,
-    });
+  if (!otpRecord) {
+    return next(new ErrorResponse('Invalid or expired OTP', 400));
   }
 
+  // Check expiration
+  if (otpRecord.expiresAt.getTime() <= Date.now()) {
+    await EmailOTP.deleteOne({ _id: otpRecord._id });
+
+    return next(new ErrorResponse('Invalid or expired OTP', 400));
+  }
+
+  // Check maximum attempts
+  if (otpRecord.attempts >= MAX_OTP_ATTEMPTS) {
+    await EmailOTP.deleteOne({ _id: otpRecord._id });
+
+    return next(
+      new ErrorResponse(
+        'Too many incorrect attempts. Please request a new OTP',
+        429,
+      ),
+    );
+  }
+
+  // Verify OTP
+  const isValid = verifyOtpHash(otp, otpRecord.otpHash);
+
+  if (!isValid) {
+    otpRecord.attempts += 1;
+    await otpRecord.save();
+
+    const attemptsRemaining = MAX_OTP_ATTEMPTS - otpRecord.attempts;
+
+    if (attemptsRemaining <= 0) {
+      await EmailOTP.deleteOne({ _id: otpRecord._id });
+
+      return next(
+        new ErrorResponse(
+          'Too many incorrect attempts. Please request a new OTP',
+          429,
+        ),
+      );
+    }
+
+    return next(
+      new ErrorResponse(
+        `Invalid OTP. ${attemptsRemaining} attempts remaining`,
+        400,
+      ),
+    );
+  }
+
+  // OTP is valid — invalidate it immediately
+  await EmailOTP.deleteOne({ _id: otpRecord._id });
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return next(new ErrorResponse('Invalid or expired OTP', 400));
+  }
+
+  // Log the user in using the existing JWT cookie
   generateToken(res, user._id);
 
-  res.status(200).json({
-    isNewUser: false,
+  return res.status(200).json({
+    success: true,
     _id: user._id,
     name: user.name,
     email: user.email,
