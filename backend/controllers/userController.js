@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import escapeRegex from '../utils/escapeRegex.js';
 import EmailOTP from '../models/emailOtpModel.js';
 import otpEmail from '../utils/emailTemplates/otpEmail.js';
+import EmailVerification from '../models/emailVerificationModel.js';
 
 import {
   generateOTP,
@@ -52,33 +53,82 @@ const authUser = asyncHandler(async (req, res, next) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, verificationToken } = req.body;
 
-  const userExists = await User.findOne({ email });
+  const normalizedEmail = email?.trim().toLowerCase();
+
+  if (!name?.trim() || !normalizedEmail || !password) {
+    return next(
+      new ErrorResponse('Name, email and password are required', 400),
+    );
+  }
+
+  const userExists = await User.findOne({ email: normalizedEmail });
 
   if (userExists) {
     return next(new ErrorResponse('User already exists', 400));
   }
 
-  const user = await User.create({
-    name,
-    email,
-    password,
-  });
+  // Email OTP registration
+  if (verificationToken) {
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(verificationToken)
+      .digest('hex');
 
-  if (user) {
+    const verification = await EmailVerification.findOne({
+      email: normalizedEmail,
+      tokenHash,
+      expiresAt: { $gt: Date.now() },
+    });
+
+    if (!verification) {
+      return next(
+        new ErrorResponse(
+          'Email verification has expired or is invalid. Please verify your email again.',
+          400,
+        ),
+      );
+    }
+
+    const user = await User.create({
+      name: name.trim(),
+      email: normalizedEmail,
+      password,
+    });
+
+    // One-time use
+    await EmailVerification.deleteOne({
+      _id: verification._id,
+    });
+
     generateToken(res, user._id);
-    res.status(201).json({
+
+    return res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       phone: user.phone,
       isAdmin: user.isAdmin,
     });
-  } else {
-    res.status(400);
-    throw new Error('Invalid user data');
   }
+
+  // Normal registration
+  const user = await User.create({
+    name: name.trim(),
+    email: normalizedEmail,
+    password,
+  });
+
+  generateToken(res, user._id);
+
+  return res.status(201).json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    isAdmin: user.isAdmin,
+  });
 });
 
 // @desc    Logout user / clear cookies
@@ -630,17 +680,6 @@ const sendOTP = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Email is required', 400));
   }
 
-  // Check whether an account exists with this email
-  const user = await User.findOne({ email });
-
-  // Return a generic response to avoid unnecessary email enumeration
-  if (!user) {
-    return res.status(200).json({
-      success: true,
-      message: 'If an account exists for this email, an OTP has been sent.',
-    });
-  }
-
   // Check resend cooldown
   const existingOtp = await EmailOTP.findOne({ email });
 
@@ -689,7 +728,7 @@ const sendOTP = asyncHandler(async (req, res, next) => {
 
   try {
     await sendEmail({
-      email: user.email,
+      email,
       subject: 'Your Arihant Fashion Login OTP',
       html: otpEmail(otp, OTP_EXPIRY_MINUTES),
     });
@@ -820,7 +859,14 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    return next(new ErrorResponse('Invalid or expired OTP', 400));
+    const verificationToken = await createEmailVerificationToken(email);
+
+    return res.status(200).json({
+      success: true,
+      isNewUser: true,
+      email,
+      verificationToken,
+    });
   }
 
   // Log the user in using the existing JWT cookie
@@ -1069,6 +1115,24 @@ const changeAdminPassword = asyncHandler(async (req, res, next) => {
     message: 'Password changed successfully',
   });
 });
+
+const createEmailVerificationToken = async (email) => {
+  const token = crypto.randomBytes(32).toString('hex');
+
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  await EmailVerification.deleteMany({ email });
+
+  await EmailVerification.create({
+    email,
+    tokenHash,
+    expiresAt,
+  });
+
+  return token;
+};
 
 // Get token from model, create cookie and send response
 // const sendTokenResponse = (user, statusCode, res) => {
