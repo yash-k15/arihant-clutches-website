@@ -153,6 +153,100 @@
   cursor: not-allowed;
 }
 
+/* Auth Links */
+
+.auth-modal .auth-modal-link-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.auth-modal .auth-modal-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #b08d57;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.auth-modal .auth-modal-link:hover {
+  color: #2c2222;
+  text-decoration: underline;
+}
+
+
+/* Divider */
+
+.auth-modal .auth-modal-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: #9aa3a5;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.auth-modal .auth-modal-divider::before,
+.auth-modal .auth-modal-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e8e2dc;
+}
+
+
+/* Secondary Button */
+
+.auth-modal .auth-secondary-btn {
+  width: 100%;
+  height: 50px;
+
+  border: 1px solid #2c2222;
+  border-radius: 10px;
+
+  background: #fff;
+  color: #2c2222;
+
+  font-weight: 600;
+  letter-spacing: 0.2px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.auth-modal .auth-secondary-btn:hover {
+  background: #b08d57;
+  border-color: #b08d57;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+
+/* Footer */
+
+.auth-modal .auth-modal-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
+
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.auth-modal .auth-modal-footer .auth-modal-link {
+  font-weight: 600;
+}
+
 /* Mobile */
 
 @media (max-width: 767.98px) {
@@ -190,5 +284,13 @@
     width: 42px;
     height: 48px;
     font-size: 1.1rem;
+  }
+
+    .auth-modal .auth-modal-footer {
+    font-size: 0.8rem;
+  }
+
+  .auth-modal .auth-modal-divider {
+    margin: 18px 0;
   }
 }

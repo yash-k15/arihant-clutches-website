@@ -53,7 +53,7 @@ const authUser = asyncHandler(async (req, res, next) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password, verificationToken } = req.body;
+  const { name, email, password, phone, verificationToken } = req.body;
 
   const normalizedEmail = email?.trim().toLowerCase();
 
@@ -67,6 +67,20 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
   if (userExists) {
     return next(new ErrorResponse('User already exists', 400));
+  }
+
+  const normalizedPhone = phone?.trim();
+
+  if (normalizedPhone && !/^[6-9]\d{9}$/.test(normalizedPhone)) {
+    return next(new ErrorResponse('Enter a valid mobile number', 400));
+  }
+
+  if (normalizedPhone) {
+    const phoneExists = await User.findOne({ phone: normalizedPhone });
+
+    if (phoneExists) {
+      return next(new ErrorResponse('Phone number already registered', 400));
+    }
   }
 
   // Email OTP registration
@@ -94,6 +108,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     const user = await User.create({
       name: name.trim(),
       email: normalizedEmail,
+      phone: normalizedPhone,
       password,
     });
 
@@ -117,6 +132,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   const user = await User.create({
     name: name.trim(),
     email: normalizedEmail,
+    phone: normalizedPhone,
     password,
   });
 
