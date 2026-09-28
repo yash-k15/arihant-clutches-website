@@ -476,6 +476,13 @@ const ProfileScreen = () => {
                 </button>
               </div>
 
+              <div className='profile-edit-email'>
+                <span className='profile-edit-email-label'>Email: </span>
+                <span className='profile-edit-email-value'>
+                  {email || 'Not added'}
+                </span>
+              </div>
+
               <div className='profile-form-fields'>
                 <Form.Group controlId='profileName'>
                   <Form.Label>Name</Form.Label>
@@ -485,16 +492,6 @@ const ProfileScreen = () => {
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
-                </Form.Group>
-
-                <Form.Group controlId='profileEmail'>
-                  <Form.Label>Email</Form.Label>
-
-                  <Form.Control type='email' value={email} readOnly />
-
-                  <Form.Text className='profile-form-helper'>
-                    Email address cannot be changed.
-                  </Form.Text>
                 </Form.Group>
 
                 <Form.Group controlId='profilePhone'>

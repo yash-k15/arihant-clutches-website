@@ -222,11 +222,31 @@
   color: #2c2222;
 }
 
+.profile-edit-email {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 20px 0 4px;
+}
+
+.profile-edit-email-label {
+  color: #444;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.profile-edit-email-value {
+  color: #2c2222;
+  font-size: 0.95rem;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
 .profile-form-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px 24px;
-  padding: 24px 0;
+  padding: 16px 0 24px;
 }
 
 .profile-form-fields .form-group:last-child {
