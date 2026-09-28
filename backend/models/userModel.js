@@ -13,10 +13,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        'Please add a valid email',
-      ],
+      validate: {
+        validator: function (value) {
+          if (typeof value !== 'string' || value.length > 254) {
+            return false;
+          }
+
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        },
+        message: 'Please add a valid email',
+      },
     },
     phone: {
       type: String,
