@@ -8,9 +8,26 @@ import { useResetPasswordMutation } from '../slices/usersApiSlice.js';
 
 import '../assets/styles/components/ResetPasswordScreen.css';
 
+const PASSWORD_RULE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 const ResetPasswordScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const passwordRequirements = [
+    {
+      label: 'At least 8 characters',
+      valid: password.length >= 8,
+    },
+    {
+      label: 'Contains both lowercase and uppercase letters',
+      valid: /[a-z]/.test(password) && /[A-Z]/.test(password),
+    },
+    {
+      label: 'Contains 1 number',
+      valid: /\d/.test(password),
+    },
+  ];
 
   const { token } = useParams();
   const navigate = useNavigate();
@@ -19,6 +36,13 @@ const ResetPasswordScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (!PASSWORD_RULE.test(password)) {
+      toast.warning(
+        'Password must be at least 8 characters and include uppercase, lowercase, and a number',
+      );
+      return;
+    }
 
     if (password !== confirmPassword) {
       toast.error('Passwords do not match.');
@@ -65,9 +89,28 @@ const ResetPasswordScreen = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className='reset-password-input'
-              minLength={6}
+              minLength={8}
               required
             />
+
+            <div className='password-requirements'>
+              <div className='password-requirements-title'>Password must:</div>
+
+              {passwordRequirements.map((requirement) => (
+                <div
+                  key={requirement.label}
+                  className={`password-requirement ${
+                    requirement.valid ? 'valid' : ''
+                  }`}
+                >
+                  <span className='password-requirement-icon'>
+                    {requirement.valid ? '✓' : '○'}
+                  </span>
+
+                  <span>{requirement.label}</span>
+                </div>
+              ))}
+            </div>
           </Form.Group>
 
           <Form.Group controlId='confirmPassword' className='my-3'>
@@ -81,7 +124,7 @@ const ResetPasswordScreen = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className='reset-password-input'
-              minLength={6}
+              minLength={8}
               required
             />
           </Form.Group>

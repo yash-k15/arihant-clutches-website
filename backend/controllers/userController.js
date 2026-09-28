@@ -20,6 +20,11 @@ import {
   MAX_OTP_ATTEMPTS,
 } from '../utils/otp.js';
 
+import {
+  validatePassword,
+  PASSWORD_ERROR_MESSAGE,
+} from '../utils/passwordValidator.js';
+
 // @desc    Auth user and get token
 // @route   POST /api/users/login
 // @access  Public
@@ -61,6 +66,10 @@ const registerUser = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse('Name, email and password are required', 400),
     );
+  }
+
+  if (!validatePassword(password)) {
+    return next(new ErrorResponse(PASSWORD_ERROR_MESSAGE, 400));
   }
 
   const userExists = await User.findOne({ email: normalizedEmail });
@@ -638,8 +647,18 @@ const resetPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid token', 400));
   }
 
+  const { password } = req.body;
+
+  if (!password) {
+    return next(new ErrorResponse('New password is required', 400));
+  }
+
+  if (!validatePassword(password)) {
+    return next(new ErrorResponse(PASSWORD_ERROR_MESSAGE, 400));
+  }
+
   // Set new Password
-  user.password = req.body.password;
+  user.password = password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
   await user.save();

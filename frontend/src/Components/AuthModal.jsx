@@ -13,6 +13,8 @@ import { toast } from 'sonner';
 
 import '../assets/styles/components/AuthModal.css';
 
+const PASSWORD_RULE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 const AuthModal = ({ show, onHide, onSuccess }) => {
   const dispatch = useDispatch();
 
@@ -26,6 +28,21 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
   const [verificationToken, setVerificationToken] = useState('');
   const [phone, setPhone] = useState('');
   const [resendTimer, setResendTimer] = useState(0);
+
+  const passwordRequirements = [
+    {
+      label: 'At least 8 characters',
+      valid: password.length >= 8,
+    },
+    {
+      label: 'Contains both lowercase and uppercase letters',
+      valid: /[a-z]/.test(password) && /[A-Z]/.test(password),
+    },
+    {
+      label: 'Contains 1 number',
+      valid: /\d/.test(password),
+    },
+  ];
 
   const firstOtpInputRef = useRef(null);
 
@@ -191,8 +208,10 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
       return;
     }
 
-    if (password.length < 6) {
-      toast.warning('Password must be at least 6 characters');
+    if (!PASSWORD_RULE.test(password)) {
+      toast.warning(
+        'Password must be at least 8 characters and include uppercase, lowercase, and a number',
+      );
       return;
     }
 
@@ -618,6 +637,27 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
                 autoComplete='new-password'
                 required
               />
+
+              <div className='password-requirements'>
+                <div className='password-requirements-title'>
+                  Password must:
+                </div>
+
+                {passwordRequirements.map((requirement) => (
+                  <div
+                    key={requirement.label}
+                    className={`password-requirement ${
+                      requirement.valid ? 'valid' : ''
+                    }`}
+                  >
+                    <span className='password-requirement-icon'>
+                      {requirement.valid ? '✓' : '○'}
+                    </span>
+
+                    <span>{requirement.label}</span>
+                  </div>
+                ))}
+              </div>
             </Form.Group>
 
             <Form.Group>
@@ -705,6 +745,27 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
                 autoComplete='new-password'
                 required
               />
+
+              <div className='password-requirements'>
+                <div className='password-requirements-title'>
+                  Password must:
+                </div>
+
+                {passwordRequirements.map((requirement) => (
+                  <div
+                    key={requirement.label}
+                    className={`password-requirement ${
+                      requirement.valid ? 'valid' : ''
+                    }`}
+                  >
+                    <span className='password-requirement-icon'>
+                      {requirement.valid ? '✓' : '○'}
+                    </span>
+
+                    <span>{requirement.label}</span>
+                  </div>
+                ))}
+              </div>
             </Form.Group>
 
             <Form.Group>

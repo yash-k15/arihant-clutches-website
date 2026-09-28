@@ -81,6 +81,49 @@
   box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.12);
 }
 
+/* Password Requirements */
+
+.auth-modal .password-requirements {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #faf8f5;
+}
+
+.auth-modal .password-requirements-title {
+  margin-bottom: 7px;
+  color: #2c2222;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.auth-modal .password-requirement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+  color: #9aa3a5;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.auth-modal .password-requirement.valid {
+  color: #2e9d5b;
+}
+
+.auth-modal .password-requirement-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+
 /* OTP */
 
 .auth-modal .otp-input-group {
