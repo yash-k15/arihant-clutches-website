@@ -632,7 +632,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Password reset token',
+      subject: 'Reset your Arihant Clutches password',
       html: resetPasswordEmail(resetUrl),
     });
 
@@ -784,7 +784,7 @@ const sendOTP = asyncHandler(async (req, res, next) => {
   try {
     await sendEmail({
       email,
-      subject: 'Your Arihant Fashion Login OTP',
+      subject: 'Your Arihant Clutches Login OTP',
       html: otpEmail(otp, OTP_EXPIRY_MINUTES),
     });
 

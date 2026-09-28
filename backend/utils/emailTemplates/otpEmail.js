@@ -1,6 +1,6 @@
 const otpEmail = (otp, expiryMinutes) => {
   return `
-    <h2>Your Arihant Fashion Login OTP</h2>
+    <h2>Your Arihant Clutches Login OTP</h2>
 
     <p>Your one-time password (OTP) is:</p>
 
