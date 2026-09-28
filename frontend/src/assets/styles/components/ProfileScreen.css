@@ -23,13 +23,13 @@
   font-size: 0.95rem;
 }
 
-.profile-security-actions {
+/* .profile-security-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
   flex-shrink: 0;
-}
+} */
 
 .profile-orders-section {
   margin-top: 32px;
