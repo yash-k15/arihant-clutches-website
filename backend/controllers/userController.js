@@ -117,7 +117,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     const user = await User.create({
       name: name.trim(),
       email: normalizedEmail,
-      phone: normalizedPhone,
+      phone: normalizedPhone || undefined,
       password,
     });
 
@@ -141,7 +141,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   const user = await User.create({
     name: name.trim(),
     email: normalizedEmail,
-    phone: normalizedPhone,
+    phone: normalizedPhone || undefined,
     password,
   });
 
