@@ -10,6 +10,7 @@ import escapeRegex from '../utils/escapeRegex.js';
 import EmailOTP from '../models/emailOtpModel.js';
 import otpEmail from '../utils/emailTemplates/otpEmail.js';
 import EmailVerification from '../models/emailVerificationModel.js';
+import isValidEmail from '../utils/emailValidator.js';
 
 import {
   generateOTP,
@@ -729,10 +730,14 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 // @route   POST /api/users/send-otp
 // @access  Public
 const sendOTP = asyncHandler(async (req, res, next) => {
-  const email = req.body.email?.trim().toLowerCase();
+  if (typeof req.body.email !== 'string') {
+    return next(new ErrorResponse('Please provide a valid email address', 400));
+  }
 
-  if (!email) {
-    return next(new ErrorResponse('Email is required', 400));
+  const email = req.body.email.trim().toLowerCase();
+
+  if (!isValidEmail(email)) {
+    return next(new ErrorResponse('Please provide a valid email address', 400));
   }
 
   // Check resend cooldown
@@ -844,10 +849,14 @@ const sendOTP = asyncHandler(async (req, res, next) => {
 // @route       POST /api/users/verify-otp
 // @access      Public
 const verifyOTP = asyncHandler(async (req, res, next) => {
-  const email = req.body.email?.trim().toLowerCase();
+  if (typeof req.body.email !== 'string') {
+    return next(new ErrorResponse('Please provide a valid email address', 400));
+  }
+
+  const email = req.body.email.trim().toLowerCase();
   const otp = req.body.otp?.trim();
 
-  if (!email || !otp) {
+  if (!isValidEmail(email) || !otp) {
     return next(new ErrorResponse('Email and OTP are required', 400));
   }
 

@@ -1,6 +1,11 @@
 import nodemailer from 'nodemailer';
+import isValidEmail from './emailValidator.js';
 
 const sendEmail = async (options) => {
+  if (!isValidEmail(options?.email)) {
+    throw new Error('Invalid email recipient');
+  }
+
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
