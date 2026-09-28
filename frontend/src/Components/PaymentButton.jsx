@@ -22,6 +22,7 @@ const PaymentButton = ({ disabled }) => {
   const codIdempotencyKeyRef = useRef(crypto.randomUUID());
   const onlineIdempotencyKeyRef = useRef(crypto.randomUUID());
   const paymentInProgressRef = useRef(false);
+  const paymentVerificationInProgressRef = useRef(false);
 
   const cart = useSelector((state) => state.cart);
   const userInfo = useSelector((state) => state.auth);
@@ -128,43 +129,26 @@ const PaymentButton = ({ disabled }) => {
 
         // PAYMENT SUCCESS HANDLER
         handler: async function (response) {
+          if (paymentVerificationInProgressRef.current) {
+            return;
+          }
+
+          paymentVerificationInProgressRef.current = true;
+
           try {
-            // VERIFY PAYMENT + CREATE DB ORDER
             const paymentPromise = verifyPayment({
               paymentData: response,
-              orderData: {
-                paymentMethod: 'ONLINE',
-              },
+              orderData: { paymentMethod: 'ONLINE' },
             }).unwrap();
 
             toast.promise(paymentPromise, {
               loading: 'Verifying payment...',
-              success: (res) =>
-                res.success
-                  ? 'Payment successful'
-                  : 'Payment verification failed',
-              error: (error) => {
-                const outOfStock = error?.data?.outOfStockItems;
-
-                if (outOfStock?.length) {
-                  const items = outOfStock
-                    .map((item) => `${item.name} (${item.color})`)
-                    .join(', ');
-
-                  return `Out of stock: ${items}`;
-                }
-
-                return (
-                  error?.data?.message ||
-                  error?.message ||
-                  'Payment verification failed'
-                );
-              },
+              success: 'Payment verified successfully!',
+              error: 'Payment verification failed',
             });
 
             const res = await paymentPromise;
 
-            // SUCCESS
             if (res.success) {
               dispatch(clearCartItems());
               closeCheckout();
@@ -176,6 +160,8 @@ const PaymentButton = ({ disabled }) => {
             }
           } catch (error) {
             console.log(error);
+          } finally {
+            paymentVerificationInProgressRef.current = false;
           }
         },
 
