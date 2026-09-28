@@ -198,8 +198,26 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
   }
 
   user.name = req.body.name || user.name;
+
   if (req.body.phone !== undefined) {
-    user.phone = req.body.phone.trim() || undefined;
+    const normalizedPhone = req.body.phone.trim();
+
+    if (normalizedPhone && !/^[6-9]\d{9}$/.test(normalizedPhone)) {
+      return next(new ErrorResponse('Enter a valid mobile number', 400));
+    }
+
+    if (normalizedPhone && normalizedPhone !== user.phone) {
+      const existingUser = await User.findOne({
+        phone: normalizedPhone,
+        _id: { $ne: user._id },
+      });
+
+      if (existingUser) {
+        return next(new ErrorResponse('Phone number already registered', 400));
+      }
+    }
+
+    user.phone = normalizedPhone || undefined;
   }
 
   const updateUser = await user.save();
