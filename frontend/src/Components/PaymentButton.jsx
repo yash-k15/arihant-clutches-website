@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,7 +17,11 @@ const PaymentButton = ({ disabled }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [paymentInProgress, setPaymentInProgress] = useState(false);
+
   const codIdempotencyKeyRef = useRef(crypto.randomUUID());
+  const onlineIdempotencyKeyRef = useRef(crypto.randomUUID());
+  const paymentInProgressRef = useRef(false);
 
   const cart = useSelector((state) => state.cart);
   const userInfo = useSelector((state) => state.auth);
@@ -31,6 +35,12 @@ const PaymentButton = ({ disabled }) => {
     useVerifyPaymentMutation();
 
   const handlePayment = async () => {
+    if (paymentInProgressRef.current) {
+      return;
+    }
+
+    setPaymentInProgress(true);
+
     try {
       // CHECK STOCK BEFORE OPENING RAZORPAY
       await checkStock({
@@ -103,6 +113,8 @@ const PaymentButton = ({ disabled }) => {
           qty: item.qty,
         })),
         paymentMethod: 'ONLINE',
+        shippingAddress: cart.shippingAddress,
+        idempotencyKey: onlineIdempotencyKeyRef.current,
       }).unwrap();
 
       // RAZORPAY OPTIONS
@@ -121,22 +133,7 @@ const PaymentButton = ({ disabled }) => {
             const paymentPromise = verifyPayment({
               paymentData: response,
               orderData: {
-                orderItems: cart.cartItems.map((item) => ({
-                  product: item._id,
-                  slug: item.slug,
-                  name: item.name,
-                  image: item.image,
-                  price: item.price,
-                  color: item.color,
-                  variantId: item.variantId,
-                  qty: item.qty,
-                })),
-                shippingAddress: cart.shippingAddress,
                 paymentMethod: 'ONLINE',
-                itemsPrice: cart.itemsPrice,
-                shippingPrice: cart.shippingPrice,
-                taxPrice: cart.taxPrice,
-                totalPrice: cart.totalPrice,
               },
             }).unwrap();
 
@@ -213,13 +210,16 @@ const PaymentButton = ({ disabled }) => {
       }
 
       toast.error(error?.data?.message || error?.message || 'Payment Failed');
+    } finally {
+      paymentInProgressRef.current = false;
+      setPaymentInProgress(false);
     }
   };
 
   return (
     <Button
       className='payment-btn'
-      disabled={disabled || loadingVerify || isLoading}
+      disabled={disabled || loadingVerify || isLoading || paymentInProgress}
       onClick={handlePayment}
     >
       {cart.paymentMethod === 'COD'
