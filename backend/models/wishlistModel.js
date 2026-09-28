@@ -22,9 +22,6 @@ const wishlistSchema = new mongoose.Schema(
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      unique: true,
-      sparse: true,
-      default: null,
     },
 
     items: [wishlistItemSchema],
@@ -43,6 +40,16 @@ const wishlistSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+  },
+);
+
+wishlistSchema.index(
+  { owner: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      owner: { $type: 'objectId' },
+    },
   },
 );
 

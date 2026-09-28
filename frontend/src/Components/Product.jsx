@@ -33,7 +33,7 @@ const Product = ({ product }) => {
   const [removeFromWishlist, { isLoading: isRemovingFromWishlist }] =
     useRemoveFromWishlistMutation();
 
-  const [setGuestWishlistVersion] = useState(0);
+  const [, setGuestWishlistVersion] = useState(0);
 
   const selectVariantHandler = (variant) => {
     setSelectedVariant(variant);

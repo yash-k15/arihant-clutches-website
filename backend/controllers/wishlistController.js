@@ -224,7 +224,6 @@ const createGuestWishlistShare = asyncHandler(async (req, res, next) => {
   const expiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
 
   const wishlist = await Wishlist.create({
-    owner: null,
     items: validItems,
     shareToken,
     expiresAt,
