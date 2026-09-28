@@ -5,7 +5,7 @@ import User from '../models/userModel.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import generateToken from '../utils/generateToken.js';
 import resetPasswordEmail from '../utils/emailTemplates/resetPasswordEmail.js';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import escapeRegex from '../utils/escapeRegex.js';
 import EmailOTP from '../models/emailOtpModel.js';
 import otpEmail from '../utils/emailTemplates/otpEmail.js';
@@ -198,7 +198,9 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
   }
 
   user.name = req.body.name || user.name;
-  user.email = req.body.email || user.email;
+  if (req.body.phone !== undefined) {
+    user.phone = req.body.phone.trim() || undefined;
+  }
 
   const updateUser = await user.save();
   res.status(200).json({
@@ -422,48 +424,48 @@ const setDefaultUserAddress = asyncHandler(async (req, res, next) => {
 // @desc    Change user phone number
 // @route   PUT /api/users/change-phone
 // @access  Private
-const changeUserPhone = asyncHandler(async (req, res, next) => {
-  const phone = String(req.body.phone).trim();
+// const changeUserPhone = asyncHandler(async (req, res, next) => {
+//   const phone = String(req.body.phone).trim();
 
-  if (!phone) {
-    return next(new ErrorResponse('Phone number is required', 400));
-  }
+//   if (!phone) {
+//     return next(new ErrorResponse('Phone number is required', 400));
+//   }
 
-  if (!/^[6-9]\d{9}$/.test(phone)) {
-    return next(new ErrorResponse('Enter a valid mobile number', 400));
-  }
+//   if (!/^[6-9]\d{9}$/.test(phone)) {
+//     return next(new ErrorResponse('Enter a valid mobile number', 400));
+//   }
 
-  const user = await User.findById(req.user._id);
+//   const user = await User.findById(req.user._id);
 
-  if (!user) {
-    return next(new ErrorResponse('User not found', 404));
-  }
+//   if (!user) {
+//     return next(new ErrorResponse('User not found', 404));
+//   }
 
-  if (user.phone === phone) {
-    return next(
-      new ErrorResponse('This is already your current phone number', 400),
-    );
-  }
+//   if (user.phone === phone) {
+//     return next(
+//       new ErrorResponse('This is already your current phone number', 400),
+//     );
+//   }
 
-  const existingUser = await User.findOne({ phone });
+//   const existingUser = await User.findOne({ phone });
 
-  if (existingUser) {
-    return next(new ErrorResponse('Phone number already registered', 400));
-  }
+//   if (existingUser) {
+//     return next(new ErrorResponse('Phone number already registered', 400));
+//   }
 
-  user.phone = phone;
-  user.phoneVerified = true;
+//   user.phone = phone;
+//   user.phoneVerified = true;
 
-  const updatedUser = await user.save();
+//   const updatedUser = await user.save();
 
-  res.status(200).json({
-    _id: updatedUser._id,
-    name: updatedUser.name,
-    email: updatedUser.email,
-    phone: updatedUser.phone,
-    isAdmin: updatedUser.isAdmin,
-  });
-});
+//   res.status(200).json({
+//     _id: updatedUser._id,
+//     name: updatedUser.name,
+//     email: updatedUser.email,
+//     phone: updatedUser.phone,
+//     isAdmin: updatedUser.isAdmin,
+//   });
+// });
 
 // @desc    Get users
 // @route   GET /api/users
@@ -975,181 +977,181 @@ const verifyPhoneChangeOTP = asyncHandler(async (req, res, next) => {
 // @desc        Register With Phone
 // @route       POST /api/users/register-phone
 // @access      Public
-const registerWithPhone = asyncHandler(async (req, res, next) => {
-  const { name } = req.body;
-  const email = req.body.email?.trim();
-  const phone = String(req.body.phone).trim();
+// const registerWithPhone = asyncHandler(async (req, res, next) => {
+//   const { name } = req.body;
+//   const email = req.body.email?.trim();
+//   const phone = String(req.body.phone).trim();
 
-  if (!email) {
-    return res.status(400).json({
-      message: 'Email is required',
-    });
-  }
+//   if (!email) {
+//     return res.status(400).json({
+//       message: 'Email is required',
+//     });
+//   }
 
-  const existingUser = await User.findOne({ phone });
+//   const existingUser = await User.findOne({ phone });
 
-  if (existingUser) {
-    return next(new ErrorResponse('Phone number already registered', 400));
-  }
+//   if (existingUser) {
+//     return next(new ErrorResponse('Phone number already registered', 400));
+//   }
 
-  const user = await User.create({
-    name,
-    email,
-    phone,
-    password: crypto.randomBytes(32).toString('hex'),
-    phoneVerified: true,
-  });
+//   const user = await User.create({
+//     name,
+//     email,
+//     phone,
+//     password: crypto.randomBytes(32).toString('hex'),
+//     phoneVerified: true,
+//   });
 
-  generateToken(res, user._id);
+//   generateToken(res, user._id);
 
-  res.status(201).json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
-    isAdmin: user.isAdmin,
-  });
-});
+//   res.status(201).json({
+//     _id: user._id,
+//     name: user.name,
+//     email: user.email,
+//     phone: user.phone,
+//     isAdmin: user.isAdmin,
+//   });
+// });
 
 // @desc    Send OTP for password change
 // @route   POST /api/users/send-password-change-otp
 // @access  Private
-const sendPasswordChangeOTP = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user._id);
+// const sendPasswordChangeOTP = asyncHandler(async (req, res, next) => {
+//   const user = await User.findById(req.user._id);
 
-  if (!user) {
-    return next(new ErrorResponse('User not found', 404));
-  }
+//   if (!user) {
+//     return next(new ErrorResponse('User not found', 404));
+//   }
 
-  if (!user.isAdmin) {
-    return next(
-      new ErrorResponse(
-        'Password change is only available for admin accounts',
-        403,
-      ),
-    );
-  }
+//   if (!user.isAdmin) {
+//     return next(
+//       new ErrorResponse(
+//         'Password change is only available for admin accounts',
+//         403,
+//       ),
+//     );
+//   }
 
-  res.status(200).json({
-    success: true,
-    message: 'OTP sent successfully',
-  });
-});
+//   res.status(200).json({
+//     success: true,
+//     message: 'OTP sent successfully',
+//   });
+// });
 
 // @desc    Verify OTP for password change
 // @route   POST /api/users/verify-password-change-otp
 // @access  Private
-const verifyPasswordChangeOTP = asyncHandler(async (req, res, next) => {
-  const { otp } = req.body;
+// const verifyPasswordChangeOTP = asyncHandler(async (req, res, next) => {
+//   const { otp } = req.body;
 
-  const user = await User.findById(req.user._id);
+//   const user = await User.findById(req.user._id);
 
-  if (!user) {
-    return next(new ErrorResponse('User not found', 404));
-  }
+//   if (!user) {
+//     return next(new ErrorResponse('User not found', 404));
+//   }
 
-  if (!user.isAdmin) {
-    return next(
-      new ErrorResponse(
-        'Password change is only available for admin accounts',
-        403,
-      ),
-    );
-  }
+//   if (!user.isAdmin) {
+//     return next(
+//       new ErrorResponse(
+//         'Password change is only available for admin accounts',
+//         403,
+//       ),
+//     );
+//   }
 
-  if (String(otp) !== '123456') {
-    return next(new ErrorResponse('Invalid OTP', 400));
-  }
+//   if (String(otp) !== '123456') {
+//     return next(new ErrorResponse('Invalid OTP', 400));
+//   }
 
-  const passwordChangeToken = jwt.sign(
-    {
-      userId: user._id,
-      purpose: 'password-change',
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: '10m',
-    },
-  );
+//   const passwordChangeToken = jwt.sign(
+//     {
+//       userId: user._id,
+//       purpose: 'password-change',
+//     },
+//     process.env.JWT_SECRET,
+//     {
+//       expiresIn: '10m',
+//     },
+//   );
 
-  res.status(200).json({
-    success: true,
-    message: 'OTP verified successfully',
-    passwordChangeToken,
-  });
-});
+//   res.status(200).json({
+//     success: true,
+//     message: 'OTP verified successfully',
+//     passwordChangeToken,
+//   });
+// });
 
 // @desc    Change admin password
 // @route   PUT /api/users/change-password
 // @access  Private
-const changeAdminPassword = asyncHandler(async (req, res, next) => {
-  const { passwordChangeToken, newPassword } = req.body;
+// const changeAdminPassword = asyncHandler(async (req, res, next) => {
+//   const { passwordChangeToken, newPassword } = req.body;
 
-  if (!passwordChangeToken) {
-    return next(
-      new ErrorResponse('Password change authorization is required', 400),
-    );
-  }
+//   if (!passwordChangeToken) {
+//     return next(
+//       new ErrorResponse('Password change authorization is required', 400),
+//     );
+//   }
 
-  if (!newPassword) {
-    return next(new ErrorResponse('New password is required', 400));
-  }
+//   if (!newPassword) {
+//     return next(new ErrorResponse('New password is required', 400));
+//   }
 
-  if (newPassword.length < 6) {
-    return next(
-      new ErrorResponse('Password must be at least 6 characters', 400),
-    );
-  }
+//   if (newPassword.length < 6) {
+//     return next(
+//       new ErrorResponse('Password must be at least 6 characters', 400),
+//     );
+//   }
 
-  let decodedToken;
+//   let decodedToken;
 
-  try {
-    decodedToken = jwt.verify(passwordChangeToken, process.env.JWT_SECRET);
-  } catch (error) {
-    return next(
-      new ErrorResponse(
-        'Password change authorization has expired or is invalid',
-        401,
-      ),
-    );
-  }
+//   try {
+//     decodedToken = jwt.verify(passwordChangeToken, process.env.JWT_SECRET);
+//   } catch (error) {
+//     return next(
+//       new ErrorResponse(
+//         'Password change authorization has expired or is invalid',
+//         401,
+//       ),
+//     );
+//   }
 
-  if (decodedToken.purpose !== 'password-change') {
-    return next(
-      new ErrorResponse('Invalid password change authorization', 401),
-    );
-  }
+//   if (decodedToken.purpose !== 'password-change') {
+//     return next(
+//       new ErrorResponse('Invalid password change authorization', 401),
+//     );
+//   }
 
-  if (String(decodedToken.userId) !== String(req.user._id)) {
-    return next(
-      new ErrorResponse('Invalid password change authorization', 401),
-    );
-  }
+//   if (String(decodedToken.userId) !== String(req.user._id)) {
+//     return next(
+//       new ErrorResponse('Invalid password change authorization', 401),
+//     );
+//   }
 
-  const user = await User.findById(req.user._id).select('+password');
+//   const user = await User.findById(req.user._id).select('+password');
 
-  if (!user) {
-    return next(new ErrorResponse('User not found', 404));
-  }
+//   if (!user) {
+//     return next(new ErrorResponse('User not found', 404));
+//   }
 
-  if (!user.isAdmin) {
-    return next(
-      new ErrorResponse(
-        'Password change is only available for admin accounts',
-        403,
-      ),
-    );
-  }
+//   if (!user.isAdmin) {
+//     return next(
+//       new ErrorResponse(
+//         'Password change is only available for admin accounts',
+//         403,
+//       ),
+//     );
+//   }
 
-  user.password = newPassword;
+//   user.password = newPassword;
 
-  await user.save();
+//   await user.save();
 
-  res.status(200).json({
-    success: true,
-    message: 'Password changed successfully',
-  });
-});
+//   res.status(200).json({
+//     success: true,
+//     message: 'Password changed successfully',
+//   });
+// });
 
 const createEmailVerificationToken = async (email) => {
   const token = crypto.randomBytes(32).toString('hex');
@@ -1202,7 +1204,7 @@ export {
   updateUserAddress,
   deleteUserAddress,
   setDefaultUserAddress,
-  changeUserPhone,
+  // changeUserPhone,
   getUsers,
   getUserById,
   deleteUser,
@@ -1212,8 +1214,8 @@ export {
   sendOTP,
   verifyOTP,
   verifyPhoneChangeOTP,
-  registerWithPhone,
-  sendPasswordChangeOTP,
-  verifyPasswordChangeOTP,
-  changeAdminPassword,
+  // registerWithPhone,
+  // sendPasswordChangeOTP,
+  // verifyPasswordChangeOTP,
+  // changeAdminPassword,
 };

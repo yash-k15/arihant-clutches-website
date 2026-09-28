@@ -253,7 +253,7 @@
   box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.12);
 }
 
-.profile-phone-field {
+/* .profile-phone-field {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -279,7 +279,7 @@
 .profile-phone-change-button:hover {
   background: #faf7f3;
   border-color: #b08d57;
-}
+} */
 
 .profile-form-fields .form-text {
   display: block;
@@ -554,7 +554,7 @@
   border-radius: 12px;
 }
 
-.profile-phone-display {
+/* .profile-phone-display {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -628,9 +628,9 @@
 
 .profile-phone-cancel-btn:hover {
   color: #2c2222;
-}
+} */
 
-.profile-security-section {
+/* .profile-security-section {
   margin-top: 32px;
 }
 
@@ -735,7 +735,7 @@
 
 .profile-password-cancel-button:hover {
   color: #2c2222;
-}
+} */
 
 /* =========================================================
    SAVED ADDRESSES
@@ -1219,7 +1219,7 @@
     grid-column: auto;
   }
 
-  .profile-phone-field {
+  /* .profile-phone-field {
     align-items: stretch;
   }
 
@@ -1229,7 +1229,7 @@
 
   .profile-phone-change-button {
     padding: 0 12px;
-  }
+  } */
 
   .profile-form-actions {
     flex-direction: column-reverse;
@@ -1273,7 +1273,7 @@
     background: #faf7f3;
   }
 
-  .profile-phone-input-row,
+  /* .profile-phone-input-row,
   .profile-phone-otp {
     flex-direction: column;
     align-items: stretch;
@@ -1313,7 +1313,7 @@
 
 .profile-security-actions {
   width: 100%;
-}
+} */
 
 .profile-addresses-list {
   grid-template-columns: 1fr;

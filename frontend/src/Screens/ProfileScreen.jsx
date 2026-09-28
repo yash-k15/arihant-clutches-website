@@ -17,11 +17,13 @@ import Paginate from '../Components/Paginate.jsx';
 
 import {
   useProfileMutation,
-  useSendOtpMutation,
-  useSendPasswordChangeOtpMutation,
-  useVerifyPasswordChangeOtpMutation,
-  useChangePasswordMutation,
-  useVerifyPhoneChangeOtpMutation,
+
+  // Old phone/password OTP flows preserved for possible future use
+  // useSendOtpMutation,
+  // useSendPasswordChangeOtpMutation,
+  // useVerifyPasswordChangeOtpMutation,
+  // useChangePasswordMutation,
+  // useVerifyPhoneChangeOtpMutation,
   useGetUserAddressesQuery,
   useAddUserAddressMutation,
   useUpdateUserAddressMutation,
@@ -38,6 +40,7 @@ import '../assets/styles/components/ProfileScreen.css';
 const ProfileScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   const [isAddingAddress, setIsAddingAddress] = useState(false);
@@ -47,16 +50,16 @@ const ProfileScreen = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const ordersSectionRef = useRef(null);
 
-  const [isChangingPhone, setIsChangingPhone] = useState(false);
-  const [newPhone, setNewPhone] = useState('');
-  const [phoneOtp, setPhoneOtp] = useState('');
-  const [phoneOtpSent, setPhoneOtpSent] = useState(false);
+  // const [isChangingPhone, setIsChangingPhone] = useState(false);
+  // const [newPhone, setNewPhone] = useState('');
+  // const [phoneOtp, setPhoneOtp] = useState('');
+  // const [phoneOtpSent, setPhoneOtpSent] = useState(false);
 
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [passwordOtp, setPasswordOtp] = useState('');
-  const [passwordChangeToken, setPasswordChangeToken] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // const [isChangingPassword, setIsChangingPassword] = useState(false);
+  // const [passwordOtp, setPasswordOtp] = useState('');
+  // const [passwordChangeToken, setPasswordChangeToken] = useState('');
+  // const [newPassword, setNewPassword] = useState('');
+  // const [confirmPassword, setConfirmPassword] = useState('');
 
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
@@ -64,19 +67,19 @@ const ProfileScreen = () => {
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
 
-  const [sendOtp, { isLoading: sendingOtp }] = useSendOtpMutation();
+  // const [sendOtp, { isLoading: sendingOtp }] = useSendOtpMutation();
 
-  const [verifyPhoneChangeOtp, { isLoading: verifyingPhoneOtp }] =
-    useVerifyPhoneChangeOtpMutation();
+  // const [verifyPhoneChangeOtp, { isLoading: verifyingPhoneOtp }] =
+  //   useVerifyPhoneChangeOtpMutation();
 
-  const [sendPasswordChangeOtp, { isLoading: sendingPasswordOtp }] =
-    useSendPasswordChangeOtpMutation();
+  // const [sendPasswordChangeOtp, { isLoading: sendingPasswordOtp }] =
+  //   useSendPasswordChangeOtpMutation();
 
-  const [verifyPasswordChangeOtp, { isLoading: verifyingPasswordOtp }] =
-    useVerifyPasswordChangeOtpMutation();
+  // const [verifyPasswordChangeOtp, { isLoading: verifyingPasswordOtp }] =
+  //   useVerifyPasswordChangeOtpMutation();
 
-  const [changePassword, { isLoading: changingPassword }] =
-    useChangePasswordMutation();
+  // const [changePassword, { isLoading: changingPassword }] =
+  //   useChangePasswordMutation();
 
   const { data: addressData, isLoading: loadingAddresses } =
     useGetUserAddressesQuery(userInfo?._id, {
@@ -104,24 +107,27 @@ const ProfileScreen = () => {
     if (userInfo) {
       setName(userInfo.name || '');
       setEmail(userInfo.email || '');
+      setPhone(userInfo.phone || '');
     }
   }, [userInfo]);
 
   const handleEdit = () => {
     setName(userInfo?.name || '');
     setEmail(userInfo?.email || '');
+    setPhone(userInfo?.phone || '');
     setIsEditing(true);
   };
 
   const handleCancel = () => {
     setName(userInfo?.name || '');
     setEmail(userInfo?.email || '');
+    setPhone(userInfo?.phone || '');
 
     // Reset phone-change state
-    setIsChangingPhone(false);
-    setNewPhone('');
-    setPhoneOtp('');
-    setPhoneOtpSent(false);
+    // setIsChangingPhone(false);
+    // setNewPhone('');
+    // setPhoneOtp('');
+    // setPhoneOtpSent(false);
 
     setIsEditing(false);
   };
@@ -132,17 +138,17 @@ const ProfileScreen = () => {
     try {
       const updatedUser = await updateProfile({
         _id: userInfo._id,
-        name,
-        email,
+        name: name.trim(),
+        phone: phone.trim(),
       }).unwrap();
 
       dispatch(setCredentials(updatedUser));
 
       // Reset phone-change state
-      setIsChangingPhone(false);
-      setNewPhone('');
-      setPhoneOtp('');
-      setPhoneOtpSent(false);
+      // setIsChangingPhone(false);
+      // setNewPhone('');
+      // setPhoneOtp('');
+      // setPhoneOtpSent(false);
 
       setIsEditing(false);
 
@@ -195,143 +201,143 @@ const ProfileScreen = () => {
     };
   };
 
-  const handleSendPhoneOtp = async () => {
-    const phone = newPhone.trim();
+  // const handleSendPhoneOtp = async () => {
+  //   const phone = newPhone.trim();
 
-    if (!/^[6-9]\d{9}$/.test(phone)) {
-      toast.warning('Enter a valid mobile number');
-      return;
-    }
+  //   if (!/^[6-9]\d{9}$/.test(phone)) {
+  //     toast.warning('Enter a valid mobile number');
+  //     return;
+  //   }
 
-    if (phone === userInfo.phone) {
-      toast.warning('This is already your current phone number');
-      return;
-    }
+  //   if (phone === userInfo.phone) {
+  //     toast.warning('This is already your current phone number');
+  //     return;
+  //   }
 
-    try {
-      await sendOtp({
-        phone,
-        purpose: 'phone-change',
-      }).unwrap();
+  //   try {
+  //     await sendOtp({
+  //       phone,
+  //       purpose: 'phone-change',
+  //     }).unwrap();
 
-      setPhoneOtpSent(true);
-      setPhoneOtp('');
+  //     setPhoneOtpSent(true);
+  //     setPhoneOtp('');
 
-      toast.success('OTP sent successfully');
-    } catch (error) {
-      toast.error(error?.data?.message || 'Unable to send OTP');
-    }
-  };
+  //     toast.success('OTP sent successfully');
+  //   } catch (error) {
+  //     toast.error(error?.data?.message || 'Unable to send OTP');
+  //   }
+  // };
 
-  const handleVerifyPhoneOtp = async () => {
-    if (!phoneOtp.trim()) {
-      toast.warning('Enter the OTP');
-      return;
-    }
+  // const handleVerifyPhoneOtp = async () => {
+  //   if (!phoneOtp.trim()) {
+  //     toast.warning('Enter the OTP');
+  //     return;
+  //   }
 
-    try {
-      const updatedUser = await verifyPhoneChangeOtp({
-        phone: newPhone.trim(),
-        otp: phoneOtp.trim(),
-        purpose: 'phone-change',
-      }).unwrap();
+  //   try {
+  //     const updatedUser = await verifyPhoneChangeOtp({
+  //       phone: newPhone.trim(),
+  //       otp: phoneOtp.trim(),
+  //       purpose: 'phone-change',
+  //     }).unwrap();
 
-      dispatch(setCredentials(updatedUser));
+  //     dispatch(setCredentials(updatedUser));
 
-      setIsChangingPhone(false);
-      setNewPhone('');
-      setPhoneOtp('');
-      setPhoneOtpSent(false);
+  //     setIsChangingPhone(false);
+  //     setNewPhone('');
+  //     setPhoneOtp('');
+  //     setPhoneOtpSent(false);
 
-      toast.success('Phone number updated successfully');
-    } catch (error) {
-      toast.error(error?.data?.message || 'Invalid OTP');
-    }
-  };
+  //     toast.success('Phone number updated successfully');
+  //   } catch (error) {
+  //     toast.error(error?.data?.message || 'Invalid OTP');
+  //   }
+  // };
 
-  const handleCancelPhoneChange = () => {
-    setIsChangingPhone(false);
-    setNewPhone('');
-    setPhoneOtp('');
-    setPhoneOtpSent(false);
-  };
+  // const handleCancelPhoneChange = () => {
+  //   setIsChangingPhone(false);
+  //   setNewPhone('');
+  //   setPhoneOtp('');
+  //   setPhoneOtpSent(false);
+  // };
 
-  const handleStartPasswordChange = async () => {
-    try {
-      await sendPasswordChangeOtp().unwrap();
+  // const handleStartPasswordChange = async () => {
+  //   try {
+  //     await sendPasswordChangeOtp().unwrap();
 
-      setIsChangingPassword(true);
-      setPasswordOtp('');
-      setPasswordChangeToken('');
+  //     setIsChangingPassword(true);
+  //     setPasswordOtp('');
+  //     setPasswordChangeToken('');
 
-      toast.success('OTP sent successfully');
-    } catch (error) {
-      toast.error(error?.data?.message || 'Unable to send password change OTP');
-    }
-  };
+  //     toast.success('OTP sent successfully');
+  //   } catch (error) {
+  //     toast.error(error?.data?.message || 'Unable to send password change OTP');
+  //   }
+  // };
 
-  const handleVerifyPasswordOtp = async () => {
-    if (!passwordOtp.trim()) {
-      toast.warning('Enter the OTP');
-      return;
-    }
+  // const handleVerifyPasswordOtp = async () => {
+  //   if (!passwordOtp.trim()) {
+  //     toast.warning('Enter the OTP');
+  //     return;
+  //   }
 
-    try {
-      const response = await verifyPasswordChangeOtp({
-        otp: passwordOtp.trim(),
-      }).unwrap();
+  //   try {
+  //     const response = await verifyPasswordChangeOtp({
+  //       otp: passwordOtp.trim(),
+  //     }).unwrap();
 
-      setPasswordChangeToken(response.passwordChangeToken);
+  //     setPasswordChangeToken(response.passwordChangeToken);
 
-      toast.success('OTP verified successfully');
-    } catch (error) {
-      toast.error(error?.data?.message || 'Invalid OTP');
-    }
-  };
+  //     toast.success('OTP verified successfully');
+  //   } catch (error) {
+  //     toast.error(error?.data?.message || 'Invalid OTP');
+  //   }
+  // };
 
-  const handleChangePassword = async () => {
-    if (!newPassword) {
-      toast.warning('Enter a new password');
-      return;
-    }
+  // const handleChangePassword = async () => {
+  //   if (!newPassword) {
+  //     toast.warning('Enter a new password');
+  //     return;
+  //   }
 
-    if (newPassword.length < 6) {
-      toast.warning('Password must be at least 6 characters');
-      return;
-    }
+  //   if (newPassword.length < 6) {
+  //     toast.warning('Password must be at least 6 characters');
+  //     return;
+  //   }
 
-    if (!confirmPassword) {
-      toast.warning('Confirm your new password');
-      return;
-    }
+  //   if (!confirmPassword) {
+  //     toast.warning('Confirm your new password');
+  //     return;
+  //   }
 
-    if (newPassword !== confirmPassword) {
-      toast.warning('Passwords do not match');
-      return;
-    }
+  //   if (newPassword !== confirmPassword) {
+  //     toast.warning('Passwords do not match');
+  //     return;
+  //   }
 
-    if (!passwordChangeToken) {
-      toast.error('Password change authorization is missing');
-      return;
-    }
+  //   if (!passwordChangeToken) {
+  //     toast.error('Password change authorization is missing');
+  //     return;
+  //   }
 
-    try {
-      await changePassword({
-        passwordChangeToken,
-        newPassword,
-      }).unwrap();
+  //   try {
+  //     await changePassword({
+  //       passwordChangeToken,
+  //       newPassword,
+  //     }).unwrap();
 
-      setIsChangingPassword(false);
-      setPasswordOtp('');
-      setPasswordChangeToken('');
-      setNewPassword('');
-      setConfirmPassword('');
+  //     setIsChangingPassword(false);
+  //     setPasswordOtp('');
+  //     setPasswordChangeToken('');
+  //     setNewPassword('');
+  //     setConfirmPassword('');
 
-      toast.success('Password changed successfully');
-    } catch (error) {
-      toast.error(error?.data?.message || 'Unable to change password');
-    }
-  };
+  //     toast.success('Password changed successfully');
+  //   } catch (error) {
+  //     toast.error(error?.data?.message || 'Unable to change password');
+  //   }
+  // };
 
   const handleAddAddress = async (address) => {
     try {
@@ -483,14 +489,34 @@ const ProfileScreen = () => {
 
                 <Form.Group controlId='profileEmail'>
                   <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    type='email'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+
+                  <Form.Control type='email' value={email} readOnly />
+
+                  <Form.Text className='profile-form-helper'>
+                    Email address cannot be changed.
+                  </Form.Text>
                 </Form.Group>
 
                 <Form.Group controlId='profilePhone'>
+                  <Form.Label>Phone</Form.Label>
+
+                  <Form.Control
+                    type='tel'
+                    value={phone}
+                    onChange={(e) =>
+                      setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))
+                    }
+                    placeholder='Enter your mobile number'
+                    maxLength={10}
+                    autoComplete='tel'
+                  />
+
+                  <Form.Text className='profile-form-helper'>
+                    Optional
+                  </Form.Text>
+                </Form.Group>
+
+                {/* <Form.Group controlId='profilePhone'>
                   <Form.Label>Phone</Form.Label>
 
                   {!isChangingPhone ? (
@@ -576,7 +602,7 @@ const ProfileScreen = () => {
                   <Form.Text>
                     Changing your phone number will require OTP verification.
                   </Form.Text>
-                </Form.Group>
+                </Form.Group> */}
               </div>
 
               <div className='profile-form-actions'>
@@ -717,7 +743,7 @@ const ProfileScreen = () => {
         )}
       </section>
 
-      {userInfo?.isAdmin && (
+      {/* {userInfo?.isAdmin && (
         <section className='profile-security-section'>
           <div className='profile-section-heading'>
             <div>
@@ -822,7 +848,7 @@ const ProfileScreen = () => {
             </div>
           </div>
         </section>
-      )}
+      )} */}
 
       <section ref={ordersSectionRef} className='profile-orders-section'>
         <div className='profile-section-heading'>

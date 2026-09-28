@@ -89,28 +89,28 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    sendPasswordChangeOtp: builder.mutation({
-      query: () => ({
-        url: `${USERS_URL}/send-password-change-otp`,
-        method: 'POST',
-      }),
-    }),
+    // sendPasswordChangeOtp: builder.mutation({
+    //   query: () => ({
+    //     url: `${USERS_URL}/send-password-change-otp`,
+    //     method: 'POST',
+    //   }),
+    // }),
 
-    verifyPasswordChangeOtp: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/verify-password-change-otp`,
-        method: 'POST',
-        body: data,
-      }),
-    }),
+    // verifyPasswordChangeOtp: builder.mutation({
+    //   query: (data) => ({
+    //     url: `${USERS_URL}/verify-password-change-otp`,
+    //     method: 'POST',
+    //     body: data,
+    //   }),
+    // }),
 
-    changePassword: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/change-password`,
-        method: 'PUT',
-        body: data,
-      }),
-    }),
+    // changePassword: builder.mutation({
+    //   query: (data) => ({
+    //     url: `${USERS_URL}/change-password`,
+    //     method: 'PUT',
+    //     body: data,
+    //   }),
+    // }),
 
     verifyOtp: builder.mutation({
       query: (data) => ({
@@ -120,21 +120,21 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    verifyPhoneChangeOtp: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/verify-phone-change-otp`,
-        method: 'POST',
-        body: data,
-      }),
-    }),
+    // verifyPhoneChangeOtp: builder.mutation({
+    //   query: (data) => ({
+    //     url: `${USERS_URL}/verify-phone-change-otp`,
+    //     method: 'POST',
+    //     body: data,
+    //   }),
+    // }),
 
-    registerPhone: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/register-phone`,
-        method: 'POST',
-        body: data,
-      }),
-    }),
+    // registerPhone: builder.mutation({
+    //   query: (data) => ({
+    //     url: `${USERS_URL}/register-phone`,
+    //     method: 'POST',
+    //     body: data,
+    //   }),
+    // }),
 
     getUserAddresses: builder.query({
       query: () => ({
@@ -191,12 +191,12 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useSendOtpMutation,
-  useSendPasswordChangeOtpMutation,
-  useVerifyPasswordChangeOtpMutation,
-  useChangePasswordMutation,
+  // useSendPasswordChangeOtpMutation,
+  // useVerifyPasswordChangeOtpMutation,
+  // useChangePasswordMutation,
   useVerifyOtpMutation,
-  useVerifyPhoneChangeOtpMutation,
-  useRegisterPhoneMutation,
+  // useVerifyPhoneChangeOtpMutation,
+  // useRegisterPhoneMutation,
   useGetUserAddressesQuery,
   useAddUserAddressMutation,
   useUpdateUserAddressMutation,

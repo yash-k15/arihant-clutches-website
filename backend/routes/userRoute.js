@@ -10,7 +10,7 @@ import {
   updateUserAddress,
   deleteUserAddress,
   setDefaultUserAddress,
-  changeUserPhone,
+  // changeUserPhone,
   getUsers,
   getUserById,
   deleteUser,
@@ -19,11 +19,11 @@ import {
   resetPassword,
   sendOTP,
   verifyOTP,
-  verifyPhoneChangeOTP,
-  registerWithPhone,
-  sendPasswordChangeOTP,
-  verifyPasswordChangeOTP,
-  changeAdminPassword,
+  // verifyPhoneChangeOTP,
+  // registerWithPhone,
+  // sendPasswordChangeOTP,
+  // verifyPasswordChangeOTP,
+  // changeAdminPassword,
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import {
@@ -57,28 +57,28 @@ router
 
 router.put('/addresses/:addressId/default', protect, setDefaultUserAddress);
 
-router.put('/change-phone', protect, changeUserPhone);
+// router.put('/change-phone', protect, changeUserPhone);
 
-router.post('/verify-phone-change-otp', protect, verifyPhoneChangeOTP);
-router.post(
-  '/send-password-change-otp',
-  protect,
-  otpLimiter,
-  sendPasswordChangeOTP,
-);
+// router.post('/verify-phone-change-otp', protect, verifyPhoneChangeOTP);
+// router.post(
+//   '/send-password-change-otp',
+//   protect,
+//   otpLimiter,
+//   sendPasswordChangeOTP,
+// );
 
-router.post(
-  '/verify-password-change-otp',
-  protect,
-  otpLimiter,
-  verifyPasswordChangeOTP,
-);
+// router.post(
+//   '/verify-password-change-otp',
+//   protect,
+//   otpLimiter,
+//   verifyPasswordChangeOTP,
+// );
 
-router.put('/change-password', protect, changeAdminPassword);
+// router.put('/change-password', protect, changeAdminPassword);
 
 router.post('/send-otp', otpLimiter, sendOTP);
 router.post('/verify-otp', otpLimiter, verifyOTP);
-router.post('/register-phone', authLimiter, registerWithPhone);
+// router.post('/register-phone', authLimiter, registerWithPhone);
 
 router
   .route('/:id')
