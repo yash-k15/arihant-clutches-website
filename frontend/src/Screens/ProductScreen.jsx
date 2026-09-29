@@ -856,6 +856,7 @@ const ProductScreen = () => {
                         as='textarea'
                         rows='5'
                         value={comment}
+                        maxLength={2000}
                         onChange={(event) => setComment(event.target.value)}
                       />
                     </Form.Group>

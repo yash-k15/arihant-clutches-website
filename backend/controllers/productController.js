@@ -501,41 +501,82 @@ const deleteProduct = asyncHandler(async (req, res, next) => {
 // @desc Create a new review
 // @route POST /api/product/:id/reviews
 // @access Private
-const createProductReview = asyncHandler(async (req, res) => {
+const createProductReview = asyncHandler(async (req, res, next) => {
   const { rating, comment } = req.body;
+
+  // Validate rating before any database work.
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return next(
+      new ErrorResponse('Rating must be an integer between 1 and 5', 400),
+    );
+  }
+
+  // Validate comment before any database work.
+  if (typeof comment !== 'string') {
+    return next(new ErrorResponse('Review comment must be text', 400));
+  }
+
+  const trimmedComment = comment.trim();
+
+  if (!trimmedComment) {
+    return next(new ErrorResponse('Review comment is required', 400));
+  }
+
+  if (trimmedComment.length > 2000) {
+    return next(
+      new ErrorResponse('Review comment cannot exceed 2000 characters', 400),
+    );
+  }
+
   const product = await Product.findOne({ slug: req.params.slug });
 
-  if (product) {
-    const alreadyReviewed = product.reviews.find(
-      (review) => review.user.toString() === req.user._id.toString(),
-    );
-
-    if (alreadyReviewed) {
-      res.status(404);
-      throw new Error('Product already reviewed');
-    }
-
-    const review = {
-      name: req.user.name,
-      rating: Number(rating),
-      comment,
-      user: req.user._id,
-    };
-
-    product.reviews.push(review);
-
-    product.numReviews = product.reviews.length;
-
-    product.rating =
-      product.reviews.reduce((acc, review) => acc + review.rating, 0) /
-      product.reviews.length;
-
-    await product.save();
-    res.status(201).json({ message: 'Review added' });
-  } else {
-    res.status(404);
-    throw new Error('Resource not found');
+  if (!product) {
+    return next(new ErrorResponse('Resource not found', 404));
   }
+
+  // Prevent duplicate reviews during normal requests.
+  const review = {
+    name: req.user.name,
+    rating,
+    comment: trimmedComment,
+    user: req.user._id,
+  };
+
+  const updatedProduct = await Product.findOneAndUpdate(
+    {
+      _id: product._id,
+      reviews: {
+        $not: {
+          $elemMatch: {
+            user: req.user._id,
+          },
+        },
+      },
+    },
+    {
+      $push: {
+        reviews: review,
+      },
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  if (!updatedProduct) {
+    return next(new ErrorResponse('Product already reviewed', 409));
+  }
+
+  updatedProduct.numReviews = updatedProduct.reviews.length;
+
+  updatedProduct.rating =
+    updatedProduct.reviews.reduce((acc, review) => acc + review.rating, 0) /
+    updatedProduct.reviews.length;
+
+  await updatedProduct.save();
+
+  res.status(201).json({ message: 'Review added' });
 });
 
 // @desc Get top rated products
