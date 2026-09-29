@@ -92,7 +92,12 @@ const registerUser = asyncHandler(async (req, res, next) => {
   const userExists = await User.findOne({ email: normalizedEmail });
 
   if (userExists) {
-    return next(new ErrorResponse('User already exists', 400));
+    return next(
+      new ErrorResponse(
+        'Unable to create account with the provided details',
+        400,
+      ),
+    );
   }
 
   const normalizedPhone = phone?.trim();
@@ -701,7 +706,10 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new ErrorResponse('There is no user with that email', 404));
+    return res.status(200).json({
+      success: true,
+      message: 'A password reset email has been sent.',
+    });
   }
 
   // Get reset Token
@@ -722,7 +730,10 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
       html: resetPasswordEmail(resetUrl),
     });
 
-    res.status(200).json({ success: true, data: 'Email Sent' });
+    return res.status(200).json({
+      success: true,
+      message: 'A password reset email has been sent.',
+    });
   } catch (err) {
     console.log(err);
     user.resetPasswordToken = undefined;
