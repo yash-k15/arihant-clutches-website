@@ -27,7 +27,9 @@ const protect = asyncHandler(async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = await User.findById(decoded.userId).select('-password');
+    req.user = await User.findById(decoded.userId).select(
+      '_id name email phone isAdmin tokenVersion',
+    );
 
     // User no longer exists
     if (!req.user) {

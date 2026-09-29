@@ -26,6 +26,8 @@ import {
   PASSWORD_ERROR_MESSAGE,
 } from '../utils/passwordValidator.js';
 
+const SAFE_USER_FIELDS = '_id name email phone isAdmin createdAt';
+
 // @desc    Auth user and get token
 // @route   POST /api/users/login
 // @access  Public
@@ -571,7 +573,7 @@ const getUsers = asyncHandler(async (req, res, next) => {
   }
 
   const users = await User.find(filters)
-    .select('-password')
+    .select(SAFE_USER_FIELDS)
     .sort(sortOption)
     .limit(pageSize)
     .skip(pageSize * (page - 1));
@@ -587,7 +589,7 @@ const getUsers = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users/:id
 // @access  Private/admin
 const getUserById = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.params.id).select('-password');
+  const user = await User.findById(req.params.id).select(SAFE_USER_FIELDS);
 
   if (!user) {
     return next(new ErrorResponse('User not found', 404));
