@@ -9,17 +9,34 @@ const generateOTP = () => {
   return crypto.randomInt(100000, 1000000).toString();
 };
 
+const getOtpHashSecret = () => {
+  const secret = process.env.OTP_HASH_SECRET;
+
+  if (!secret) {
+    throw new Error('OTP_HASH_SECRET is not configured');
+  }
+
+  return secret;
+};
+
 const hashOTP = (otp) => {
-  return crypto.createHash('sha256').update(otp).digest('hex');
+  return crypto
+    .createHmac('sha256', getOtpHashSecret())
+    .update(otp)
+    .digest('hex');
 };
 
 const verifyOTP = (otp, otpHash) => {
   const hashedOtp = hashOTP(otp);
 
-  return crypto.timingSafeEqual(
-    Buffer.from(hashedOtp, 'hex'),
-    Buffer.from(otpHash, 'hex'),
-  );
+  const hashedOtpBuffer = Buffer.from(hashedOtp, 'hex');
+  const storedHashBuffer = Buffer.from(otpHash, 'hex');
+
+  if (hashedOtpBuffer.length !== storedHashBuffer.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(hashedOtpBuffer, storedHashBuffer);
 };
 
 export {
