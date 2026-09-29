@@ -1,7 +1,17 @@
 const orderConfirmationEmail = (order, paymentId, customerEmail) => {
+  const escapeHtml = (value) =>
+    String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
   const isCOD = paymentId === 'Cash on Delivery';
 
-  const customerName = order.shippingAddress?.fullName || 'Customer';
+  const customerName = escapeHtml(
+    order.shippingAddress?.fullName || 'Customer',
+  );
 
   const getOrdinal = (day) => {
     if (day >= 11 && day <= 13) {
@@ -219,7 +229,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                             font-weight: 600;
                             word-break: break-all;
                           ">
-                            ${order._id}
+                            ${escapeHtml(order._id)}
                           </div>
                         </td>
 
@@ -299,7 +309,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                                   font-weight: 600;
                                   word-break: break-all;
                                 ">
-                                  ${paymentId}
+                                  ${escapeHtml(paymentId)}
                                 </div>
                               </td>
                             `
@@ -393,7 +403,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                                     font-weight: 600;
                                     margin-bottom: 4px;
                                   ">
-                                    ${item.name}
+                                    ${escapeHtml(item.name)}
                                   </div>
 
                                   ${
@@ -403,7 +413,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                                           color: #8a7b6d;
                                           font-size: 12px;
                                         ">
-                                          Color: ${item.color}
+                                          Color: ${escapeHtml(item.color)}
                                         </div>
                                       `
                                       : ''
@@ -572,35 +582,35 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           <strong style="
                             color: #2c2222;
                           ">
-                            ${order.shippingAddress.fullName}
+                            ${escapeHtml(order.shippingAddress.fullName)}
                           </strong>
 
                           <br />
 
-                          ${order.shippingAddress.addressLine1}
+                          ${escapeHtml(order.shippingAddress.addressLine1)}
 
                           <br />
 
                           ${
                             order.shippingAddress.addressLine2
-                              ? `${order.shippingAddress.addressLine2}<br />`
+                              ? `${escapeHtml(order.shippingAddress.addressLine2)}<br />`
                               : ''
                           }
 
-                          ${order.shippingAddress.city},
-                          ${order.shippingAddress.state}
+                          ${escapeHtml(order.shippingAddress.city)},
+                          ${escapeHtml(order.shippingAddress.state)}
 
                           <br />
 
-                          ${order.shippingAddress.postalCode},
-                          ${order.shippingAddress.country}
+                          ${escapeHtml(order.shippingAddress.postalCode)},
+                          ${escapeHtml(order.shippingAddress.country)}
 
                           <br />
 
                           <span style="
                             color: #8a7b6d;
                           ">
-                            Phone: ${order.shippingAddress.phone}
+                            Phone: ${escapeHtml(order.shippingAddress.phone)}
                           </span>
 
                           <br />
@@ -608,7 +618,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           <span style="
                             color: #8a7b6d;
                           ">
-                            Email: ${customerEmail}
+                            Email: ${escapeHtml(customerEmail)}
                           </span>
                         </td>
                       </tr>
