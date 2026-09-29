@@ -81,6 +81,7 @@ const AdminVariantManager = ({
       ...variants,
       {
         color: '',
+        price: '',
         countInStock: 0,
         images: [],
       },

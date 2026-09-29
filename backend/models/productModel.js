@@ -143,11 +143,16 @@ const productSchema = new mongoose.Schema(
 productSchema.index({ category: 1, createdAt: -1 });
 productSchema.index({ rating: -1, createdAt: -1 });
 
-// Create product slug from the name
+// Create the slug only when the product is first created.
+// Existing product slugs remain stable even if the name changes.
 productSchema.pre('save', function (next) {
-  if (this.isModified('name')) {
-    this.slug = slugify(this.name, { lower: true, strict: true });
+  if (this.isNew && !this.slug) {
+    this.slug = slugify(this.name, {
+      lower: true,
+      strict: true,
+    });
   }
+
   next();
 });
 

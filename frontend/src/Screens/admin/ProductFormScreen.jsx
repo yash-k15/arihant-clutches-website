@@ -213,7 +213,13 @@ const ProductFormScreen = () => {
 
     const invalidVariant = variants.find(
       (variant) =>
-        !variant.color || !variant.price || variant.images.length === 0,
+        !variant.color ||
+        variant.price === '' ||
+        variant.price === undefined ||
+        variant.price === null ||
+        !Number.isFinite(Number(variant.price)) ||
+        Number(variant.price) < 0 ||
+        variant.images.length === 0,
     );
 
     if (invalidVariant) {
@@ -222,6 +228,12 @@ const ProductFormScreen = () => {
       );
       return;
     }
+
+    const normalizedVariants = variants.map((variant) => ({
+      ...variant,
+      price: Number(variant.price),
+      countInStock: Number(variant.countInStock),
+    }));
 
     try {
       if (isEditMode) {
@@ -237,7 +249,7 @@ const ProductFormScreen = () => {
           isFeatured,
           isNewArrival,
           isBestSeller,
-          variants,
+          variants: normalizedVariants,
           video,
         }).unwrap();
 
@@ -308,7 +320,7 @@ const ProductFormScreen = () => {
           isFeatured,
           isNewArrival,
           isBestSeller,
-          variants,
+          variants: normalizedVariants,
           video,
         }).unwrap();
 
