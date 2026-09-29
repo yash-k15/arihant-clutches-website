@@ -4,6 +4,12 @@ import Product, { Category } from '../models/productModel.js';
 import slugify from 'slugify';
 import escapeRegex from '../utils/escapeRegex.js';
 
+import {
+  validateString,
+  isFiniteNumber,
+  isValidHttpUrl,
+} from '../utils/inputValidation.js';
+
 // @desc    Get all Products
 // @route   GET /api/products
 // @access  Public
@@ -276,6 +282,114 @@ const createProduct = asyncHandler(async (req, res, next) => {
     video,
   } = req.body;
 
+  for (const [field, value] of [
+    ['isFeatured', isFeatured],
+    ['isNewArrival', isNewArrival],
+    ['isBestSeller', isBestSeller],
+  ]) {
+    if (value !== undefined && typeof value !== 'boolean') {
+      return next(new ErrorResponse(`${field} must be a boolean`, 400));
+    }
+  }
+
+  const stringFields = [
+    ['name', name, 2, 150],
+    ['brand', brand, 2, 100],
+    ['category', category, 2, 100],
+    ['description', description, 1, 5000],
+    ['material', material, 0, 200],
+    ['dimensions', dimensions, 0, 100],
+    ['weight', weight, 0, 100],
+  ];
+
+  for (const [field, value, min, max] of stringFields) {
+    const validation = validateString(value, {
+      required: field === 'name' || field === 'description',
+      min,
+      max,
+    });
+
+    if (!validation.valid) {
+      return next(
+        new ErrorResponse(
+          `${field} must be a valid string with a maximum length of ${max} characters`,
+          400,
+        ),
+      );
+    }
+  }
+
+  if (category !== undefined) {
+    const categoryExists = await Category.exists({
+      name: category,
+    });
+
+    if (!categoryExists) {
+      return next(new ErrorResponse('Product category does not exist', 400));
+    }
+  }
+
+  if (!Array.isArray(variants) || variants.length === 0) {
+    return next(new ErrorResponse('At least one variant is required', 400));
+  }
+
+  for (const variant of variants) {
+    if (!variant || typeof variant !== 'object' || Array.isArray(variant)) {
+      return next(new ErrorResponse('Invalid product variant', 400));
+    }
+
+    const colorValidation = validateString(variant.color, {
+      required: true,
+      min: 1,
+      max: 100,
+    });
+
+    if (!colorValidation.valid) {
+      return next(new ErrorResponse('Variant color is invalid', 400));
+    }
+
+    if (!isFiniteNumber(variant.price) || variant.price < 0) {
+      return next(
+        new ErrorResponse(
+          'Variant price must be a valid non-negative number',
+          400,
+        ),
+      );
+    }
+
+    if (!Number.isInteger(variant.countInStock) || variant.countInStock < 0) {
+      return next(
+        new ErrorResponse('Variant stock must be a non-negative integer', 400),
+      );
+    }
+
+    if (!Array.isArray(variant.images)) {
+      return next(new ErrorResponse('Variant images must be an array', 400));
+    }
+
+    if (variant.images.some((image) => typeof image !== 'string')) {
+      return next(
+        new ErrorResponse('Variant images must contain only strings', 400),
+      );
+    }
+  }
+
+  if (video !== undefined && video !== null) {
+    if (typeof video !== 'object' || Array.isArray(video)) {
+      return next(new ErrorResponse('Invalid video data', 400));
+    }
+
+    if (video.url) {
+      if (typeof video.url !== 'string' || !isValidHttpUrl(video.url)) {
+        return next(new ErrorResponse('Invalid video URL', 400));
+      }
+    }
+
+    if (video.publicId !== undefined && typeof video.publicId !== 'string') {
+      return next(new ErrorResponse('Invalid video public ID', 400));
+    }
+  }
+
   const product = new Product({
     user: req.user._id,
     name,
@@ -315,6 +429,89 @@ const updateProduct = asyncHandler(async (req, res, next) => {
     video,
   } = req.body;
 
+  for (const [field, value] of [
+    ['isFeatured', isFeatured],
+    ['isNewArrival', isNewArrival],
+    ['isBestSeller', isBestSeller],
+  ]) {
+    if (value !== undefined && typeof value !== 'boolean') {
+      return next(new ErrorResponse(`${field} must be a boolean`, 400));
+    }
+  }
+
+  if (name !== undefined) {
+    const validation = validateString(name, {
+      required: true,
+      min: 2,
+      max: 150,
+    });
+
+    if (!validation.valid) {
+      return next(new ErrorResponse('Product name is invalid', 400));
+    }
+  }
+
+  if (description !== undefined) {
+    const validation = validateString(description, {
+      required: true,
+      min: 1,
+      max: 5000,
+    });
+
+    if (!validation.valid) {
+      return next(new ErrorResponse('Product description is invalid', 400));
+    }
+  }
+
+  if (brand !== undefined) {
+    const validation = validateString(brand, {
+      required: true,
+      min: 2,
+      max: 100,
+    });
+
+    if (!validation.valid) {
+      return next(new ErrorResponse('Product brand is invalid', 400));
+    }
+  }
+
+  if (category !== undefined) {
+    const categoryValidation = validateString(category, {
+      required: true,
+      min: 2,
+      max: 100,
+    });
+
+    if (!categoryValidation.valid) {
+      return next(new ErrorResponse('Product category is invalid', 400));
+    }
+
+    const categoryExists = await Category.exists({
+      name: category,
+    });
+
+    if (!categoryExists) {
+      return next(new ErrorResponse('Product category does not exist', 400));
+    }
+  }
+
+  for (const [field, value, max] of [
+    ['material', material, 200],
+    ['dimensions', dimensions, 100],
+    ['weight', weight, 100],
+  ]) {
+    if (value !== undefined) {
+      const validation = validateString(value, {
+        required: true,
+        max,
+      });
+
+      if (!validation.valid) {
+        return next(new ErrorResponse(`${field} is invalid`, 400));
+      }
+    }
+  }
+
   const product = await Product.findOne({ slug: req.params.slug });
 
   if (!product) {
@@ -332,8 +529,82 @@ const updateProduct = asyncHandler(async (req, res, next) => {
   product.weight = weight ?? product.weight;
   product.dimensions = dimensions ?? product.dimensions;
 
+  if (video !== undefined && video !== null) {
+    if (typeof video !== 'object' || Array.isArray(video)) {
+      return next(new ErrorResponse('Invalid video data', 400));
+    }
+
+    if (video.url) {
+      if (typeof video.url !== 'string' || !isValidHttpUrl(video.url)) {
+        return next(new ErrorResponse('Invalid video URL', 400));
+      }
+    }
+
+    if (video.publicId !== undefined && typeof video.publicId !== 'string') {
+      return next(new ErrorResponse('Invalid video public ID', 400));
+    }
+  }
+
   if (video !== undefined) {
     product.video = video;
+  }
+
+  if (variants !== undefined && !Array.isArray(variants)) {
+    return next(new ErrorResponse('Variants must be an array', 400));
+  }
+
+  if (Array.isArray(variants)) {
+    for (const variant of variants) {
+      if (!variant || typeof variant !== 'object' || Array.isArray(variant)) {
+        return next(new ErrorResponse('Invalid product variant', 400));
+      }
+
+      if (variant.color !== undefined) {
+        const colorValidation = validateString(variant.color, {
+          required: true,
+          min: 1,
+          max: 100,
+        });
+
+        if (!colorValidation.valid) {
+          return next(new ErrorResponse('Variant color is invalid', 400));
+        }
+      }
+
+      if (
+        variant.price !== undefined &&
+        (!isFiniteNumber(variant.price) || variant.price < 0)
+      ) {
+        return next(
+          new ErrorResponse(
+            'Variant price must be a valid non-negative number',
+            400,
+          ),
+        );
+      }
+
+      if (
+        variant.countInStock !== undefined &&
+        (!Number.isInteger(variant.countInStock) || variant.countInStock < 0)
+      ) {
+        return next(
+          new ErrorResponse(
+            'Variant stock must be a non-negative integer',
+            400,
+          ),
+        );
+      }
+
+      if (
+        variant.images !== undefined &&
+        (!Array.isArray(variant.images) ||
+          variant.images.some((image) => typeof image !== 'string'))
+      ) {
+        return next(
+          new ErrorResponse('Variant images must be an array of strings', 400),
+        );
+      }
+    }
   }
 
   if (Array.isArray(variants)) {

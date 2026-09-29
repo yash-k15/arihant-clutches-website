@@ -7,11 +7,21 @@ import Product from '../models/productModel.js';
 import calculateOrderPricing from '../utils/orderPricing.js';
 import sendEmail from '../utils/sendEmail.js';
 import orderConfirmationEmail from '../utils/emailTemplates/orderConfirmationEmail.js';
+import { validateAddress } from '../utils/inputValidation.js';
 
 const createOrder = asyncHandler(async (req, res) => {
   try {
     const { orderItems, paymentMethod, shippingAddress, idempotencyKey } =
       req.body;
+
+    const addressValidation = validateAddress(shippingAddress);
+
+    if (!addressValidation.valid) {
+      return res.status(400).json({
+        success: false,
+        message: addressValidation.message,
+      });
+    }
 
     if (paymentMethod !== 'ONLINE') {
       return res.status(400).json({
@@ -563,6 +573,12 @@ const reconcilePayment = async ({
  * happen inside the same MongoDB transaction.
  */
 const createCodOrder = async ({ req, orderData, idempotencyKey }) => {
+  const addressValidation = validateAddress(orderData?.shippingAddress);
+
+  if (!addressValidation.valid) {
+    throw new Error(addressValidation.message);
+  }
+
   if (typeof idempotencyKey !== 'string' || !idempotencyKey.trim()) {
     throw new Error('Missing idempotency key');
   }

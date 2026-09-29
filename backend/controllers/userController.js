@@ -26,6 +26,12 @@ import {
   PASSWORD_ERROR_MESSAGE,
 } from '../utils/passwordValidator.js';
 
+import {
+  validateAddress,
+  validateString,
+  isValidIndianPhone,
+} from '../utils/inputValidation.js';
+
 const SAFE_USER_FIELDS = '_id name email phone isAdmin createdAt';
 
 // @desc    Auth user and get token
@@ -230,12 +236,30 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('User not found', 404));
   }
 
-  user.name = req.body.name || user.name;
+  if (req.body.name !== undefined) {
+    const nameValidation = validateString(req.body.name, {
+      required: true,
+      min: 2,
+      max: 100,
+    });
+
+    if (!nameValidation.valid) {
+      return next(
+        new ErrorResponse('Name must be between 2 and 100 characters', 400),
+      );
+    }
+
+    user.name = nameValidation.value;
+  }
 
   if (req.body.phone !== undefined) {
+    if (typeof req.body.phone !== 'string') {
+      return next(new ErrorResponse('Invalid phone number', 400));
+    }
+
     const normalizedPhone = req.body.phone.trim();
 
-    if (normalizedPhone && !/^[6-9]\d{9}$/.test(normalizedPhone)) {
+    if (normalizedPhone && !isValidIndianPhone(normalizedPhone)) {
       return next(new ErrorResponse('Enter a valid mobile number', 400));
     }
 
@@ -254,6 +278,7 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
   }
 
   const updateUser = await user.save();
+
   res.status(200).json({
     _id: updateUser._id,
     name: updateUser.name,
@@ -298,6 +323,16 @@ const addUserAddress = asyncHandler(async (req, res, next) => {
     isDefault,
   } = req.body;
 
+  const addressValidation = validateAddress(req.body);
+
+  if (!addressValidation.valid) {
+    return next(new ErrorResponse(addressValidation.message, 400));
+  }
+
+  if (isDefault !== undefined && typeof isDefault !== 'boolean') {
+    return next(new ErrorResponse('isDefault must be a boolean', 400));
+  }
+
   const user = await User.findById(req.user._id);
 
   if (!user) {
@@ -324,7 +359,7 @@ const addUserAddress = asyncHandler(async (req, res, next) => {
     );
   }
 
-  const shouldBeDefault = user.addresses.length === 0 || Boolean(isDefault);
+  const shouldBeDefault = user.addresses.length === 0 || isDefault === true;
 
   if (shouldBeDefault) {
     user.addresses.forEach((address) => {
@@ -367,6 +402,16 @@ const updateUserAddress = asyncHandler(async (req, res, next) => {
     isDefault,
   } = req.body;
 
+  const addressValidation = validateAddress(req.body);
+
+  if (!addressValidation.valid) {
+    return next(new ErrorResponse(addressValidation.message, 400));
+  }
+
+  if (isDefault !== undefined && typeof isDefault !== 'boolean') {
+    return next(new ErrorResponse('isDefault must be a boolean', 400));
+  }
+
   const user = await User.findById(req.user._id);
 
   if (!user) {
@@ -393,7 +438,7 @@ const updateUserAddress = asyncHandler(async (req, res, next) => {
     );
   }
 
-  if (Boolean(isDefault)) {
+  if (isDefault === true) {
     user.addresses.forEach((item) => {
       item.isDefault = false;
     });
@@ -407,7 +452,7 @@ const updateUserAddress = asyncHandler(async (req, res, next) => {
   address.state = state.trim();
   address.postalCode = postalCode.trim();
   address.country = country.trim();
-  address.isDefault = Boolean(isDefault);
+  address.isDefault = isDefault === true;
 
   await user.save();
 
