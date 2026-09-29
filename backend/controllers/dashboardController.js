@@ -3,7 +3,16 @@ import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
 import User from '../models/userModel.js';
 
-import { getPeriodKey, generateSalesPeriods } from '../utils/dashboardSales.js';
+import {
+  getPeriodKey,
+  generateSalesPeriods,
+  startOfDay,
+  startOfWeek,
+  startOfMonth,
+  createISTDate,
+  shiftISTDate,
+  BUSINESS_TIMEZONE,
+} from '../utils/dashboardSales.js';
 
 const getDashboardOverview = asyncHandler(async (req, res) => {
   const [
@@ -118,30 +127,30 @@ const getDashboardSales = asyncHandler(async (req, res) => {
 
   switch (period) {
     case '7days':
-      startDate = new Date(now);
-      startDate.setDate(startDate.getDate() - 6);
+      startDate = startOfDay(shiftISTDate(now, { days: -6 }));
       groupBy = 'day';
       break;
 
     case '30days':
-      startDate = new Date(now);
-      startDate.setDate(startDate.getDate() - 29);
+      startDate = startOfDay(shiftISTDate(now, { days: -29 }));
       groupBy = 'day';
       break;
 
     case '3months':
-      startDate = new Date(now);
-      startDate.setMonth(startDate.getMonth() - 3);
+      startDate = shiftISTDate(now, {
+        months: -3,
+      });
       groupBy = 'week';
       break;
 
     case '1year':
-      startDate = new Date(now);
-      startDate.setFullYear(startDate.getFullYear() - 1);
+      startDate = shiftISTDate(now, {
+        years: -1,
+      });
       groupBy = 'month';
       break;
 
-    case 'custom':
+    case 'custom': {
       if (!dateFrom || !dateTo) {
         res.status(400);
         throw new Error('dateFrom and dateTo are required for a custom range');
@@ -151,9 +160,9 @@ const getDashboardSales = asyncHandler(async (req, res) => {
 
       const [toYear, toMonth, toDay] = dateTo.split('-').map(Number);
 
-      startDate = new Date(fromYear, fromMonth - 1, fromDay, 0, 0, 0, 0);
+      startDate = createISTDate(fromYear, fromMonth, fromDay, 0, 0, 0, 0);
 
-      endDate = new Date(toYear, toMonth - 1, toDay, 23, 59, 59, 999);
+      endDate = createISTDate(toYear, toMonth, toDay, 23, 59, 59, 999);
 
       if (
         Number.isNaN(startDate.getTime()) ||
@@ -180,6 +189,7 @@ const getDashboardSales = asyncHandler(async (req, res) => {
       }
 
       break;
+    }
 
     default:
       res.status(400);
@@ -198,23 +208,33 @@ const getDashboardSales = asyncHandler(async (req, res) => {
 
   if (groupBy === 'day') {
     groupId = {
-      year: { $year: '$createdAt' },
-      month: { $month: '$createdAt' },
-      day: { $dayOfMonth: '$createdAt' },
+      $dateTrunc: {
+        date: '$createdAt',
+        unit: 'day',
+        timezone: BUSINESS_TIMEZONE,
+      },
     };
   }
 
   if (groupBy === 'week') {
     groupId = {
-      year: { $isoWeekYear: '$createdAt' },
-      week: { $isoWeek: '$createdAt' },
+      $dateTrunc: {
+        date: '$createdAt',
+        unit: 'week',
+        binSize: 1,
+        timezone: BUSINESS_TIMEZONE,
+        startOfWeek: 'monday',
+      },
     };
   }
 
   if (groupBy === 'month') {
     groupId = {
-      year: { $year: '$createdAt' },
-      month: { $month: '$createdAt' },
+      $dateTrunc: {
+        date: '$createdAt',
+        unit: 'month',
+        timezone: BUSINESS_TIMEZONE,
+      },
     };
   }
 
@@ -232,39 +252,17 @@ const getDashboardSales = asyncHandler(async (req, res) => {
     },
     {
       $sort: {
-        '_id.year': 1,
-        '_id.month': 1,
-        '_id.day': 1,
-        '_id.week': 1,
+        _id: 1,
       },
     },
   ]);
 
   const periods = generateSalesPeriods(startDate, endDate, groupBy);
 
+  const periodMap = new Map(periods.map((item) => [item.key, item]));
+
   sales.forEach((item) => {
-    const date = new Date();
-
-    date.setFullYear(item._id.year);
-    date.setMonth(item._id.month ? item._id.month - 1 : 0);
-
-    if (item._id.day) {
-      date.setDate(item._id.day);
-    }
-
-    if (groupBy === 'week') {
-      date.setDate(1);
-
-      const firstDayOfYear = new Date(item._id.year, 0, 1);
-
-      const dayOffset = (item._id.week - 1) * 7;
-
-      date.setTime(firstDayOfYear.getTime() + dayOffset * 24 * 60 * 60 * 1000);
-    }
-
-    const key = getPeriodKey(date, groupBy);
-
-    const matchingPeriod = periods.find((period) => period.key === key);
+    const matchingPeriod = periodMap.get(item._id.toISOString());
 
     if (matchingPeriod) {
       matchingPeriod.sales = item.sales;
@@ -275,6 +273,7 @@ const getDashboardSales = asyncHandler(async (req, res) => {
 
   res.json({
     period,
+    timezone: BUSINESS_TIMEZONE,
     startDate,
     endDate,
     groupBy,
