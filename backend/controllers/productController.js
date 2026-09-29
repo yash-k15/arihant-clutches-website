@@ -14,14 +14,25 @@ import {
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res, next) => {
-  const pageSize =
-    req.query.admin === 'true'
-      ? Number(process.env.ADMIN_PRODUCTS_PER_PAGE) || 10
-      : req.query.home === 'true'
-        ? Number(process.env.HOME_PRODUCTS_LIMIT) || 10
-        : Number(process.env.PRODUCTS_PER_PAGE) || 10;
+  const DEFAULT_PAGE_SIZE = 10;
+  const MAX_PAGE_SIZE = 100;
 
-  const page = Number(req.query.pageNumber) || 1;
+  const configuredPageSize =
+    req.query.admin === 'true'
+      ? Number(process.env.ADMIN_PRODUCTS_PER_PAGE)
+      : req.query.home === 'true'
+        ? Number(process.env.HOME_PRODUCTS_LIMIT)
+        : Number(process.env.PRODUCTS_PER_PAGE);
+
+  const pageSize =
+    Number.isSafeInteger(configuredPageSize) && configuredPageSize > 0
+      ? Math.min(configuredPageSize, MAX_PAGE_SIZE)
+      : DEFAULT_PAGE_SIZE;
+
+  const parsedPage = Number(req.query.pageNumber);
+
+  const page =
+    Number.isSafeInteger(parsedPage) && parsedPage >= 1 ? parsedPage : 1;
 
   const filters = {};
 
