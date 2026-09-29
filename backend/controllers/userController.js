@@ -3,7 +3,7 @@ import sendEmail from '../utils/sendEmail.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 import User from '../models/userModel.js';
 import ErrorResponse from '../utils/errorResponse.js';
-import generateToken from '../utils/generateToken.js';
+import generateToken, { AUTH_COOKIE_OPTIONS } from '../utils/generateToken.js';
 import resetPasswordEmail from '../utils/emailTemplates/resetPasswordEmail.js';
 import jwt from 'jsonwebtoken';
 import escapeRegex from '../utils/escapeRegex.js';
@@ -201,10 +201,8 @@ const logoutUser = asyncHandler(async (req, res, next) => {
   }
 
   res.cookie('token', 'none', {
+    ...AUTH_COOKIE_OPTIONS,
     expires: new Date(0),
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== 'development',
-    sameSite: 'strict',
   });
 
   res.status(200).json({

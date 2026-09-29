@@ -1,4 +1,8 @@
-import jwt from 'jsonwebtoken';
+const AUTH_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV !== 'development',
+  sameSite: 'strict',
+};
 
 const generateToken = (res, user) => {
   const token = jwt.sign(
@@ -12,13 +16,11 @@ const generateToken = (res, user) => {
     },
   );
 
-  // Set JWT as HTTP-Only Cookie
   res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== 'development',
-    sameSite: 'strict',
-    maxAge: 24 * 60 * 60 * 1000, // 1 Day
+    ...AUTH_COOKIE_OPTIONS,
+    maxAge: 24 * 60 * 60 * 1000,
   });
 };
 
+export { AUTH_COOKIE_OPTIONS };
 export default generateToken;
