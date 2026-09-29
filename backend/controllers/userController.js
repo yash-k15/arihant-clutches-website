@@ -32,7 +32,15 @@ import {
 const authUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).select('+password');
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    return next(new ErrorResponse('Invalid email or password', 401));
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const user = await User.findOne({
+    email: normalizedEmail,
+  }).select('+password');
 
   if (!user) {
     return next(new ErrorResponse('Invalid email or password', 401));
@@ -635,7 +643,15 @@ const updateUser = asyncHandler(async (req, res, next) => {
 // @route       POST /api/users/forgotpassword
 // @access      Public
 const forgotPassword = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
+  if (typeof req.body.email !== 'string') {
+    return next(new ErrorResponse('Please provide a valid email address', 400));
+  }
+
+  const normalizedEmail = req.body.email.trim().toLowerCase();
+
+  const user = await User.findOne({
+    email: normalizedEmail,
+  });
 
   if (!user) {
     return next(new ErrorResponse('There is no user with that email', 404));

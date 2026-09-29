@@ -11,8 +11,9 @@ const calculateOrderPricing = async (orderItems, paymentMethod) => {
 
   for (const item of orderItems) {
     if (
-      !item.product ||
-      !item.variantId ||
+      !item ||
+      typeof item.product !== 'string' ||
+      typeof item.variantId !== 'string' ||
       !Number.isInteger(item.qty) ||
       item.qty <= 0
     ) {

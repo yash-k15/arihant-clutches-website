@@ -220,6 +220,16 @@ const checkStock = asyncHandler(async (req, res) => {
   const outOfStockItems = [];
 
   for (const item of orderItems) {
+    if (
+      !item ||
+      typeof item.product !== 'string' ||
+      typeof item.variantId !== 'string' ||
+      !Number.isInteger(item.qty) ||
+      item.qty <= 0
+    ) {
+      return next(new ErrorResponse('Invalid order item', 400));
+    }
+
     const product = await Product.findOne({
       _id: item.product,
       variants: {
