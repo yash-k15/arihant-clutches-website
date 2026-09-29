@@ -23,6 +23,7 @@ const PaymentButton = ({ disabled }) => {
   const onlineIdempotencyKeyRef = useRef(crypto.randomUUID());
   const paymentInProgressRef = useRef(false);
   const paymentVerificationInProgressRef = useRef(false);
+  const paymentOutcomeRef = useRef(null);
 
   const cart = useSelector((state) => state.cart);
   const userInfo = useSelector((state) => state.auth);
@@ -35,11 +36,18 @@ const PaymentButton = ({ disabled }) => {
   const [verifyPayment, { isLoading: loadingVerify }] =
     useVerifyPaymentMutation();
 
+  const resetPaymentState = () => {
+    paymentInProgressRef.current = false;
+    setPaymentInProgress(false);
+  };
+
   const handlePayment = async () => {
     if (paymentInProgressRef.current) {
       return;
     }
 
+    paymentInProgressRef.current = true;
+    paymentOutcomeRef.current = null;
     setPaymentInProgress(true);
 
     try {
@@ -98,6 +106,8 @@ const PaymentButton = ({ disabled }) => {
           });
         } catch {
           // toast.promise already displays the error.
+        } finally {
+          resetPaymentState();
         }
 
         return;
@@ -107,6 +117,7 @@ const PaymentButton = ({ disabled }) => {
       // CHECK IF RAZORPAY EXISTS
       if (!window.Razorpay) {
         toast.error('Razorpay SDK failed to load');
+        resetPaymentState();
         return;
       }
 
@@ -154,19 +165,59 @@ const PaymentButton = ({ disabled }) => {
             const res = await paymentPromise;
 
             if (res.success) {
+              paymentOutcomeRef.current = 'success';
+
               dispatch(clearCart());
               closeCheckout();
               navigate(`/order/${res.order._id}`, {
                 state: { justPlacedOrder: true },
               });
             } else {
+              paymentOutcomeRef.current = 'failed';
               toast.error('Payment verification failed');
             }
           } catch (error) {
+            paymentOutcomeRef.current = 'failed';
             console.log(error);
           } finally {
             paymentVerificationInProgressRef.current = false;
+            resetPaymentState();
           }
+        },
+
+        // PAYMENT FAILED HANDLER
+        'payment.failed': function (response) {
+          if (paymentOutcomeRef.current) {
+            return;
+          }
+
+          paymentOutcomeRef.current = 'failed';
+
+          toast.error(
+            response?.error?.description || 'Payment failed. Please try again.',
+          );
+
+          resetPaymentState();
+        },
+
+        // PAYMENT MODAL DISMISSED
+        modal: {
+          ondismiss: function () {
+            // Razorpay may dismiss the modal while our success callback
+            // is still verifying the payment. Let the verification finish.
+            if (
+              paymentVerificationInProgressRef.current ||
+              paymentOutcomeRef.current
+            ) {
+              return;
+            }
+
+            paymentOutcomeRef.current = 'dismissed';
+
+            toast.info('Payment cancelled. You can try again.');
+
+            resetPaymentState();
+          },
         },
 
         // OPTIONAL PREFILL
@@ -196,13 +247,12 @@ const PaymentButton = ({ disabled }) => {
           .join(', ');
 
         toast.error(`Out of stock: ${items}`);
+        resetPaymentState();
         return;
       }
 
       toast.error(error?.data?.message || error?.message || 'Payment Failed');
-    } finally {
-      paymentInProgressRef.current = false;
-      setPaymentInProgress(false);
+      resetPaymentState();
     }
   };
 
@@ -213,8 +263,10 @@ const PaymentButton = ({ disabled }) => {
       onClick={handlePayment}
     >
       {cart.paymentMethod === 'COD'
-        ? 'Place Order'
-        : isLoading
+        ? paymentInProgress
+          ? 'Processing...'
+          : 'Place Order'
+        : isLoading || paymentInProgress
           ? 'Processing...'
           : 'Pay & Place Order'}
     </Button>
