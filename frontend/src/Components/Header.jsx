@@ -16,7 +16,10 @@ import AnnouncementBar from './AnnouncementBar.jsx';
 
 import '../assets/styles/components/Header.css';
 import '../assets/styles/components/SearchBox.css';
-// import { clearCartItems } from '../slices/cartSlice.js';
+
+import { clearCart } from '../slices/cartSlice.js';
+import { apiSlice } from '../slices/apiSlice.js';
+import { clearGuestWishlist } from '../utils/wishlistUtils.js';
 
 const LOGO_URL =
   'https://res.cloudinary.com/doykjfgps/image/upload/v1790252476/Arihant_Clutches_Logo.png';
@@ -53,12 +56,23 @@ const Header = () => {
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
-      dispatch(logout());
-      closeMobileMenu();
-      // dispatch(clearCartItems());
-      navigate('/');
     } catch (err) {
       console.log(err);
+    } finally {
+      // Clear authenticated user state
+      dispatch(logout());
+
+      // Clear all RTK Query cached data
+      dispatch(apiSlice.util.resetApiState());
+
+      // Clear user-specific cart state
+      dispatch(clearCart());
+
+      // Clear guest wishlist stored on this device
+      clearGuestWishlist();
+
+      closeMobileMenu();
+      navigate('/');
     }
   };
 

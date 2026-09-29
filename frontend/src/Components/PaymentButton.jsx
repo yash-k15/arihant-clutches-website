@@ -8,7 +8,7 @@ import {
   useVerifyPaymentMutation,
 } from '../slices/paymentApiSlice';
 import { useCheckStockMutation } from '../slices/ordersApiSlice.js';
-import { clearCartItems } from '../slices/cartSlice.js';
+import { clearCart } from '../slices/cartSlice.js';
 import { useCheckout } from './Checkout/CheckoutContext.jsx';
 
 import '../assets/styles/components/PaymentButton.css';
@@ -91,7 +91,7 @@ const PaymentButton = ({ disabled }) => {
         try {
           const res = await orderPromise;
 
-          dispatch(clearCartItems());
+          dispatch(clearCart());
           closeCheckout();
           navigate(`/order/${res.order._id}`, {
             state: { justPlacedOrder: true },
@@ -154,7 +154,7 @@ const PaymentButton = ({ disabled }) => {
             const res = await paymentPromise;
 
             if (res.success) {
-              dispatch(clearCartItems());
+              dispatch(clearCart());
               closeCheckout();
               navigate(`/order/${res.order._id}`, {
                 state: { justPlacedOrder: true },
