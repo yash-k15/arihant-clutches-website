@@ -88,13 +88,17 @@ const PaymentButton = ({ disabled }) => {
             error?.data?.message || error?.message || 'Unable to place order',
         });
 
-        const res = await orderPromise;
+        try {
+          const res = await orderPromise;
 
-        dispatch(clearCartItems());
-        closeCheckout();
-        navigate(`/order/${res.order._id}`, {
-          state: { justPlacedOrder: true },
-        });
+          dispatch(clearCartItems());
+          closeCheckout();
+          navigate(`/order/${res.order._id}`, {
+            state: { justPlacedOrder: true },
+          });
+        } catch {
+          // toast.promise already displays the error.
+        }
 
         return;
       }

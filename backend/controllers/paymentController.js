@@ -556,11 +556,224 @@ const reconcilePayment = async ({
 };
 
 /*
- * Verify Payment
+ * Create a Cash on Delivery order.
+ *
+ * COD orders do not involve Razorpay.
+ * Pricing is calculated server-side and stock + order creation
+ * happen inside the same MongoDB transaction.
+ */
+const createCodOrder = async ({ req, orderData, idempotencyKey }) => {
+  if (typeof idempotencyKey !== 'string' || !idempotencyKey.trim()) {
+    throw new Error('Missing idempotency key');
+  }
+
+  const normalizedIdempotencyKey = idempotencyKey.trim();
+
+  /*
+   * Return the existing COD order if this checkout request
+   * is being retried.
+   */
+  const existingOrder = await Order.findOne({
+    idempotencyKey: normalizedIdempotencyKey,
+    user: req.user._id,
+    paymentMethod: 'COD',
+  });
+
+  if (existingOrder) {
+    return {
+      order: existingOrder,
+      created: false,
+    };
+  }
+
+  /*
+   * Always calculate pricing from the database.
+   * Never trust frontend prices.
+   */
+  const pricing = await calculateOrderPricing(orderData.orderItems, 'COD');
+
+  const session = await mongoose.startSession();
+
+  let createdOrder;
+
+  try {
+    await session.withTransaction(async () => {
+      /*
+       * Deduct stock atomically.
+       *
+       * If any item does not have enough stock, the entire
+       * transaction rolls back, including previous items.
+       */
+      for (const item of pricing.validatedItems) {
+        const updatedProduct = await Product.findOneAndUpdate(
+          {
+            _id: item.product,
+            variants: {
+              $elemMatch: {
+                _id: item.variantId,
+                countInStock: { $gte: item.qty },
+              },
+            },
+          },
+          {
+            $inc: {
+              'variants.$.countInStock': -item.qty,
+            },
+          },
+          {
+            new: true,
+            session,
+          },
+        );
+
+        if (!updatedProduct) {
+          throw new Error(`${item.name} (${item.color}) is out of stock`);
+        }
+      }
+
+      /*
+       * Create the COD application order.
+       *
+       * Stock has already been deducted inside this same
+       * transaction, so mark stockDeducted as true.
+       */
+      createdOrder = new Order({
+        orderItems: pricing.validatedItems.map((item) => ({
+          ...item,
+          _id: undefined,
+        })),
+
+        user: req.user._id,
+
+        idempotencyKey: normalizedIdempotencyKey,
+
+        shippingAddress: orderData.shippingAddress,
+
+        paymentMethod: 'COD',
+
+        itemsPrice: pricing.itemsPrice,
+        shippingPrice: pricing.shippingPrice,
+        taxPrice: pricing.taxPrice,
+        totalPrice: pricing.totalPrice,
+
+        paymentResult: {
+          status: 'COD',
+          update_time: new Date().toISOString(),
+        },
+
+        stockDeducted: true,
+
+        isPaid: false,
+        paidAt: null,
+      });
+
+      await createdOrder.save({ session });
+    });
+  } finally {
+    await session.endSession();
+  }
+
+  return {
+    order: createdOrder,
+    created: true,
+  };
+};
+
+/*
+ * Verify Payment / Create COD Order
  */
 const verifyPayment = asyncHandler(async (req, res) => {
   try {
-    const { paymentData = {}, orderData } = req.body;
+    const { paymentData = {}, orderData, idempotencyKey } = req.body;
+
+    if (!orderData?.paymentMethod) {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment method is required',
+      });
+    }
+
+    /*
+     * =========================
+     * COD
+     * =========================
+     *
+     * COD does not use Razorpay.
+     */
+    if (orderData.paymentMethod === 'COD') {
+      try {
+        const { order, created } = await createCodOrder({
+          req,
+          orderData,
+          idempotencyKey,
+        });
+
+        /*
+         * Only send the confirmation email when this request
+         * actually created the order.
+         *
+         * A retry with the same idempotency key must not send
+         * another confirmation email.
+         */
+        if (created) {
+          try {
+            await sendEmail({
+              email: req.user.email,
+              subject: 'Order Confirmation from Arihant Clutches',
+              html: orderConfirmationEmail(
+                order,
+                'Cash on Delivery',
+                req.user.email,
+              ),
+            });
+          } catch (emailError) {
+            console.log('Order email failed:', emailError.message);
+          }
+        }
+
+        return res.json({
+          success: true,
+          order,
+        });
+      } catch (error) {
+        /*
+         * Two identical COD requests can race.
+         *
+         * The unique idempotencyKey index allows only one
+         * application order to be created. If the other request
+         * loses the race, return the already-created order.
+         */
+        if (error?.code === 11000) {
+          const existingOrder = await Order.findOne({
+            idempotencyKey: idempotencyKey?.trim(),
+            user: req.user._id,
+            paymentMethod: 'COD',
+          });
+
+          if (existingOrder) {
+            return res.json({
+              success: true,
+              order: existingOrder,
+            });
+          }
+        }
+
+        throw error;
+      }
+    }
+
+    /*
+     * =========================
+     * ONLINE
+     * =========================
+     */
+
+    if (orderData.paymentMethod !== 'ONLINE') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid payment method',
+      });
+    }
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       paymentData;
