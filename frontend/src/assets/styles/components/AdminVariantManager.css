@@ -67,3 +67,130 @@
   line-height: 1;
   cursor: pointer;
 }
+
+.variant-stock-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.variant-stock-label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.variant-stock-label strong {
+  font-weight: 600;
+}
+
+.variant-stock-adjustment {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.variant-stock-adjustment-label {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.variant-stock-controls {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.variant-stock-btn {
+  width: 42px;
+  height: 42px;
+  padding: 0 !important;
+  border: 1px solid #d8cec4 !important;
+  background: #fff !important;
+  color: #2c2222 !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+  box-shadow: none !important;
+}
+
+.variant-stock-btn:first-child {
+  border-radius: 7px 0 0 7px;
+}
+
+.variant-stock-btn:last-child {
+  border-radius: 0 7px 7px 0;
+}
+
+.variant-stock-btn:hover {
+  background: #f5f1ed !important;
+  border-color: #b08d57 !important;
+}
+
+.variant-stock-adjustment-input {
+  width: 65px;
+  height: 42px;
+  padding: 6px 4px !important;
+  border-radius: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c2222;
+  box-shadow: none !important;
+}
+
+.variant-stock-adjustment-input:focus {
+  border-color: #b08d57 !important;
+  box-shadow: none !important;
+}
+
+.variant-stock-action-btn {
+  margin-left: auto;
+  min-height: 42px;
+  padding: 8px 18px !important;
+  border: 1px solid #2c2222 !important;
+  border-radius: 7px !important;
+  background: #2c2222 !important;
+  color: #fff !important;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.variant-stock-action-btn:hover:not(:disabled) {
+  background: #b08d57 !important;
+  border-color: #b08d57 !important;
+}
+
+.variant-stock-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.initial-stock-input {
+  width: 48%;
+}
+
+@media (max-width: 767.98px) {
+  .variant-stock-adjustment {
+    flex-wrap: wrap;
+  }
+
+  .variant-stock-adjustment-label {
+    width: 100%;
+  }
+
+  .variant-stock-controls {
+    width: auto;
+  }
+
+  .variant-stock-action-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .initial-stock-input {
+  width: 100%;
+}
+}

@@ -296,9 +296,9 @@ const createProduct = asyncHandler(async (req, res, next) => {
   res.status(201).json(createdProduct);
 });
 
-// @desc Update a product
-// @route PUT /api/product/:slug
-// @access Private/Admin
+// @desc    Update a product
+// @route   PUT /api/product/:slug
+// @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res, next) => {
   const {
     name,
@@ -330,14 +330,157 @@ const updateProduct = asyncHandler(async (req, res, next) => {
   product.isNewArrival = isNewArrival ?? product.isNewArrival;
   product.isBestSeller = isBestSeller ?? product.isBestSeller;
   product.weight = weight ?? product.weight;
-  product.dimensions = dimensions || product.dimensions;
-  product.variants = variants || product.variants;
+  product.dimensions = dimensions ?? product.dimensions;
 
   if (video !== undefined) {
     product.video = video;
   }
 
+  if (Array.isArray(variants)) {
+    const incomingIds = new Set(
+      variants
+        .filter((variant) => variant._id)
+        .map((variant) => String(variant._id)),
+    );
+
+    // Do not allow an existing variant with stock to be removed.
+    const blockedVariant = product.variants.find(
+      (variant) =>
+        !incomingIds.has(String(variant._id)) && variant.countInStock > 0,
+    );
+
+    if (blockedVariant) {
+      return next(
+        new ErrorResponse(
+          `Cannot remove "${blockedVariant.color}" while it has ${blockedVariant.countInStock} in stock. Set stock to 0 first.`,
+          400,
+        ),
+      );
+    }
+
+    // Update existing variants.
+    // IMPORTANT: countInStock is intentionally excluded.
+    variants.forEach((incomingVariant) => {
+      if (!incomingVariant._id) {
+        return;
+      }
+
+      const existingVariant = product.variants.id(incomingVariant._id);
+
+      if (!existingVariant) {
+        return;
+      }
+
+      existingVariant.color = incomingVariant.color ?? existingVariant.color;
+
+      existingVariant.price = incomingVariant.price ?? existingVariant.price;
+
+      existingVariant.images = incomingVariant.images ?? existingVariant.images;
+    });
+
+    // Remove variants that are no longer present in the submitted list.
+    // Variants with stock were already blocked above.
+    product.variants = product.variants.filter((variant) =>
+      incomingIds.has(String(variant._id)),
+    );
+
+    // Add genuinely new variants.
+    // New variants ALWAYS start with zero stock.
+    variants
+      .filter((variant) => !variant._id)
+      .forEach((variant) => {
+        const initialStock = variant.countInStock ?? 0;
+
+        if (!Number.isInteger(initialStock) || initialStock < 0) {
+          return next(
+            new ErrorResponse(
+              'Initial stock must be a non-negative integer',
+              400,
+            ),
+          );
+        }
+
+        product.variants.push({
+          color: variant.color,
+          price: variant.price,
+          images: variant.images || [],
+          countInStock: initialStock,
+        });
+      });
+  }
+
   const updatedProduct = await product.save();
+
+  res.status(200).json(updatedProduct);
+});
+
+// @desc    Adjust variant stock
+// @route   PATCH /api/product/:slug/variants/:variantId/stock
+// @access  Private/Admin
+const adjustVariantStock = asyncHandler(async (req, res, next) => {
+  const { delta, setTo } = req.body;
+
+  const hasDelta = Number.isInteger(delta);
+  const hasSetTo = Number.isInteger(setTo);
+
+  if (hasDelta === hasSetTo) {
+    return next(
+      new ErrorResponse('Provide either an integer delta or setTo', 400),
+    );
+  }
+
+  if (hasSetTo && setTo < 0) {
+    return next(new ErrorResponse('Stock cannot be negative', 400));
+  }
+
+  const { slug, variantId } = req.params;
+
+  const filter = {
+    slug,
+    'variants._id': variantId,
+  };
+
+  let update;
+
+  if (hasDelta) {
+    if (delta < 0) {
+      filter.variants = {
+        $elemMatch: {
+          _id: variantId,
+          countInStock: { $gte: Math.abs(delta) },
+        },
+      };
+    }
+
+    update = {
+      $inc: {
+        'variants.$.countInStock': delta,
+      },
+    };
+  } else {
+    update = {
+      $set: {
+        'variants.$.countInStock': setTo,
+      },
+    };
+  }
+
+  const updatedProduct = await Product.findOneAndUpdate(filter, update, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!updatedProduct) {
+    return next(
+      new ErrorResponse(
+        hasDelta && delta < 0
+          ? 'Variant not found or insufficient stock for that adjustment'
+          : 'Product or variant not found',
+        404,
+      ),
+    );
+  }
+
   res.status(200).json(updatedProduct);
 });
 
@@ -613,6 +756,7 @@ export {
   getProducts,
   createProduct,
   updateProduct,
+  adjustVariantStock,
   deleteProduct,
   createProductReview,
   getTopProducts,

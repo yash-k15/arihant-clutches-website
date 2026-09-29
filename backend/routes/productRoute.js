@@ -3,6 +3,7 @@ import {
   getProducts,
   createProduct,
   updateProduct,
+  adjustVariantStock,
   deleteProduct,
   createProductReview,
   getTopProducts,
@@ -33,6 +34,13 @@ router
   .route('/categories/:id')
   .put(protect, admin, updateCategory)
   .delete(protect, admin, deleteCategory);
+
+router.patch(
+  '/:slug/variants/:variantId/stock',
+  protect,
+  admin,
+  adjustVariantStock,
+);
 
 router
   .route('/:slug')

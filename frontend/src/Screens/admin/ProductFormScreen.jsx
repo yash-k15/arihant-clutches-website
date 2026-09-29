@@ -11,6 +11,7 @@ import AdminVariantManager from '../../Components/AdminVariantManager';
 import {
   useCreateProductMutation,
   useUpdateProductMutation,
+  useAdjustVariantStockMutation,
   useGetProductDetailsQuery,
   useUploadProductImageMutation,
   useDeleteProductImageMutation,
@@ -72,6 +73,8 @@ const ProductFormScreen = () => {
 
   const [updateProduct, { isLoading: loadingUpdate }] =
     useUpdateProductMutation();
+
+  const [adjustVariantStock] = useAdjustVariantStockMutation();
 
   const [uploadProductImage] = useUploadProductImageMutation();
   const [deleteProductImage] = useDeleteProductImageMutation();
@@ -522,8 +525,11 @@ const ProductFormScreen = () => {
                 setVariants={setVariants}
                 uploadProductImage={uploadProductImage}
                 deleteProductImage={deleteProductImage}
+                adjustVariantStock={adjustVariantStock}
                 toast={toast}
                 productName={name}
+                productSlug={product?.slug || productId}
+                isEditMode={isEditMode}
               />
 
               <div className='admin-product-form-actions'>

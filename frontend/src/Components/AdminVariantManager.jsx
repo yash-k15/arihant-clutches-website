@@ -9,10 +9,69 @@ const AdminVariantManager = ({
   setVariants,
   uploadProductImage,
   deleteProductImage,
+  adjustVariantStock,
   toast,
   productName,
+  productSlug,
+  isEditMode,
 }) => {
   const [draggedImage, setDraggedImage] = useState(null);
+  const [stockAdjustments, setStockAdjustments] = useState({});
+
+  const handleStockAdjustment = async (variantId) => {
+    const rawAdjustment = stockAdjustments[variantId] ?? 0;
+    const delta = Number(rawAdjustment);
+
+    if (!isEditMode || !variantId || !Number.isInteger(delta) || delta === 0) {
+      return;
+    }
+
+    try {
+      const updatedProduct = await adjustVariantStock({
+        productSlug,
+        variantId,
+        delta,
+      }).unwrap();
+
+      setVariants(updatedProduct.variants);
+
+      setStockAdjustments((prev) => ({
+        ...prev,
+        [variantId]: 0,
+      }));
+
+      toast.success(
+        delta > 0
+          ? `Added ${delta} to stock`
+          : `Removed ${Math.abs(delta)} from stock`,
+      );
+    } catch (error) {
+      toast.error(
+        error?.data?.message || error.error || 'Unable to adjust stock',
+      );
+    }
+  };
+
+  const handleStockAdjustmentInput = (variantId, value) => {
+    // Allow empty input and "-" while the user is typing.
+    if (value === '' || value === '-') {
+      setStockAdjustments((prev) => ({
+        ...prev,
+        [variantId]: value,
+      }));
+      return;
+    }
+
+    // Only allow whole numbers, including negative numbers.
+    if (!/^-?\d+$/.test(value)) {
+      return;
+    }
+
+    setStockAdjustments((prev) => ({
+      ...prev,
+      [variantId]: Number(value),
+    }));
+  };
 
   // ADD VARIANT
   const addVariantHandler = () => {
@@ -209,22 +268,117 @@ const AdminVariantManager = ({
                 </Form.Group>
               </Col>
 
-              <Col md={6}>
+              <Col md={12}>
                 <Form.Group className='mb-3'>
-                  <Form.Label>Stock</Form.Label>
+                  {isEditMode && variant._id ? (
+                    <div className='variant-stock-manager'>
+                      {/* Current Stock */}
+                      <Form.Label className='variant-stock-label'>
+                        Current Stock:{' '}
+                        <strong>{variant.countInStock ?? 0}</strong>
+                      </Form.Label>
 
-                  <Form.Control
-                    type='number'
-                    placeholder='Enter Stock'
-                    value={variant.countInStock}
-                    onChange={(e) =>
-                      updateVariantField(
-                        index,
-                        'countInStock',
-                        Number(e.target.value),
-                      )
-                    }
-                  />
+                      {/* Stock Adjustment */}
+                      <div className='variant-stock-adjustment'>
+                        <Form.Label className='variant-stock-adjustment-label'>
+                          Add / Remove Stock:
+                        </Form.Label>
+
+                        <div className='variant-stock-controls'>
+                          <Button
+                            type='button'
+                            className='variant-stock-btn'
+                            onClick={() =>
+                              handleStockAdjustmentInput(
+                                variant._id,
+                                (Number(stockAdjustments[variant._id]) || 0) -
+                                  1,
+                              )
+                            }
+                            aria-label='Decrease stock adjustment'
+                          >
+                            −
+                          </Button>
+
+                          <Form.Control
+                            type='text'
+                            inputMode='numeric'
+                            value={stockAdjustments[variant._id] ?? 0}
+                            onChange={(e) =>
+                              handleStockAdjustmentInput(
+                                variant._id,
+                                e.target.value,
+                              )
+                            }
+                            className='variant-stock-adjustment-input'
+                            aria-label='Stock adjustment'
+                          />
+
+                          <Button
+                            type='button'
+                            className='variant-stock-btn'
+                            onClick={() =>
+                              handleStockAdjustmentInput(
+                                variant._id,
+                                (Number(stockAdjustments[variant._id]) || 0) +
+                                  1,
+                              )
+                            }
+                            aria-label='Increase stock adjustment'
+                          >
+                            +
+                          </Button>
+                        </div>
+
+                        {(() => {
+                          const adjustment = Number(
+                            stockAdjustments[variant._id] ?? 0,
+                          );
+
+                          return (
+                            <Button
+                              type='button'
+                              className='variant-stock-action-btn'
+                              disabled={
+                                !Number.isInteger(adjustment) ||
+                                adjustment === 0
+                              }
+                              onClick={() => handleStockAdjustment(variant._id)}
+                            >
+                              {adjustment > 0
+                                ? `Add ${adjustment} Stock`
+                                : adjustment < 0
+                                  ? `Remove ${Math.abs(adjustment)} Stock`
+                                  : 'Add Stock'}
+                            </Button>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <Form.Label>Initial Stock</Form.Label>
+
+                      <Form.Control
+                        type='text'
+                        inputMode='numeric'
+                        placeholder='Enter Initial Stock'
+                        value={variant.countInStock ?? 0}
+                        className='initial-stock-input'
+                        onChange={(e) => {
+                          const value = e.target.value;
+
+                          if (value === '' || /^\d+$/.test(value)) {
+                            updateVariantField(
+                              index,
+                              'countInStock',
+                              value === '' ? 0 : Number(value),
+                            );
+                          }
+                        }}
+                      />
+                    </>
+                  )}
                 </Form.Group>
               </Col>
             </Row>

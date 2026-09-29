@@ -133,6 +133,18 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Products'],
     }),
+
+    adjustVariantStock: builder.mutation({
+      query: ({ productSlug, variantId, delta, setTo }) => ({
+        url: `${PRODUCTS_URL}/${productSlug}/variants/${variantId}/stock`,
+        method: 'PATCH',
+        body: {
+          ...(delta !== undefined && { delta }),
+          ...(setTo !== undefined && { setTo }),
+        },
+      }),
+      invalidatesTags: ['Products', 'Product'],
+    }),
     uploadProductImage: builder.mutation({
       query: (data) => ({
         url: `${UPLOAD_URL}`,
@@ -248,6 +260,7 @@ export const {
   useGetProductDetailsQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
+  useAdjustVariantStockMutation,
   useUploadProductImageMutation,
   useUploadProductVideoMutation,
   useDeleteProductImageMutation,
