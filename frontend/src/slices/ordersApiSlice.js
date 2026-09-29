@@ -9,12 +9,14 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: { ...order },
       }),
+      invalidatesTags: ['Order'],
     }),
     getOrderDetails: builder.query({
       query: (orderId) => ({
         url: `${ORDERS_URL}/${orderId}`,
         method: 'GET',
       }),
+      providesTags: ['Order'],
       keepUnusedDataFor: 5,
     }),
     getMyOrders: builder.query({
@@ -24,6 +26,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
           pageNumber,
         },
       }),
+      providesTags: ['Order'],
       keepUnusedDataFor: 5,
     }),
     getOrders: builder.query({
@@ -76,6 +79,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
           params,
         };
       },
+      providesTags: ['Order'],
       keepUnusedDataFor: 5,
     }),
     payOrder: builder.mutation({
@@ -83,12 +87,14 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         url: `${ORDERS_URL}/${orderId}/pay`,
         method: 'PUT',
       }),
+      invalidatesTags: ['Order'],
     }),
     deliverOrder: builder.mutation({
       query: (orderId) => ({
         url: `${ORDERS_URL}/${orderId}/deliver`,
         method: 'PUT',
       }),
+      invalidatesTags: ['Order'],
       keepUnusedDataFor: 5,
     }),
     checkStock: builder.mutation({

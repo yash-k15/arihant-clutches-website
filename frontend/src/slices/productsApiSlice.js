@@ -108,13 +108,14 @@ export const productsApiSlice = apiSlice.injectEndpoints({
           params,
         };
       },
-      providesTags: ['Products'],
+      providesTags: ['Product'],
       keepUnusedDataFor: 5,
     }),
     getProductDetails: builder.query({
       query: (slug) => ({
         url: `${PRODUCTS_URL}/${slug}`,
       }),
+      providesTags: ['Product'],
       keepUnusedDataFor: 5,
     }),
     createProduct: builder.mutation({
@@ -131,7 +132,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['Products'],
+      invalidatesTags: ['Product'],
     }),
 
     adjustVariantStock: builder.mutation({
@@ -143,7 +144,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
           ...(setTo !== undefined && { setTo }),
         },
       }),
-      invalidatesTags: ['Products', 'Product'],
+      invalidatesTags: ['Product'],
     }),
     uploadProductImage: builder.mutation({
       query: (data) => ({
@@ -185,6 +186,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         url: `${PRODUCTS_URL}/${productSlug}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Product'],
     }),
     createReview: builder.mutation({
       query: (data) => ({
@@ -198,6 +200,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${PRODUCTS_URL}/top`,
       }),
+      providesTags: ['Product'],
       keepUnusedDataFor: 5,
     }),
     getCategories: builder.query({
@@ -249,7 +252,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
           name: data.name,
         },
       }),
-      invalidatesTags: ['Categories', 'Products'],
+      invalidatesTags: ['Categories', 'Product'],
     }),
 
     deleteCategory: builder.mutation({
@@ -257,7 +260,7 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         url: `${PRODUCTS_URL}/categories/${categoryId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Categories', 'Products'],
+      invalidatesTags: ['Categories', 'Product'],
     }),
   }),
 });

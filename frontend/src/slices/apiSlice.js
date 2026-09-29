@@ -14,8 +14,8 @@ export const apiSlice = createApi({
   baseQuery,
   tagTypes: [
     'Product',
-    'Order',
     'User',
+    'Order',
     'Categories',
     'Wishlist',
     'SharedWishlist',

@@ -28,6 +28,7 @@ export const dashboardApiSlice = apiSlice.injectEndpoints({
           params,
         };
       },
+      providesTags: ['Dashboard'],
     }),
   }),
 });
