@@ -5,7 +5,7 @@ import User from '../models/userModel.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import generateToken from '../utils/generateToken.js';
 import resetPasswordEmail from '../utils/emailTemplates/resetPasswordEmail.js';
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import escapeRegex from '../utils/escapeRegex.js';
 import EmailOTP from '../models/emailOtpModel.js';
 import otpEmail from '../utils/emailTemplates/otpEmail.js';
@@ -44,7 +44,7 @@ const authUser = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid email or password', 401));
   }
 
-  generateToken(res, user._id);
+  generateToken(res, user);
 
   res.status(200).json({
     _id: user._id,
@@ -127,7 +127,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
       _id: verification._id,
     });
 
-    generateToken(res, user._id);
+    generateToken(res, user);
 
     return res.status(201).json({
       _id: user._id,
@@ -146,7 +146,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     password,
   });
 
-  generateToken(res, user._id);
+  generateToken(res, user);
 
   return res.status(201).json({
     _id: user._id,
@@ -161,12 +161,34 @@ const registerUser = asyncHandler(async (req, res, next) => {
 // @route   POST /api/users/logout
 // @access  Private
 const logoutUser = asyncHandler(async (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      const user = await User.findById(decoded.userId);
+
+      if (user) {
+        user.tokenVersion += 1;
+        await user.save();
+      }
+    } catch (err) {
+      // Token is already invalid/expired/revoked.
+      // That's fine — logout should still clear the cookie.
+    }
+  }
+
   res.cookie('token', 'none', {
     expires: new Date(0),
     httpOnly: true,
+    secure: process.env.NODE_ENV !== 'development',
+    sameSite: 'strict',
   });
 
-  res.status(200).json({ message: 'Logged out successfully' });
+  res.status(200).json({
+    message: 'Logged out successfully',
+  });
 });
 
 // @desc    Get user profile
@@ -682,6 +704,8 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   user.password = password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
+  user.tokenVersion += 1;
+
   await user.save();
 
   res.status(200).json({
@@ -866,7 +890,7 @@ const sendOTP = asyncHandler(async (req, res, next) => {
 //     });
 //   }
 
-//   generateToken(res, user._id);
+//   generateToken(res, user);
 
 //   res.status(200).json({
 //     isNewUser: false,
@@ -1013,7 +1037,7 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
   }
 
   // Log the user in using the existing JWT cookie
-  generateToken(res, user._id);
+  generateToken(res, user);
 
   return res.status(200).json({
     success: true,
@@ -1108,7 +1132,7 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
 //     phoneVerified: true,
 //   });
 
-//   generateToken(res, user._id);
+//   generateToken(res, user);
 
 //   res.status(201).json({
 //     _id: user._id,

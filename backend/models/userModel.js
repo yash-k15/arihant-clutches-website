@@ -53,6 +53,11 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
+
     addresses: [
       {
         fullName: {

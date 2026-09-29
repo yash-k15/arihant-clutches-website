@@ -27,9 +27,21 @@ const protect = asyncHandler(async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // console.log(decoded);
-
     req.user = await User.findById(decoded.userId).select('-password');
+
+    // User no longer exists
+    if (!req.user) {
+      return next(
+        new ErrorResponse('Not Authorized to access this route', 401),
+      );
+    }
+
+    // Session has been revoked
+    if (decoded.tokenVersion !== req.user.tokenVersion) {
+      return next(
+        new ErrorResponse('Not Authorized to access this route', 401),
+      );
+    }
 
     next();
   } catch (err) {
