@@ -14,10 +14,10 @@ import {
   useAdjustVariantStockMutation,
   useGetProductDetailsQuery,
   useUploadProductImageMutation,
-  useDeleteProductImageMutation,
   useUploadProductVideoMutation,
   useDeleteProductVideoMutation,
   useGetCategoriesQuery,
+  useCleanupUnusedProductImageMutation,
 } from '../../slices/productsApiSlice';
 
 import '../../assets/styles/components/ProductFormScreen.css';
@@ -41,6 +41,9 @@ const ProductFormScreen = () => {
   const [isBestSeller, setIsBestSeller] = useState(false);
 
   const [variants, setVariants] = useState([]);
+
+  const [removedImageUrls, setRemovedImageUrls] = useState([]);
+  const [uploadedImageUrls, setUploadedImageUrls] = useState([]);
 
   const [video, setVideo] = useState({
     url: '',
@@ -77,7 +80,8 @@ const ProductFormScreen = () => {
   const [adjustVariantStock] = useAdjustVariantStockMutation();
 
   const [uploadProductImage] = useUploadProductImageMutation();
-  const [deleteProductImage] = useDeleteProductImageMutation();
+
+  const [cleanupUnusedProductImage] = useCleanupUnusedProductImageMutation();
 
   const [uploadProductVideo, { isLoading: isUploadingVideo }] =
     useUploadProductVideoMutation();
@@ -103,6 +107,9 @@ const ProductFormScreen = () => {
       setIsBestSeller(product.isBestSeller || false);
 
       setVariants(product.variants || []);
+
+      setRemovedImageUrls([]);
+      setUploadedImageUrls([]);
 
       const productVideo = product.video || {
         url: '',
@@ -161,7 +168,25 @@ const ProductFormScreen = () => {
     );
   };
 
+  const cleanupUnusedImages = async (imageUrls) => {
+    const uniqueImageUrls = [...new Set(imageUrls)];
+
+    await Promise.all(
+      uniqueImageUrls.map((imageUrl) =>
+        cleanupUnusedProductImage(imageUrl).unwrap(),
+      ),
+    );
+  };
+
   const handleCancel = async () => {
+    if (uploadedImageUrls.length > 0) {
+      try {
+        await cleanupUnusedImages(uploadedImageUrls);
+      } catch (error) {
+        console.error('Failed to clean up uploaded product images:', error);
+      }
+    }
+
     if (uploadedVideoIds.length > 0) {
       try {
         await cleanupUnusedVideos(uploadedVideoIds);
@@ -216,6 +241,36 @@ const ProductFormScreen = () => {
           video,
         }).unwrap();
 
+        const currentImageUrls = variants.flatMap(
+          (variant) => variant.images || [],
+        );
+
+        const unusedUploadedImages = uploadedImageUrls.filter(
+          (imageUrl) => !currentImageUrls.includes(imageUrl),
+        );
+
+        if (unusedUploadedImages.length > 0) {
+          try {
+            await cleanupUnusedImages(unusedUploadedImages);
+          } catch (error) {
+            console.error(
+              'Some unused uploaded product images could not be deleted:',
+              error,
+            );
+          }
+        }
+
+        if (removedImageUrls.length > 0) {
+          try {
+            await cleanupUnusedImages(removedImageUrls);
+          } catch (error) {
+            console.error(
+              'Some removed product images could not be deleted:',
+              error,
+            );
+          }
+        }
+
         const videosToDelete = uploadedVideoIds.filter(
           (publicId) => publicId !== video.publicId,
         );
@@ -262,6 +317,17 @@ const ProductFormScreen = () => {
         navigate(`/products/${createdProduct.slug}`);
       }
     } catch (err) {
+      if (uploadedImageUrls.length > 0) {
+        try {
+          await cleanupUnusedImages(uploadedImageUrls);
+        } catch (cleanupError) {
+          console.error(
+            'Failed to clean up uploaded product images:',
+            cleanupError,
+          );
+        }
+      }
+
       if (uploadedVideoIds.length > 0) {
         try {
           await cleanupUnusedVideos(uploadedVideoIds);
@@ -524,12 +590,14 @@ const ProductFormScreen = () => {
                 variants={variants}
                 setVariants={setVariants}
                 uploadProductImage={uploadProductImage}
-                deleteProductImage={deleteProductImage}
                 adjustVariantStock={adjustVariantStock}
                 toast={toast}
                 productName={name}
                 productSlug={product?.slug || productId}
                 isEditMode={isEditMode}
+                uploadedImageUrls={uploadedImageUrls}
+                setRemovedImageUrls={setRemovedImageUrls}
+                setUploadedImageUrls={setUploadedImageUrls}
               />
 
               <div className='admin-product-form-actions'>

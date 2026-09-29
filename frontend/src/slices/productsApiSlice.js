@@ -166,6 +166,13 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         body: { imageUrl },
       }),
     }),
+    cleanupUnusedProductImage: builder.mutation({
+      query: (imageUrl) => ({
+        url: '/api/upload/cleanup',
+        method: 'DELETE',
+        body: { imageUrl },
+      }),
+    }),
     deleteProductVideo: builder.mutation({
       query: (publicId) => ({
         url: `${UPLOAD_URL}/video`,
@@ -264,6 +271,7 @@ export const {
   useUploadProductImageMutation,
   useUploadProductVideoMutation,
   useDeleteProductImageMutation,
+  useCleanupUnusedProductImageMutation,
   useDeleteProductVideoMutation,
   useDeleteProductMutation,
   useCreateReviewMutation,

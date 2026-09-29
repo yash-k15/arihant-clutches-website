@@ -8,12 +8,14 @@ const AdminVariantManager = ({
   variants,
   setVariants,
   uploadProductImage,
-  deleteProductImage,
   adjustVariantStock,
   toast,
   productName,
   productSlug,
   isEditMode,
+  uploadedImageUrls,
+  setRemovedImageUrls,
+  setUploadedImageUrls,
 }) => {
   const [draggedImage, setDraggedImage] = useState(null);
   const [stockAdjustments, setStockAdjustments] = useState({});
@@ -87,6 +89,20 @@ const AdminVariantManager = ({
 
   // REMOVE VARIANT
   const removeVariantHandler = (index) => {
+    const variantToRemove = variants[index];
+
+    if (isEditMode && variantToRemove?.images?.length > 0) {
+      const existingImagesToRemove = variantToRemove.images.filter(
+        (imageUrl) => !uploadedImageUrls.includes(imageUrl),
+      );
+
+      if (existingImagesToRemove.length > 0) {
+        setRemovedImageUrls((prev) => [
+          ...new Set([...prev, ...existingImagesToRemove]),
+        ]);
+      }
+    }
+
     const updatedVariants = [...variants];
 
     updatedVariants.splice(index, 1);
@@ -122,6 +138,13 @@ const AdminVariantManager = ({
 
     try {
       const res = await uploadProductImage(formData).unwrap();
+
+      if (res.images?.length > 0) {
+        setUploadedImageUrls((prev) => [
+          ...prev,
+          ...res.images.filter((url) => !prev.includes(url)),
+        ]);
+      }
 
       const updatedVariants = [...variants];
 
@@ -184,25 +207,25 @@ const AdminVariantManager = ({
   };
 
   // REMOVE VARIANT IMAGE
-  const removeVariantImageHandler = async (variantIndex, imageUrl) => {
-    try {
-      await deleteProductImage(imageUrl).unwrap();
+  const removeVariantImageHandler = (variantIndex, imageUrl) => {
+    const updatedVariants = [...variants];
 
-      const updatedVariants = [...variants];
+    updatedVariants[variantIndex] = {
+      ...updatedVariants[variantIndex],
+      images: updatedVariants[variantIndex].images.filter(
+        (img) => img !== imageUrl,
+      ),
+    };
 
-      updatedVariants[variantIndex] = {
-        ...updatedVariants[variantIndex],
-        images: updatedVariants[variantIndex].images.filter(
-          (img) => img !== imageUrl,
-        ),
-      };
+    setVariants(updatedVariants);
 
-      setVariants(updatedVariants);
-
-      toast.success('Image Removed');
-    } catch (err) {
-      toast.error(err?.data?.message || err.error || 'Unable to remove image');
+    if (isEditMode && !uploadedImageUrls.includes(imageUrl)) {
+      setRemovedImageUrls((prev) =>
+        prev.includes(imageUrl) ? prev : [...prev, imageUrl],
+      );
     }
+
+    toast.success('Image marked for removal');
   };
 
   return (

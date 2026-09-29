@@ -335,6 +335,56 @@ const deleteProductImage = asyncHandler(async (req, res) => {
 router.delete('/', protect, admin, deleteProductImage);
 
 /*
+ * Cleanup unused product image
+ *
+ * Used only for Cloudinary images that were uploaded during
+ * an unfinished product edit/create operation.
+ */
+const cleanupUnusedProductImage = asyncHandler(async (req, res) => {
+  const { imageUrl } = req.body ?? {};
+
+  if (!imageUrl) {
+    return res.status(400).json({
+      message: 'Image URL is required',
+    });
+  }
+
+  const publicId = getPublicIdFromUrl(imageUrl);
+
+  if (!publicId) {
+    return res.status(400).json({
+      message: 'Invalid Cloudinary image URL',
+    });
+  }
+
+  // Only allow cleanup of assets inside our product image folder.
+  if (!publicId.startsWith('products/')) {
+    return res.status(400).json({
+      message: 'Invalid product image path',
+    });
+  }
+
+  // Never delete an image that is currently referenced by a product.
+  const product = await Product.findOne({
+    'variants.images': imageUrl,
+  }).select('_id');
+
+  if (product) {
+    return res.status(409).json({
+      message: 'Image is currently used by a product',
+    });
+  }
+
+  await cloudinary.uploader.destroy(publicId);
+
+  res.json({
+    message: 'Unused image deleted',
+  });
+});
+
+router.delete('/cleanup', protect, admin, cleanupUnusedProductImage);
+
+/*
  * Delete product video
  */
 const deleteProductVideo = asyncHandler(async (req, res) => {
