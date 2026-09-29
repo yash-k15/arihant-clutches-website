@@ -140,6 +140,9 @@ const productSchema = new mongoose.Schema(
   },
 );
 
+productSchema.index({ category: 1, createdAt: -1 });
+productSchema.index({ rating: -1, createdAt: -1 });
+
 // Create product slug from the name
 productSchema.pre('save', function (next) {
   if (this.isModified('name')) {
