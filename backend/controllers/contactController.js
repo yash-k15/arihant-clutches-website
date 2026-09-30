@@ -1,34 +1,39 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import sendEmail from '../utils/sendEmail.js';
+import isValidEmail from '../utils/emailValidator.js';
+import {
+  isValidIndianPhone,
+  validateString,
+} from '../utils/inputValidation.js';
 
 const sendContactMessage = asyncHandler(async (req, res) => {
   const { name, email, phone, subject, message } = req.body;
 
-  if (!name?.trim()) {
+  const nameValidation = validateString(name, {
+    required: true,
+    min: 2,
+    max: 100,
+  });
+
+  if (!nameValidation.valid) {
     return res.status(400).json({
-      message: 'Name is required',
+      message: 'Name must be between 2 and 100 characters',
     });
   }
 
-  if (!email?.trim()) {
+  if (typeof email !== 'string' || !isValidEmail(email.trim())) {
     return res.status(400).json({
-      message: 'Email is required',
+      message: 'Please provide a valid email address',
     });
   }
 
-  if (!subject) {
-    return res.status(400).json({
-      message: 'Subject is required',
-    });
+  if (phone !== undefined && phone !== null && phone !== '') {
+    if (typeof phone !== 'string' || !isValidIndianPhone(phone.trim())) {
+      return res.status(400).json({
+        message: 'Please provide a valid mobile number',
+      });
+    }
   }
-
-  if (!message?.trim()) {
-    return res.status(400).json({
-      message: 'Message is required',
-    });
-  }
-
-  const replyTo = email.trim();
 
   const subjectLabels = {
     general: 'General Enquiry',
@@ -39,22 +44,46 @@ const sendContactMessage = asyncHandler(async (req, res) => {
     other: 'Other',
   };
 
-  const subjectLabel = subjectLabels[subject] || subject;
+  if (typeof subject !== 'string' || !subjectLabels[subject]) {
+    return res.status(400).json({
+      message: 'Please select a valid subject',
+    });
+  }
+
+  const messageValidation = validateString(message, {
+    required: true,
+    min: 10,
+    max: 5000,
+  });
+
+  if (!messageValidation.valid) {
+    return res.status(400).json({
+      message: 'Message must be between 10 and 5000 characters',
+    });
+  }
+
+  const normalizedName = nameValidation.value;
+  const normalizedEmail = email.trim();
+  const normalizedPhone = phone?.trim() || '';
+
+  const replyTo = normalizedEmail;
+
+  const subjectLabel = subjectLabels[subject];
 
   await sendEmail({
     email: process.env.SMTP_EMAIL,
     replyTo,
-    subject: `${subjectLabel} — ${name.trim()}`,
+    subject: `${subjectLabel} — ${normalizedName}`,
     message: `
 New contact form enquiry
 
-Name: ${name.trim()}
-Email: ${email.trim()}
-Phone: ${phone?.trim() || 'Not provided'}
+Name: ${normalizedName}
+Email: ${normalizedEmail}
+Phone: ${normalizedPhone || 'Not provided'}
 Subject: ${subjectLabel}
 
 Message:
-${message.trim()}
+${messageValidation.value}
     `.trim(),
   });
 
