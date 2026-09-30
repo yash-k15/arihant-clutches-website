@@ -1,17 +1,30 @@
+import { useEffect, useRef } from 'react';
 import { Button, Image } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 import PaymentButton from '../PaymentButton.jsx';
 import { getCloudinaryImage } from '../../utils/cloudinary.js';
 
+import { useCalculateOrderPricingMutation } from '../../slices/ordersApiSlice.js';
+
 const CheckoutReview = ({ onBack, onEditDelivery }) => {
-  const {
-    cartItems,
-    shippingAddress,
-    paymentMethod,
-    shippingPrice,
-    totalPrice,
-  } = useSelector((state) => state.cart);
+  const { cartItems, shippingAddress, paymentMethod } = useSelector(
+    (state) => state.cart,
+  );
+
+  const [
+    calculateOrderPricing,
+    {
+      data: pricingData,
+      isLoading: isPricingLoading,
+      isError: isPricingError,
+      error: pricingError,
+    },
+  ] = useCalculateOrderPricingMutation();
+
+  const pricing = pricingData?.pricing;
+
+  const pricingRequestKeyRef = useRef(null);
 
   const formatPrice = (price) => {
     return Number(price).toLocaleString('en-IN', {
@@ -22,10 +35,38 @@ const CheckoutReview = ({ onBack, onEditDelivery }) => {
 
   const cartQuantity = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.qty * item.price,
-    0,
-  );
+  useEffect(() => {
+    if (!cartItems.length || !paymentMethod) return;
+
+    const pricingRequestKey = JSON.stringify({
+      paymentMethod,
+      orderItems: cartItems.map((item) => ({
+        product: item._id,
+        variantId: item.variantId,
+        qty: item.qty,
+      })),
+    });
+
+    if (pricingRequestKeyRef.current === pricingRequestKey) return;
+
+    pricingRequestKeyRef.current = pricingRequestKey;
+
+    calculateOrderPricing({
+      orderItems: cartItems.map((item) => ({
+        product: item._id,
+        variantId: item.variantId,
+        qty: item.qty,
+      })),
+      paymentMethod,
+    });
+  }, [cartItems, paymentMethod, calculateOrderPricing]);
+
+  const getServerItem = (item) =>
+    pricing?.validatedItems?.find(
+      (serverItem) =>
+        serverItem.product?.toString() === item._id?.toString() &&
+        serverItem.variantId?.toString() === item.variantId?.toString(),
+    );
 
   return (
     <div className='checkout-step-content checkout-review'>
@@ -128,7 +169,7 @@ const CheckoutReview = ({ onBack, onEditDelivery }) => {
               </div>
 
               <div className='checkout-review-item-price'>
-                ₹{formatPrice(item.price * item.qty)}
+                ₹{(getServerItem(item)?.price ?? item.price) * item.qty}
               </div>
             </div>
           ))}
@@ -139,17 +180,23 @@ const CheckoutReview = ({ onBack, onEditDelivery }) => {
       <div className='checkout-review-summary'>
         <div className='checkout-review-summary-row'>
           <span>Subtotal</span>
-          <strong>₹{formatPrice(subtotal)}</strong>
+          <strong>
+            {pricing ? `₹${formatPrice(pricing.itemsPrice)}` : '—'}
+          </strong>
         </div>
 
         <div className='checkout-review-summary-row'>
           <span>Shipping</span>
-          <strong>₹{formatPrice(shippingPrice)}</strong>
+          <strong>
+            {pricing ? `₹${formatPrice(pricing.shippingPrice)}` : '—'}
+          </strong>
         </div>
 
         <div className='checkout-review-summary-total'>
           <span>Total</span>
-          <strong>₹{formatPrice(totalPrice)}</strong>
+          <strong>
+            {pricing ? `₹${formatPrice(pricing.totalPrice)}` : '—'}
+          </strong>
         </div>
       </div>
 
@@ -159,7 +206,17 @@ const CheckoutReview = ({ onBack, onEditDelivery }) => {
           ← Back
         </Button>
 
-        <PaymentButton />
+        {isPricingLoading ? (
+          <p className='checkout-pricing-status'>Checking current prices...</p>
+        ) : isPricingError ? (
+          <p className='checkout-pricing-status checkout-pricing-error'>
+            {pricingError?.data?.error ||
+              pricingError?.data?.message ||
+              'Unable to verify current prices. Please try again.'}
+          </p>
+        ) : pricing ? (
+          <PaymentButton />
+        ) : null}
       </div>
     </div>
   );

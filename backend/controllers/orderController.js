@@ -4,6 +4,7 @@ import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
 import User from '../models/userModel.js';
 import escapeRegex from '../utils/escapeRegex.js';
+import calculateOrderPricing from '../utils/orderPricing.js';
 
 // @desc    Get logged in user order
 // @route   GET /api/orders/myorders
@@ -229,10 +230,36 @@ const getOrders = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc    Calculate authoritative order pricing
+// @route   POST /api/orders/pricing
+// @access  Private
+const calculatePricing = asyncHandler(async (req, res, next) => {
+  const { orderItems, paymentMethod } = req.body;
+
+  if (!Array.isArray(orderItems) || orderItems.length === 0) {
+    return next(new ErrorResponse('No order items provided', 400));
+  }
+
+  if (!['COD', 'ONLINE'].includes(paymentMethod)) {
+    return next(new ErrorResponse('Invalid payment method', 400));
+  }
+
+  try {
+    const pricing = await calculateOrderPricing(orderItems, paymentMethod);
+
+    res.status(200).json({
+      success: true,
+      pricing,
+    });
+  } catch (error) {
+    return next(new ErrorResponse(error.message, 400));
+  }
+});
+
 // @desc    Check stock before payment
 // @route   POST /api/orders/checkStock
 // @access  Private
-const checkStock = asyncHandler(async (req, res) => {
+const checkStock = asyncHandler(async (req, res, next) => {
   const { orderItems } = req.body;
 
   const outOfStockItems = [];
@@ -288,5 +315,6 @@ export {
   updateOrderToPaid,
   updateOrderToDelivered,
   getOrders,
+  calculatePricing,
   checkStock,
 };

@@ -5,6 +5,7 @@ import {
   updateOrderToPaid,
   updateOrderToDelivered,
   getOrders,
+  calculatePricing,
   checkStock,
 } from '../controllers/orderController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
@@ -14,6 +15,8 @@ const router = express.Router();
 router.route('/').get(protect, admin, getOrders);
 
 router.route('/mine').get(protect, getMyOrders);
+
+router.route('/pricing').post(protect, calculatePricing);
 
 router.route('/checkStock').post(protect, checkStock);
 
