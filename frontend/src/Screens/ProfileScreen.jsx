@@ -17,13 +17,6 @@ import Paginate from '../Components/Paginate.jsx';
 
 import {
   useProfileMutation,
-
-  // Old phone/password OTP flows preserved for possible future use
-  // useSendOtpMutation,
-  // useSendPasswordChangeOtpMutation,
-  // useVerifyPasswordChangeOtpMutation,
-  // useChangePasswordMutation,
-  // useVerifyPhoneChangeOtpMutation,
   useGetUserAddressesQuery,
   useAddUserAddressMutation,
   useUpdateUserAddressMutation,
@@ -50,36 +43,11 @@ const ProfileScreen = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const ordersSectionRef = useRef(null);
 
-  // const [isChangingPhone, setIsChangingPhone] = useState(false);
-  // const [newPhone, setNewPhone] = useState('');
-  // const [phoneOtp, setPhoneOtp] = useState('');
-  // const [phoneOtpSent, setPhoneOtpSent] = useState(false);
-
-  // const [isChangingPassword, setIsChangingPassword] = useState(false);
-  // const [passwordOtp, setPasswordOtp] = useState('');
-  // const [passwordChangeToken, setPasswordChangeToken] = useState('');
-  // const [newPassword, setNewPassword] = useState('');
-  // const [confirmPassword, setConfirmPassword] = useState('');
-
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
 
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
-
-  // const [sendOtp, { isLoading: sendingOtp }] = useSendOtpMutation();
-
-  // const [verifyPhoneChangeOtp, { isLoading: verifyingPhoneOtp }] =
-  //   useVerifyPhoneChangeOtpMutation();
-
-  // const [sendPasswordChangeOtp, { isLoading: sendingPasswordOtp }] =
-  //   useSendPasswordChangeOtpMutation();
-
-  // const [verifyPasswordChangeOtp, { isLoading: verifyingPasswordOtp }] =
-  //   useVerifyPasswordChangeOtpMutation();
-
-  // const [changePassword, { isLoading: changingPassword }] =
-  //   useChangePasswordMutation();
 
   const { data: addressData, isLoading: loadingAddresses } =
     useGetUserAddressesQuery(userInfo?._id, {
@@ -122,13 +90,6 @@ const ProfileScreen = () => {
     setName(userInfo?.name || '');
     setEmail(userInfo?.email || '');
     setPhone(userInfo?.phone || '');
-
-    // Reset phone-change state
-    // setIsChangingPhone(false);
-    // setNewPhone('');
-    // setPhoneOtp('');
-    // setPhoneOtpSent(false);
-
     setIsEditing(false);
   };
 
@@ -143,12 +104,6 @@ const ProfileScreen = () => {
       }).unwrap();
 
       dispatch(setCredentials(updatedUser));
-
-      // Reset phone-change state
-      // setIsChangingPhone(false);
-      // setNewPhone('');
-      // setPhoneOtp('');
-      // setPhoneOtpSent(false);
 
       setIsEditing(false);
 
@@ -200,144 +155,6 @@ const ProfileScreen = () => {
       className: 'is-pending',
     };
   };
-
-  // const handleSendPhoneOtp = async () => {
-  //   const phone = newPhone.trim();
-
-  //   if (!/^[6-9]\d{9}$/.test(phone)) {
-  //     toast.warning('Enter a valid mobile number');
-  //     return;
-  //   }
-
-  //   if (phone === userInfo.phone) {
-  //     toast.warning('This is already your current phone number');
-  //     return;
-  //   }
-
-  //   try {
-  //     await sendOtp({
-  //       phone,
-  //       purpose: 'phone-change',
-  //     }).unwrap();
-
-  //     setPhoneOtpSent(true);
-  //     setPhoneOtp('');
-
-  //     toast.success('OTP sent successfully');
-  //   } catch (error) {
-  //     toast.error(error?.data?.message || 'Unable to send OTP');
-  //   }
-  // };
-
-  // const handleVerifyPhoneOtp = async () => {
-  //   if (!phoneOtp.trim()) {
-  //     toast.warning('Enter the OTP');
-  //     return;
-  //   }
-
-  //   try {
-  //     const updatedUser = await verifyPhoneChangeOtp({
-  //       phone: newPhone.trim(),
-  //       otp: phoneOtp.trim(),
-  //       purpose: 'phone-change',
-  //     }).unwrap();
-
-  //     dispatch(setCredentials(updatedUser));
-
-  //     setIsChangingPhone(false);
-  //     setNewPhone('');
-  //     setPhoneOtp('');
-  //     setPhoneOtpSent(false);
-
-  //     toast.success('Phone number updated successfully');
-  //   } catch (error) {
-  //     toast.error(error?.data?.message || 'Invalid OTP');
-  //   }
-  // };
-
-  // const handleCancelPhoneChange = () => {
-  //   setIsChangingPhone(false);
-  //   setNewPhone('');
-  //   setPhoneOtp('');
-  //   setPhoneOtpSent(false);
-  // };
-
-  // const handleStartPasswordChange = async () => {
-  //   try {
-  //     await sendPasswordChangeOtp().unwrap();
-
-  //     setIsChangingPassword(true);
-  //     setPasswordOtp('');
-  //     setPasswordChangeToken('');
-
-  //     toast.success('OTP sent successfully');
-  //   } catch (error) {
-  //     toast.error(error?.data?.message || 'Unable to send password change OTP');
-  //   }
-  // };
-
-  // const handleVerifyPasswordOtp = async () => {
-  //   if (!passwordOtp.trim()) {
-  //     toast.warning('Enter the OTP');
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await verifyPasswordChangeOtp({
-  //       otp: passwordOtp.trim(),
-  //     }).unwrap();
-
-  //     setPasswordChangeToken(response.passwordChangeToken);
-
-  //     toast.success('OTP verified successfully');
-  //   } catch (error) {
-  //     toast.error(error?.data?.message || 'Invalid OTP');
-  //   }
-  // };
-
-  // const handleChangePassword = async () => {
-  //   if (!newPassword) {
-  //     toast.warning('Enter a new password');
-  //     return;
-  //   }
-
-  //   if (newPassword.length < 6) {
-  //     toast.warning('Password must be at least 6 characters');
-  //     return;
-  //   }
-
-  //   if (!confirmPassword) {
-  //     toast.warning('Confirm your new password');
-  //     return;
-  //   }
-
-  //   if (newPassword !== confirmPassword) {
-  //     toast.warning('Passwords do not match');
-  //     return;
-  //   }
-
-  //   if (!passwordChangeToken) {
-  //     toast.error('Password change authorization is missing');
-  //     return;
-  //   }
-
-  //   try {
-  //     await changePassword({
-  //       passwordChangeToken,
-  //       newPassword,
-  //     }).unwrap();
-
-  //     setIsChangingPassword(false);
-  //     setPasswordOtp('');
-  //     setPasswordChangeToken('');
-  //     setNewPassword('');
-  //     setConfirmPassword('');
-
-  //     toast.success('Password changed successfully');
-  //   } catch (error) {
-  //     toast.error(error?.data?.message || 'Unable to change password');
-  //   }
-  // };
 
   const handleAddAddress = async (address) => {
     try {
@@ -512,94 +329,6 @@ const ProfileScreen = () => {
                     Optional
                   </Form.Text>
                 </Form.Group>
-
-                {/* <Form.Group controlId='profilePhone'>
-                  <Form.Label>Phone</Form.Label>
-
-                  {!isChangingPhone ? (
-                    <div className='profile-phone-field'>
-                      <Form.Control
-                        type='tel'
-                        value={userInfo?.phone || ''}
-                        readOnly
-                      />
-
-                      <button
-                        type='button'
-                        className='profile-phone-change-button'
-                        onClick={() => setIsChangingPhone(true)}
-                      >
-                        Change
-                      </button>
-                    </div>
-                  ) : (
-                    <div className='profile-phone-change'>
-                      <div className='profile-phone-input-row'>
-                        <Form.Control
-                          type='tel'
-                          value={newPhone}
-                          onChange={(e) =>
-                            setNewPhone(
-                              e.target.value.replace(/\D/g, '').slice(0, 10),
-                            )
-                          }
-                          placeholder='Enter new phone number'
-                          maxLength={10}
-                          disabled={phoneOtpSent}
-                        />
-
-                        {!phoneOtpSent && (
-                          <button
-                            type='button'
-                            className='profile-phone-action-btn'
-                            onClick={handleSendPhoneOtp}
-                            disabled={sendingOtp}
-                          >
-                            {sendingOtp ? 'Sending...' : 'Send OTP'}
-                          </button>
-                        )}
-                      </div>
-
-                      {phoneOtpSent && (
-                        <div className='profile-phone-otp'>
-                          <Form.Control
-                            type='text'
-                            value={phoneOtp}
-                            onChange={(e) =>
-                              setPhoneOtp(
-                                e.target.value.replace(/\D/g, '').slice(0, 6),
-                              )
-                            }
-                            placeholder='Enter OTP'
-                            maxLength={6}
-                            inputMode='numeric'
-                          />
-
-                          <button
-                            type='button'
-                            className='profile-phone-action-btn'
-                            onClick={handleVerifyPhoneOtp}
-                            disabled={verifyingPhoneOtp}
-                          >
-                            {verifyingPhoneOtp ? 'Verifying...' : 'Verify OTP'}
-                          </button>
-                        </div>
-                      )}
-
-                      <button
-                        type='button'
-                        className='profile-phone-cancel-btn'
-                        onClick={handleCancelPhoneChange}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-
-                  <Form.Text>
-                    Changing your phone number will require OTP verification.
-                  </Form.Text>
-                </Form.Group> */}
               </div>
 
               <div className='profile-form-actions'>
@@ -739,113 +468,6 @@ const ProfileScreen = () => {
           </div>
         )}
       </section>
-
-      {/* {userInfo?.isAdmin && (
-        <section className='profile-security-section'>
-          <div className='profile-section-heading'>
-            <div>
-              <h2>Security</h2>
-              <p>Manage your account security</p>
-            </div>
-          </div>
-
-          <div className='profile-security-card'>
-            <div className='profile-security-info'>
-              <h3>Password</h3>
-
-              {!isChangingPassword ? (
-                <p>
-                  Change your admin account password using OTP verification.
-                </p>
-              ) : passwordChangeToken ? (
-                <p>Enter and confirm your new password.</p>
-              ) : (
-                <p>Enter the OTP sent to your registered phone number.</p>
-              )}
-            </div>
-
-            <div className='profile-security-actions'>
-              {!isChangingPassword ? (
-                <button
-                  type='button'
-                  className='profile-change-password-button'
-                  onClick={handleStartPasswordChange}
-                  disabled={sendingPasswordOtp}
-                >
-                  {sendingPasswordOtp ? 'Sending OTP...' : 'Change Password'}
-                </button>
-              ) : passwordChangeToken ? (
-                <div className='profile-password-form'>
-                  <Form.Control
-                    type='password'
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder='New password'
-                    minLength={6}
-                  />
-
-                  <Form.Control
-                    type='password'
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder='Confirm new password'
-                    minLength={6}
-                  />
-
-                  <button
-                    type='button'
-                    className='profile-change-password-button'
-                    onClick={handleChangePassword}
-                    disabled={changingPassword}
-                  >
-                    {changingPassword ? 'Changing...' : 'Change Password'}
-                  </button>
-                </div>
-              ) : (
-                <div className='profile-password-otp'>
-                  <Form.Control
-                    type='text'
-                    value={passwordOtp}
-                    onChange={(e) =>
-                      setPasswordOtp(
-                        e.target.value.replace(/\D/g, '').slice(0, 6),
-                      )
-                    }
-                    placeholder='Enter OTP'
-                    maxLength={6}
-                    inputMode='numeric'
-                  />
-
-                  <button
-                    type='button'
-                    className='profile-change-password-button'
-                    onClick={handleVerifyPasswordOtp}
-                    disabled={verifyingPasswordOtp}
-                  >
-                    {verifyingPasswordOtp ? 'Verifying...' : 'Verify OTP'}
-                  </button>
-                </div>
-              )}
-
-              {isChangingPassword && (
-                <button
-                  type='button'
-                  className='profile-password-cancel-button'
-                  onClick={() => {
-                    setIsChangingPassword(false);
-                    setPasswordOtp('');
-                    setPasswordChangeToken('');
-                    setNewPassword('');
-                    setConfirmPassword('');
-                  }}
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-          </div>
-        </section>
-      )} */}
 
       <section ref={ordersSectionRef} className='profile-orders-section'>
         <div className='profile-section-heading'>

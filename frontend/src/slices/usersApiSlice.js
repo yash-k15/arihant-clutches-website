@@ -91,29 +91,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    // sendPasswordChangeOtp: builder.mutation({
-    //   query: () => ({
-    //     url: `${USERS_URL}/send-password-change-otp`,
-    //     method: 'POST',
-    //   }),
-    // }),
-
-    // verifyPasswordChangeOtp: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USERS_URL}/verify-password-change-otp`,
-    //     method: 'POST',
-    //     body: data,
-    //   }),
-    // }),
-
-    // changePassword: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USERS_URL}/change-password`,
-    //     method: 'PUT',
-    //     body: data,
-    //   }),
-    // }),
-
     verifyOtp: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/verify-otp`,
@@ -121,22 +98,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
-
-    // verifyPhoneChangeOtp: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USERS_URL}/verify-phone-change-otp`,
-    //     method: 'POST',
-    //     body: data,
-    //   }),
-    // }),
-
-    // registerPhone: builder.mutation({
-    //   query: (data) => ({
-    //     url: `${USERS_URL}/register-phone`,
-    //     method: 'POST',
-    //     body: data,
-    //   }),
-    // }),
 
     getUserAddresses: builder.query({
       query: () => ({
@@ -193,12 +154,7 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useSendOtpMutation,
-  // useSendPasswordChangeOtpMutation,
-  // useVerifyPasswordChangeOtpMutation,
-  // useChangePasswordMutation,
   useVerifyOtpMutation,
-  // useVerifyPhoneChangeOtpMutation,
-  // useRegisterPhoneMutation,
   useGetUserAddressesQuery,
   useAddUserAddressMutation,
   useUpdateUserAddressMutation,
