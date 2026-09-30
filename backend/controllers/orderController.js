@@ -261,7 +261,17 @@ const calculatePricing = asyncHandler(async (req, res, next) => {
 // @route   POST /api/orders/checkStock
 // @access  Private
 const checkStock = asyncHandler(async (req, res, next) => {
-  const { orderItems } = req.body;
+  const { orderItems } = req.body ?? {};
+
+  const MAX_CHECK_STOCK_ITEMS = 50;
+
+  if (
+    !Array.isArray(orderItems) ||
+    orderItems.length === 0 ||
+    orderItems.length > MAX_CHECK_STOCK_ITEMS
+  ) {
+    return next(new ErrorResponse('Invalid order items', 400));
+  }
 
   const outOfStockItems = [];
 
