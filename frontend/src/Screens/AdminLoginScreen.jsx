@@ -53,9 +53,11 @@ const AdminLoginScreen = () => {
       dispatch(setCredentials(res));
       toast.success('Admin login successful');
       navigate(redirect);
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err?.data?.message ||
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
           'Unable to sign in. Please check your credentials.',
       );
     }

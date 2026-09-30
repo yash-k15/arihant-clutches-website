@@ -22,7 +22,9 @@ const SharedWishlistScreen = () => {
 
   if (error) {
     return (
-      <Message variant='danger'>{error?.data?.message || error.error}</Message>
+      <Message variant='danger'>
+        {error?.data?.error || error?.data?.message || error?.error}
+      </Message>
     );
   }
 

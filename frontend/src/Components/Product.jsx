@@ -101,7 +101,12 @@ const Product = ({ product }) => {
         toast.success('Added to wishlist');
       }
     } catch (error) {
-      toast.error(error?.data?.message || 'Unable to update wishlist');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.message ||
+          'Unable to update wishlist',
+      );
     }
   };
 

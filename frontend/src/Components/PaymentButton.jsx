@@ -93,7 +93,10 @@ const PaymentButton = ({ disabled }) => {
           loading: 'Placing order...',
           success: 'Order placed successfully',
           error: (error) =>
-            error?.data?.message || error?.message || 'Unable to place order',
+            error?.data?.error ||
+            error?.data?.message ||
+            error?.message ||
+            'Unable to place order',
         });
 
         try {
@@ -178,7 +181,7 @@ const PaymentButton = ({ disabled }) => {
             }
           } catch (error) {
             paymentOutcomeRef.current = 'failed';
-            console.log(error);
+            console.error(error);
           } finally {
             paymentVerificationInProgressRef.current = false;
             resetPaymentState();
@@ -237,7 +240,7 @@ const PaymentButton = ({ disabled }) => {
 
       paymentObject.open();
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       const outOfStock = error?.data?.outOfStockItems;
 
@@ -251,7 +254,12 @@ const PaymentButton = ({ disabled }) => {
         return;
       }
 
-      toast.error(error?.data?.message || error?.message || 'Payment Failed');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.message ||
+          'Payment Failed',
+      );
       resetPaymentState();
     }
   };

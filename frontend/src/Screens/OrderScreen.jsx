@@ -41,8 +41,13 @@ const OrderScreen = () => {
       await payOrder(orderId).unwrap();
       await refetch();
       toast.success('Payment marked as received');
-    } catch (err) {
-      toast.error(err?.data?.message || 'Unable to mark payment as received');
+    } catch (error) {
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to mark payment as received',
+      );
     }
   };
 
@@ -51,8 +56,13 @@ const OrderScreen = () => {
       await deliverOrder(orderId).unwrap();
       await refetch();
       toast.success('Order marked as delivered');
-    } catch (err) {
-      toast.error(err?.data?.message || 'Unable to mark order as delivered');
+    } catch (error) {
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to mark order as delivered',
+      );
     }
   };
 
@@ -61,7 +71,14 @@ const OrderScreen = () => {
   }
 
   if (error) {
-    return <Message variant='danger' />;
+    return (
+      <Message variant='danger'>
+        {error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to load this order. Please try again.'}
+      </Message>
+    );
   }
 
   const isCashOnDelivery =

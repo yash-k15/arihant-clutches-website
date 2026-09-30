@@ -101,7 +101,9 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
       resetForm();
       onSuccess();
     } catch (err) {
-      toast.error(err?.data?.message || 'Invalid email or password');
+      toast.error(
+        err?.data?.error || err?.data?.message || 'Invalid email or password',
+      );
     }
   };
 
@@ -127,7 +129,9 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
       setResendTimer(60);
       setStep('otp');
     } catch (err) {
-      toast.error(err?.data?.message || 'Failed to send OTP');
+      toast.error(
+        err?.data?.error || err?.data?.message || 'Failed to send OTP',
+      );
     }
   };
 
@@ -148,7 +152,9 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
         firstOtpInputRef.current?.focus();
       }, 0);
     } catch (err) {
-      toast.error(err?.data?.message || 'Failed to resend OTP');
+      toast.error(
+        err?.data?.error || err?.data?.message || 'Failed to resend OTP',
+      );
     }
   };
 
@@ -187,7 +193,7 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
       resetForm();
       onSuccess();
     } catch (err) {
-      toast.error(err?.data?.message || 'Invalid OTP');
+      toast.error(err?.data?.error || err?.data?.message || 'Invalid OTP');
     }
   };
 
@@ -240,7 +246,9 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
       resetForm();
       onSuccess();
     } catch (err) {
-      toast.error(err?.data?.message || 'Registration failed');
+      toast.error(
+        err?.data?.error || err?.data?.message || 'Registration failed',
+      );
     }
   };
 
@@ -264,7 +272,11 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
       toast.success('Password reset email sent');
       setStep('login');
     } catch (err) {
-      toast.error(err?.data?.message || 'Unable to send password reset email');
+      toast.error(
+        err?.data?.error ||
+          err?.data?.message ||
+          'Unable to send password reset email',
+      );
     }
   };
 

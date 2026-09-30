@@ -13,7 +13,9 @@ const ProductCarousel = () => {
   return isLoading ? (
     <Loader />
   ) : error ? (
-    <Message variant='danger'>{error?.data?.message || error.error}</Message>
+    <Message variant='danger'>
+      {error?.data?.error || error?.data?.message || error?.message}
+    </Message>
   ) : !carousel?.items?.length ? null : (
     <Carousel pause='hover' className='hero-carousel mb-5'>
       {carousel.items.map((item) => {

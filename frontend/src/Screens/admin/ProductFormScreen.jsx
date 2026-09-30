@@ -147,7 +147,12 @@ const ProductFormScreen = () => {
 
       toast.success('Video uploaded successfully');
     } catch (error) {
-      toast.error(error?.data?.message || 'Video upload failed');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Video upload failed',
+      );
     } finally {
       e.target.value = '';
     }
@@ -328,7 +333,7 @@ const ProductFormScreen = () => {
 
         navigate(`/products/${createdProduct.slug}`);
       }
-    } catch (err) {
+    } catch (error) {
       if (uploadedImageUrls.length > 0) {
         try {
           await cleanupUnusedImages(uploadedImageUrls);
@@ -351,7 +356,12 @@ const ProductFormScreen = () => {
         }
       }
 
-      toast.error(err?.data?.message || err.error || 'Unable to save product');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to save product',
+      );
     }
   };
 
@@ -377,7 +387,9 @@ const ProductFormScreen = () => {
             <Loader />
           ) : isEditMode && productError ? (
             <Message variant='danger'>
-              {productError?.data?.message || productError.error}
+              {productError?.data?.error ||
+                productError?.data?.message ||
+                productError.error}
             </Message>
           ) : (
             <Form onSubmit={submitHandler}>
@@ -422,7 +434,9 @@ const ProductFormScreen = () => {
                     <Loader />
                   ) : categoriesError ? (
                     <Message variant='danger'>
-                      {categoriesError?.data?.message || categoriesError.error}
+                      {categoriesError?.data?.error ||
+                        categoriesError?.data?.message ||
+                        categoriesError?.error}
                     </Message>
                   ) : (
                     <Form.Select

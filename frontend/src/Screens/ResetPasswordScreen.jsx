@@ -58,9 +58,11 @@ const ResetPasswordScreen = () => {
       toast.success('Password reset successful.');
 
       navigate('/');
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err?.data?.message ||
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
           'Unable to reset your password. Please try again.',
       );
     }

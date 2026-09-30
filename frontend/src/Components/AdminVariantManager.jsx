@@ -49,7 +49,10 @@ const AdminVariantManager = ({
       );
     } catch (error) {
       toast.error(
-        error?.data?.message || error.error || 'Unable to adjust stock',
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to adjust stock',
       );
     }
   };
@@ -165,7 +168,10 @@ const AdminVariantManager = ({
       toast.success('Variant images uploaded');
     } catch (err) {
       toast.error(
-        err?.data?.message || err.error || 'Unable to upload variant images',
+        err?.data?.error ||
+          err?.data?.message ||
+          err?.error ||
+          'Unable to upload variant images',
       );
     }
   };

@@ -690,7 +690,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
       message: 'A password reset email has been sent.',
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
 

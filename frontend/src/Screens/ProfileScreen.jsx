@@ -109,7 +109,12 @@ const ProfileScreen = () => {
 
       toast.success('Profile updated successfully');
     } catch (error) {
-      toast.error(error?.data?.message || 'Unable to update profile');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to update profile',
+      );
     }
   };
 
@@ -164,7 +169,12 @@ const ProfileScreen = () => {
 
       toast.success('Address saved successfully');
     } catch (error) {
-      toast.error(error?.data?.message || 'Unable to save address');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to save address',
+      );
     }
   };
 
@@ -179,7 +189,12 @@ const ProfileScreen = () => {
 
       toast.success('Address updated successfully');
     } catch (error) {
-      toast.error(error?.data?.message || 'Unable to update address');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to update address',
+      );
     }
   };
 
@@ -199,7 +214,12 @@ const ProfileScreen = () => {
 
       toast.success('Address deleted successfully');
     } catch (error) {
-      toast.error(error?.data?.message || 'Unable to delete address');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to delete address',
+      );
     }
   };
 
@@ -495,7 +515,7 @@ const ProfileScreen = () => {
           </div>
         ) : error ? (
           <Message variant='danger'>
-            {error?.data?.message || error.error}
+            {error?.data?.error || error?.data?.message || error?.error}
           </Message>
         ) : orders?.length === 0 ? (
           <div className='profile-empty-orders'>

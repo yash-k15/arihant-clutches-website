@@ -117,9 +117,12 @@ const UserListScreen = () => {
       );
 
       closeRoleModal();
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err?.data?.message || err.error || 'Unable to change user role',
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to change user role',
       );
     }
   };
@@ -129,8 +132,13 @@ const UserListScreen = () => {
       try {
         await deleteUser(id).unwrap();
         toast.success('User deleted');
-      } catch (err) {
-        toast.error(err?.data?.message || err.error || 'Unable to delete user');
+      } catch (error) {
+        toast.error(
+          error?.data?.error ||
+            error?.data?.message ||
+            error?.error ||
+            'Unable to delete user',
+        );
       }
     }
   };
@@ -371,7 +379,7 @@ const UserListScreen = () => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>
-          {error?.data?.message || error.error}
+          {error?.data?.error || error?.data?.message || error?.error}
         </Message>
       ) : (
         <>

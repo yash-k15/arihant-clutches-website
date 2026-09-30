@@ -201,7 +201,8 @@ const CheckoutDelivery = ({ onContinue }) => {
            * prevent the customer from checking out.
            */
           if (
-            error?.data?.message !== 'You can save a maximum of 10 addresses'
+            (error?.data?.error || error?.data?.message) !==
+            'You can save a maximum of 10 addresses'
           ) {
             return;
           }

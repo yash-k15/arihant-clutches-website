@@ -57,7 +57,7 @@ const Header = () => {
     try {
       await logoutApiCall().unwrap();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     } finally {
       // Clear authenticated user state
       dispatch(logout());

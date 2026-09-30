@@ -102,7 +102,12 @@ const WishlistScreen = () => {
         setIsLinkCopied(false);
       }, 3000);
     } catch (error) {
-      toast.error(error?.data?.message || 'Unable to share wishlist');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to share wishlist',
+      );
     }
   };
 
@@ -158,9 +163,12 @@ const WishlistScreen = () => {
 
         setGuestWishlist(wishlistItems);
       } catch (error) {
-        console.error('Failed to load guest wishlist:', error);
-
-        setGuestError(error?.data?.message || 'Unable to load wishlist');
+        setGuestError(
+          error?.data?.error ||
+            error?.data?.message ||
+            error?.error ||
+            'Unable to load wishlist',
+        );
       } finally {
         setIsGuestLoading(false);
       }
@@ -176,7 +184,10 @@ const WishlistScreen = () => {
   if (error || guestError) {
     return (
       <Message variant='danger'>
-        {error?.data?.message || error?.error || guestError}
+        {error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          guestError}
       </Message>
     );
   }
@@ -208,7 +219,12 @@ const WishlistScreen = () => {
 
       toast.success('Removed from wishlist');
     } catch (error) {
-      toast.error(error?.data?.message || 'Unable to remove from wishlist');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to remove from wishlist',
+      );
     }
   };
 
@@ -230,7 +246,12 @@ const WishlistScreen = () => {
 
       toast.success('Wishlist cleared');
     } catch (error) {
-      toast.error(error?.data?.message || 'Unable to clear wishlist');
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to clear wishlist',
+      );
     }
   };
 

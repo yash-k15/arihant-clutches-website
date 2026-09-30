@@ -71,9 +71,12 @@ const ContactScreen = () => {
 
       setSubject('');
       setMessage('');
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err?.data?.message || 'Unable to send your message. Please try again.',
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to send your message. Please try again.',
       );
     }
   };

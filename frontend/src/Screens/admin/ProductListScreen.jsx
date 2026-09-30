@@ -163,8 +163,13 @@ const ProductListScreen = () => {
 
       setCategoryName('');
       setEditingCategory(null);
-    } catch (err) {
-      toast.error(err?.data?.message || err.error || 'Something went wrong');
+    } catch (error) {
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Something went wrong',
+      );
     }
   };
 
@@ -184,9 +189,12 @@ const ProductListScreen = () => {
       await deleteCategory(category._id).unwrap();
 
       toast.success('Category deleted');
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err?.data?.message || err.error || 'Unable to delete category',
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to delete category',
       );
     }
   };
@@ -224,9 +232,12 @@ const ProductListScreen = () => {
         await deleteProduct(slug).unwrap();
         toast.success('Product Deleted');
         refetch();
-      } catch (err) {
+      } catch (error) {
         toast.error(
-          err?.data?.message || err.error || 'Unable to delete product',
+          error?.data?.error ||
+            error?.data?.message ||
+            error?.error ||
+            'Unable to delete product',
         );
       }
     }
@@ -795,7 +806,10 @@ const ProductListScreen = () => {
               <Loader />
             ) : categoriesError ? (
               <Message variant='danger'>
-                {categoriesError?.data?.message || 'Unable to load categories'}
+                {categoriesError?.dat?.error ||
+                  categoriesError?.data?.message ||
+                  categories?.error ||
+                  'Unable to load categories'}
               </Message>
             ) : categories?.length === 0 ? (
               <p className='admin-category-empty'>No categories found.</p>

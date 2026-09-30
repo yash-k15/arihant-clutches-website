@@ -135,7 +135,7 @@ const createOrder = asyncHandler(async (req, res) => {
       applicationOrderId: applicationOrder._id,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     /*
      * If two identical requests race, the unique idempotency
@@ -310,7 +310,7 @@ const reconcilePayment = async ({
   try {
     currentPayment = await razorpay.payments.fetch(payment.id);
   } catch (error) {
-    console.log('Unable to fetch Razorpay payment:', error.message);
+    console.error('Unable to fetch Razorpay payment:', error.message);
 
     throw new Error('Unable to verify payment status');
   }
@@ -466,7 +466,7 @@ const reconcilePayment = async ({
         if (paymentAfterRefundError.status === 'refunded') {
           refundConfirmed = true;
         } else {
-          console.log(
+          console.error(
             'CRITICAL: Payment refund could not be confirmed:',
             JSON.stringify(
               refundError,
@@ -475,7 +475,7 @@ const reconcilePayment = async ({
           );
         }
       } catch (statusError) {
-        console.log(
+        console.error(
           'CRITICAL: Unable to confirm payment refund:',
           JSON.stringify(statusError, Object.getOwnPropertyNames(statusError)),
         );
@@ -558,7 +558,7 @@ const reconcilePayment = async ({
         ),
       });
     } catch (emailError) {
-      console.log('Order email failed:', emailError.message);
+      console.error('Order email failed:', emailError.message);
     }
   }
 
@@ -743,7 +743,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
               ),
             });
           } catch (emailError) {
-            console.log('Order email failed:', emailError.message);
+            console.error('Order email failed:', emailError.message);
           }
         }
 
@@ -862,7 +862,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
       order: finalizedOrder,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     if (
       error.message?.includes('out of stock') ||
@@ -972,7 +972,7 @@ const handleRazorpayWebhook = asyncHandler(async (req, res) => {
         orderId: finalizedOrder._id,
       });
     } catch (error) {
-      console.log('Webhook reconciliation failed:', error.message);
+      console.error('Webhook reconciliation failed:', error.message);
 
       /*
        * Return 500 so Razorpay can retry the webhook for

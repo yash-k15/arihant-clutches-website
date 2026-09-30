@@ -277,8 +277,13 @@ const ProductScreen = () => {
 
         toast.success('Added to wishlist');
       }
-    } catch (err) {
-      toast.error(err?.data?.message || 'Unable to update your wishlist');
+    } catch (error) {
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to update your wishlist',
+      );
     }
   };
 
@@ -462,7 +467,7 @@ const ProductScreen = () => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>
-          {error?.data?.message || error.error}
+          {error?.data?.error || error?.data?.message || error?.error}
         </Message>
       ) : (
         <>

@@ -132,7 +132,7 @@ const ProductsScreen = () => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>
-          {error?.data?.message || error.error}
+          {error?.data?.error || error?.data?.message || error?.error}
         </Message>
       ) : (
         <>

@@ -137,9 +137,12 @@ const CarouselScreen = () => {
       }).unwrap();
 
       toast.success('Carousel item removed');
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err?.data?.message || err.error || 'Unable to remove carousel item',
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to remove carousel item',
       );
     }
   };
@@ -160,9 +163,12 @@ const CarouselScreen = () => {
 
       toast.success('Added to carousel');
       closeModal();
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err?.data?.message || err.error || 'Unable to add to carousel',
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to add to carousel',
       );
     }
   };
@@ -174,7 +180,10 @@ const CarouselScreen = () => {
   if (error) {
     return (
       <Message variant='danger'>
-        {error?.data?.message || 'Unable to load carousel'}
+        {error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to load carousel'}
       </Message>
     );
   }
@@ -209,9 +218,12 @@ const CarouselScreen = () => {
       }).unwrap();
 
       toast.success('Carousel order updated');
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        err?.data?.message || err.error || 'Unable to update carousel order',
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to update carousel order',
       );
     }
   };
