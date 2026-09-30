@@ -13,6 +13,7 @@ import {
 } from '../controllers/wishlistController.js';
 
 import { protect } from '../middleware/authMiddleware.js';
+import { guestWishlistLimiter } from '../middleware/rateLimitMiddleware.js';
 
 const router = express.Router();
 
@@ -28,9 +29,11 @@ router.post('/share', protect, createWishlistShare);
 
 router.post('/merge', protect, mergeWishlist);
 
-router.route('/guest').post(getGuestWishlistProducts);
+router.route('/guest').post(guestWishlistLimiter, getGuestWishlistProducts);
 
-router.route('/guest/share').post(createGuestWishlistShare);
+router
+  .route('/guest/share')
+  .post(guestWishlistLimiter, createGuestWishlistShare);
 
 // Shared wishlist
 router.route('/shared/:shareToken').get(getSharedWishlist);

@@ -40,6 +40,16 @@ const contactLimiter = rateLimit({
   },
 });
 
+const guestWishlistLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 30,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: {
+    message: 'Too many wishlist requests. Please try again later.',
+  },
+});
+
 /*
  * Payment verification abuse controls.
  *
@@ -96,6 +106,7 @@ export {
   otpLimiter,
   passwordResetLimiter,
   contactLimiter,
+  guestWishlistLimiter,
   paymentVerificationUserLimiter,
   paymentVerificationOrderLimiter,
 };

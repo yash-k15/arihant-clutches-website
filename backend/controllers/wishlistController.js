@@ -6,6 +6,8 @@ import ErrorResponse from '../utils/errorResponse.js';
 import Wishlist from '../models/wishlistModel.js';
 import Product from '../models/productModel.js';
 
+const MAX_GUEST_WISHLIST_ITEMS = 50;
+
 const getOrCreateWishlist = async (ownerId) => {
   return Wishlist.findOneAndUpdate(
     { owner: ownerId },
@@ -173,12 +175,14 @@ const createWishlistShare = asyncHandler(async (req, res, next) => {
 // @route POST /api/wishlist/guest/share
 // @access Public
 const createGuestWishlistShare = asyncHandler(async (req, res, next) => {
-  const { items } = req.body;
+  const { items } = req.body ?? {};
 
-  if (!Array.isArray(items) || items.length === 0) {
-    return next(
-      new ErrorResponse('Wishlist must contain at least one item', 400),
-    );
+  if (
+    !Array.isArray(items) ||
+    items.length === 0 ||
+    items.length > MAX_GUEST_WISHLIST_ITEMS
+  ) {
+    return next(new ErrorResponse('Invalid wishlist items', 400));
   }
 
   const productIds = [...new Set(items.map((item) => String(item.productId)))];
@@ -256,10 +260,13 @@ const getSharedWishlist = asyncHandler(async (req, res, next) => {
 // @route POST /api/wishlist/guest
 // @access Public
 const getGuestWishlistProducts = asyncHandler(async (req, res, next) => {
-  const { productIds } = req.body;
+  const { productIds } = req.body ?? {};
 
-  if (!Array.isArray(productIds)) {
-    return next(new ErrorResponse('Product IDs must be an array', 400));
+  if (
+    !Array.isArray(productIds) ||
+    productIds.length > MAX_GUEST_WISHLIST_ITEMS
+  ) {
+    return next(new ErrorResponse('Invalid product IDs', 400));
   }
 
   if (productIds.length === 0) {
