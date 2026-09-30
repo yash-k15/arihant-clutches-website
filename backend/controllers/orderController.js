@@ -97,7 +97,20 @@ const getOrders = asyncHandler(async (req, res, next) => {
   const pageSize = Number(process.env.ADMIN_ORDERS_PER_PAGE) || 10;
   const page = Number(req.query.pageNumber) || 1;
 
-  const filters = {};
+  const filters = {
+    $and: [
+      {
+        $or: [
+          { paymentMethod: 'COD' },
+          { paymentMethod: 'ONLINE', isPaid: true },
+          {
+            paymentMethod: 'ONLINE',
+            'paymentResult.status': 'REFUNDED',
+          },
+        ],
+      },
+    ],
+  };
 
   // Search
   if (req.query.keyword) {
@@ -136,7 +149,9 @@ const getOrders = asyncHandler(async (req, res, next) => {
       },
     });
 
-    filters.$or = searchConditions;
+    filters.$and.push({
+      $or: searchConditions,
+    });
   }
 
   // Payment status
@@ -144,6 +159,9 @@ const getOrders = asyncHandler(async (req, res, next) => {
     filters.isPaid = true;
   } else if (req.query.paymentStatus === 'pending') {
     filters.isPaid = false;
+  } else if (req.query.paymentStatus === 'refunded') {
+    filters.paymentMethod = 'ONLINE';
+    filters['paymentResult.status'] = 'REFUNDED';
   }
 
   // Payment method

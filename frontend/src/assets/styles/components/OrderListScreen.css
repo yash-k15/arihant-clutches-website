@@ -289,6 +289,11 @@
   color: #8a663d;
 }
 
+.admin-orders-status-not-eligible {
+  background: #f3f3f3;
+  color: #777;
+}
+
 /* Actions */
 
 .admin-orders-actions {

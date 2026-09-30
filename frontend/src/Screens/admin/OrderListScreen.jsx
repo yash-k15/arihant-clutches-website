@@ -166,35 +166,49 @@ const OrderListScreen = () => {
   const getPaymentMethod = (order) =>
     order.paymentMethod === 'COD' ? 'Cash on Delivery' : 'Online Payment';
 
-  const renderPayment = (order) => (
-    <div className='admin-orders-payment'>
-      <span className='admin-orders-payment-method'>
-        {getPaymentMethod(order)}
-      </span>
+  const renderPayment = (order) => {
+    const isRefunded = order.paymentResult?.status === 'REFUNDED';
 
+    return (
+      <div className='admin-orders-payment'>
+        <span className='admin-orders-payment-method'>
+          {getPaymentMethod(order)}
+        </span>
+
+        <span
+          className={
+            isRefunded || order.isPaid
+              ? 'admin-orders-status admin-orders-status-paid'
+              : 'admin-orders-status admin-orders-status-pending'
+          }
+        >
+          {isRefunded ? 'Refunded' : order.isPaid ? 'Paid' : 'Pending'}
+        </span>
+      </div>
+    );
+  };
+
+  const renderDelivery = (order) => {
+    if (order.paymentResult?.status === 'REFUNDED') {
+      return (
+        <span className='admin-orders-status admin-orders-status-not-eligible'>
+          Not Eligible
+        </span>
+      );
+    }
+
+    return (
       <span
         className={
-          order.isPaid
-            ? 'admin-orders-status admin-orders-status-paid'
-            : 'admin-orders-status admin-orders-status-pending'
+          order.isDelivered
+            ? 'admin-orders-status admin-orders-status-delivered'
+            : 'admin-orders-status admin-orders-status-processing'
         }
       >
-        {order.isPaid ? 'Paid' : 'Pending'}
+        {order.isDelivered ? 'Delivered' : 'Processing'}
       </span>
-    </div>
-  );
-
-  const renderDelivery = (order) => (
-    <span
-      className={
-        order.isDelivered
-          ? 'admin-orders-status admin-orders-status-delivered'
-          : 'admin-orders-status admin-orders-status-processing'
-      }
-    >
-      {order.isDelivered ? 'Delivered' : 'Processing'}
-    </span>
-  );
+    );
+  };
 
   const handleSortChange = (value) => {
     const params = new URLSearchParams(searchParams);
@@ -383,6 +397,17 @@ const OrderListScreen = () => {
                 onChange={() => setDraftPaymentStatus('paid')}
               />
               <span>Paid</span>
+            </label>
+
+            <label>
+              <input
+                type='radio'
+                name='paymentStatus'
+                value='refunded'
+                checked={draftPaymentStatus === 'refunded'}
+                onChange={() => setDraftPaymentStatus('refunded')}
+              />
+              <span>Refunded</span>
             </label>
 
             <label>

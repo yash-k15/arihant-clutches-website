@@ -165,6 +165,10 @@ const orderSchema = new mongoose.Schema(
       type: Date,
     },
 
+    expiresAt: {
+      type: Date,
+    },
+
     isDelivered: {
       type: Boolean,
       required: true,
@@ -182,6 +186,7 @@ const orderSchema = new mongoose.Schema(
 
 // One payment ID can belong to only one application order.
 orderSchema.index({ 'paymentResult.id': 1 }, { unique: true, sparse: true });
+orderSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const Order = mongoose.model('Order', orderSchema);
 

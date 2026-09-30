@@ -127,6 +127,9 @@ const createOrder = asyncHandler(async (req, res) => {
 
       isPaid: false,
       paidAt: null,
+
+      // Temporary online payment orders expire after 48 hours
+      expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
     });
 
     return res.json({
@@ -502,6 +505,7 @@ const reconcilePayment = async ({
 
     order.isPaid = false;
     order.paidAt = null;
+    order.expiresAt = null;
 
     await order.save();
 
@@ -538,6 +542,8 @@ const reconcilePayment = async ({
       status: 'CAPTURED',
       update_time: new Date().toISOString(),
     };
+
+    finalizedOrder.expiresAt = null;
 
     await finalizedOrder.save();
   }
