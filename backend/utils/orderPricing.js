@@ -1,13 +1,21 @@
 import Product from '../models/productModel.js';
 
+const MAX_ORDER_ITEMS = 50;
+const MAX_ITEM_QUANTITY = 15;
+
 const calculateOrderPricing = async (orderItems, paymentMethod) => {
-  if (!Array.isArray(orderItems) || orderItems.length === 0) {
-    throw new Error('No order items provided');
+  if (
+    !Array.isArray(orderItems) ||
+    orderItems.length === 0 ||
+    orderItems.length > MAX_ORDER_ITEMS
+  ) {
+    throw new Error('Invalid order items');
   }
 
   let itemsPrice = 0;
   let totalQuantity = 0;
   const validatedItems = [];
+  const seenItems = new Set();
 
   for (const item of orderItems) {
     if (
@@ -15,10 +23,19 @@ const calculateOrderPricing = async (orderItems, paymentMethod) => {
       typeof item.product !== 'string' ||
       typeof item.variantId !== 'string' ||
       !Number.isInteger(item.qty) ||
-      item.qty <= 0
+      item.qty < 1 ||
+      item.qty > MAX_ITEM_QUANTITY
     ) {
       throw new Error('Invalid order item');
     }
+
+    const itemKey = `${item.product}:${item.variantId}`;
+
+    if (seenItems.has(itemKey)) {
+      throw new Error('Duplicate product variant in order');
+    }
+
+    seenItems.add(itemKey);
 
     const product = await Product.findOne({
       _id: item.product,

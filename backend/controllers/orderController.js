@@ -264,6 +264,7 @@ const checkStock = asyncHandler(async (req, res, next) => {
   const { orderItems } = req.body ?? {};
 
   const MAX_CHECK_STOCK_ITEMS = 50;
+  const MAX_ITEM_QUANTITY = 15;
 
   if (
     !Array.isArray(orderItems) ||
@@ -273,6 +274,7 @@ const checkStock = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid order items', 400));
   }
 
+  const seenItems = new Set();
   const outOfStockItems = [];
 
   for (const item of orderItems) {
@@ -281,10 +283,19 @@ const checkStock = asyncHandler(async (req, res, next) => {
       typeof item.product !== 'string' ||
       typeof item.variantId !== 'string' ||
       !Number.isInteger(item.qty) ||
-      item.qty <= 0
+      item.qty < 1 ||
+      item.qty > MAX_ITEM_QUANTITY
     ) {
       return next(new ErrorResponse('Invalid order item', 400));
     }
+
+    const itemKey = `${item.product}:${item.variantId}`;
+
+    if (seenItems.has(itemKey)) {
+      return next(new ErrorResponse('Duplicate product variant in order', 400));
+    }
+
+    seenItems.add(itemKey);
 
     const product = await Product.findOne({
       _id: item.product,
