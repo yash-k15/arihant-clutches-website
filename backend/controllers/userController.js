@@ -11,6 +11,7 @@ import EmailOTP from '../models/emailOtpModel.js';
 import otpEmail from '../utils/emailTemplates/otpEmail.js';
 import EmailVerification from '../models/emailVerificationModel.js';
 import isValidEmail from '../utils/emailValidator.js';
+import { parsePageNumber, parsePageSize } from '../utils/pagination.js';
 
 import {
   generateOTP,
@@ -527,8 +528,8 @@ const setDefaultUserAddress = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users
 // @access  Private/admin
 const getUsers = asyncHandler(async (req, res, next) => {
-  const pageSize = Number(process.env.ADMIN_USERS_PER_PAGE) || 10;
-  const page = Number(req.query.pageNumber) || 1;
+  const pageSize = parsePageSize(process.env.ADMIN_USERS_PER_PAGE);
+  const page = parsePageNumber(req.query.pageNumber);
 
   const filters = {};
 

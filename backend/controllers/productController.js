@@ -4,6 +4,8 @@ import Product, { Category } from '../models/productModel.js';
 import slugify from 'slugify';
 import escapeRegex from '../utils/escapeRegex.js';
 
+import { parsePageNumber, parsePageSize } from '../utils/pagination.js';
+
 import {
   validateString,
   isFiniteNumber,
@@ -14,25 +16,15 @@ import {
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res, next) => {
-  const DEFAULT_PAGE_SIZE = 10;
-  const MAX_PAGE_SIZE = 100;
-
   const configuredPageSize =
     req.query.admin === 'true'
-      ? Number(process.env.ADMIN_PRODUCTS_PER_PAGE)
+      ? process.env.ADMIN_PRODUCTS_PER_PAGE
       : req.query.home === 'true'
-        ? Number(process.env.HOME_PRODUCTS_LIMIT)
-        : Number(process.env.PRODUCTS_PER_PAGE);
+        ? process.env.HOME_PRODUCTS_LIMIT
+        : process.env.PRODUCTS_PER_PAGE;
 
-  const pageSize =
-    Number.isSafeInteger(configuredPageSize) && configuredPageSize > 0
-      ? Math.min(configuredPageSize, MAX_PAGE_SIZE)
-      : DEFAULT_PAGE_SIZE;
-
-  const parsedPage = Number(req.query.pageNumber);
-
-  const page =
-    Number.isSafeInteger(parsedPage) && parsedPage >= 1 ? parsedPage : 1;
+  const pageSize = parsePageSize(configuredPageSize);
+  const page = parsePageNumber(req.query.pageNumber);
 
   const filters = {};
 

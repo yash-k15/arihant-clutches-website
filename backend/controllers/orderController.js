@@ -5,13 +5,14 @@ import Product from '../models/productModel.js';
 import User from '../models/userModel.js';
 import escapeRegex from '../utils/escapeRegex.js';
 import calculateOrderPricing from '../utils/orderPricing.js';
+import { parsePageNumber, parsePageSize } from '../utils/pagination.js';
 
 // @desc    Get logged in user order
 // @route   GET /api/orders/myorders
 // @access  Private
 const getMyOrders = asyncHandler(async (req, res, next) => {
-  const pageSize = Number(process.env.CUSTOMER_ORDERS_PER_PAGE) || 10;
-  const page = Number(req.query.pageNumber) || 1;
+  const pageSize = parsePageSize(process.env.CUSTOMER_ORDERS_PER_PAGE);
+  const page = parsePageNumber(req.query.pageNumber);
 
   const count = await Order.countDocuments({
     user: req.user._id,
@@ -95,8 +96,8 @@ const updateOrderToDelivered = asyncHandler(async (req, res, next) => {
 // @route   GET /api/orders
 // @access  Private/Admin
 const getOrders = asyncHandler(async (req, res, next) => {
-  const pageSize = Number(process.env.ADMIN_ORDERS_PER_PAGE) || 10;
-  const page = Number(req.query.pageNumber) || 1;
+  const pageSize = parsePageSize(process.env.ADMIN_ORDERS_PER_PAGE);
+  const page = parsePageNumber(req.query.pageNumber);
 
   const filters = {
     $and: [
