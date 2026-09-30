@@ -165,6 +165,37 @@ const ProductScreen = () => {
 
   /*
    * --------------------------------------------------
+   * Format Date
+   * --------------------------------------------------
+   */
+
+  const formatReviewDate = (date) => {
+    const parsedDate = new Date(date);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+      return '';
+    }
+
+    const day = parsedDate.getDate();
+
+    const suffix =
+      day % 10 === 1 && day !== 11
+        ? 'st'
+        : day % 10 === 2 && day !== 12
+          ? 'nd'
+          : day % 10 === 3 && day !== 13
+            ? 'rd'
+            : 'th';
+
+    const month = parsedDate.toLocaleString('en-US', {
+      month: 'long',
+    });
+
+    return `${day}${suffix} ${month} ${parsedDate.getFullYear()}`;
+  };
+
+  /*
+   * --------------------------------------------------
    * Format price
    * --------------------------------------------------
    */
@@ -808,7 +839,7 @@ const ProductScreen = () => {
                             <p className='review-user'>{review.name}</p>
 
                             <p className='review-date'>
-                              {review.createdAt.substring(0, 10)}
+                              {formatReviewDate(review.createdAt)}
                             </p>
                           </div>
 
