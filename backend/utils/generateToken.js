@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+
 const AUTH_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV !== 'development',
@@ -13,6 +15,8 @@ const generateToken = (res, user) => {
     process.env.JWT_SECRET,
     {
       expiresIn: '1d',
+      issuer: 'arihant-clutches-api',
+      audience: 'arihant-clutches-web',
     },
   );
 

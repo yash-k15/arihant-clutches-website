@@ -186,7 +186,10 @@ const logoutUser = asyncHandler(async (req, res, next) => {
 
   if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+        issuer: 'arihant-clutches-api',
+        audience: 'arihant-clutches-web',
+      });
 
       const user = await User.findById(decoded.userId);
 
@@ -1024,28 +1027,6 @@ const createEmailVerificationToken = async (email) => {
 
   return token;
 };
-
-// Get token from model, create cookie and send response
-// const sendTokenResponse = (user, statusCode, res) => {
-//   // Create token
-//   const token = user.getSignedJwtToken();
-
-//   const options = {
-//     expires: new Date(
-//       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
-//     ),
-//     httpOnly: true,
-//   };
-
-//   if (process.env.NODE_ENV === 'production') {
-//     options.secure = true;
-//   }
-
-//   res
-//     .status(statusCode)
-//     .cookie('token', token, options)
-//     .json({ success: true, token });
-// };
 
 export {
   authUser,
