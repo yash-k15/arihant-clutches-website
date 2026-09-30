@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail.js';
+import sendAuthEmail from '../utils/sendAuthEmail.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 import User from '../models/userModel.js';
 import ErrorResponse from '../utils/errorResponse.js';
@@ -680,7 +681,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   // Please open: \n\n ${resetUrl}`;
 
   try {
-    await sendEmail({
+    await sendAuthEmail({
       email: user.email,
       subject: 'Reset your Arihant Clutches password',
       html: resetPasswordEmail(resetUrl),
@@ -836,7 +837,7 @@ const sendOTP = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    await sendEmail({
+    await sendAuthEmail({
       email,
       subject: 'Your Arihant Clutches Login OTP',
       html: otpEmail(otp, OTP_EXPIRY_MINUTES),
