@@ -163,6 +163,8 @@ const ProductFormScreen = () => {
       url: '',
       publicId: '',
     });
+
+    toast.success('Video removed');
   };
 
   const cleanupUnusedVideos = async (videoIds) => {

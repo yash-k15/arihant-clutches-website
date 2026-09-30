@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Card, Row, Col, Form, Button } from 'react-bootstrap';
 import { getCloudinaryImage } from '../utils/cloudinary';
 
@@ -19,6 +19,8 @@ const AdminVariantManager = ({
 }) => {
   const [draggedImage, setDraggedImage] = useState(null);
   const [stockAdjustments, setStockAdjustments] = useState({});
+
+  const variantRefs = useRef([]);
 
   const handleStockAdjustment = async (variantId) => {
     const rawAdjustment = stockAdjustments[variantId] ?? 0;
@@ -80,6 +82,8 @@ const AdminVariantManager = ({
 
   // ADD VARIANT
   const addVariantHandler = () => {
+    const newVariantIndex = variants.length;
+
     setVariants([
       ...variants,
       {
@@ -89,6 +93,13 @@ const AdminVariantManager = ({
         images: [],
       },
     ]);
+
+    setTimeout(() => {
+      variantRefs.current[newVariantIndex]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 0);
   };
 
   // REMOVE VARIANT
@@ -252,7 +263,13 @@ const AdminVariantManager = ({
       </div>
 
       {variants.map((variant, index) => (
-        <Card key={index} className='variant-card mb-4'>
+        <Card
+          key={index}
+          ref={(element) => {
+            variantRefs.current[index] = element;
+          }}
+          className='variant-card mb-4'
+        >
           <Card.Body>
             <div className='d-flex justify-content-between align-items-center mb-3'>
               <h6 className='mb-0'>Variant #{index + 1}</h6>
