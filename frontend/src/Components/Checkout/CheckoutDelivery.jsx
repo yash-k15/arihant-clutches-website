@@ -7,6 +7,8 @@ import {
   useAddUserAddressMutation,
 } from '../../slices/usersApiSlice.js';
 
+import { toast } from 'sonner';
+
 const emptyAddress = {
   fullName: '',
   phone: '',
@@ -186,6 +188,11 @@ const CheckoutDelivery = ({ onContinue }) => {
         country: formData.country.trim(),
       };
 
+      if (!/^\d{10}$/.test(addressToUse.phone)) {
+        toast.error('Please enter a valid 10-digit phone number.');
+        return;
+      }
+
       /*
        * Save the address if requested.
        */
@@ -196,16 +203,13 @@ const CheckoutDelivery = ({ onContinue }) => {
             isDefault: makeDefault,
           }).unwrap();
         } catch (error) {
-          /*
-           * Reaching the 10-address limit should not
-           * prevent the customer from checking out.
-           */
-          if (
-            (error?.data?.error || error?.data?.message) !==
-            'You can save a maximum of 10 addresses'
-          ) {
-            return;
-          }
+          toast.error(
+            error?.data?.error ||
+              error?.data?.message ||
+              error?.error ||
+              'Unable to save address',
+          );
+          return;
         }
       }
     }
