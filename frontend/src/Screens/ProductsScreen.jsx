@@ -78,7 +78,7 @@ const ProductsScreen = () => {
   const isBestSellers = location.pathname.startsWith('/products/best-sellers');
   const isFeatured = location.pathname.startsWith('/products/featured');
 
-  const { data, isLoading, error } = useGetProductsQuery({
+  const { data, isLoading, isFetching, error } = useGetProductsQuery({
     keyword,
     pageNumber,
     category,
@@ -128,183 +128,169 @@ const ProductsScreen = () => {
 
   return (
     <>
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant='danger'>
-          {error?.data?.error || error?.data?.message || error?.error}
-        </Message>
-      ) : (
-        <>
-          <div className='products-toolbar'>
-            <div className='products-view-toggle'>
-              <button
-                type='button'
-                className={`products-view-btn ${
-                  view === 'small' ? 'active' : ''
-                }`}
-                onClick={() => setView('small')}
-                aria-label='3 products per row'
-              >
-                <BsGridFill />
-              </button>
+      <div className='products-toolbar'>
+        <div className='products-view-toggle'>
+          <button
+            type='button'
+            className={`products-view-btn ${view === 'small' ? 'active' : ''}`}
+            onClick={() => setView('small')}
+            aria-label='3 products per row'
+          >
+            <BsGridFill />
+          </button>
 
-              <button
-                type='button'
-                className={`products-view-btn ${
-                  view === 'medium' ? 'active' : ''
-                }`}
-                onClick={() => setView('medium')}
-                aria-label='4 products per row'
-              >
-                <BsGrid3X3GapFill />
-              </button>
+          <button
+            type='button'
+            className={`products-view-btn ${view === 'medium' ? 'active' : ''}`}
+            onClick={() => setView('medium')}
+            aria-label='4 products per row'
+          >
+            <BsGrid3X3GapFill />
+          </button>
 
-              <button
-                type='button'
-                className={`products-view-btn products-view-large ${
-                  view === 'large' ? 'active' : ''
-                }`}
-                onClick={() => setView('large')}
-                aria-label='6 products per row'
-              >
-                <BsGrid3X3 />
-              </button>
-            </div>
+          <button
+            type='button'
+            className={`products-view-btn products-view-large ${
+              view === 'large' ? 'active' : ''
+            }`}
+            onClick={() => setView('large')}
+            aria-label='6 products per row'
+          >
+            <BsGrid3X3 />
+          </button>
+        </div>
 
-            <div className='products-toolbar-actions'>
-              <button
-                type='button'
-                className='products-filter-btn'
-                onClick={() => setIsFilterOpen(true)}
-              >
-                <BsFilter />
-                <span>Filter{filterCount > 0 ? ` (${filterCount})` : ''}</span>
-              </button>
+        <div className='products-toolbar-actions'>
+          <button
+            type='button'
+            className='products-filter-btn'
+            onClick={() => setIsFilterOpen(true)}
+          >
+            <BsFilter />
+            <span>Filter{filterCount > 0 ? ` (${filterCount})` : ''}</span>
+          </button>
 
-              <div className='products-sort' ref={sortRef}>
-                <button
-                  type='button'
-                  className={`products-sort-btn ${isSortOpen ? 'open' : ''}`}
-                  onClick={() => setIsSortOpen((prev) => !prev)}
-                  aria-expanded={isSortOpen}
-                  aria-haspopup='listbox'
+          <div className='products-sort' ref={sortRef}>
+            <button
+              type='button'
+              className={`products-sort-btn ${isSortOpen ? 'open' : ''}`}
+              onClick={() => setIsSortOpen((prev) => !prev)}
+              aria-expanded={isSortOpen}
+              aria-haspopup='listbox'
+            >
+              <span>Sort By</span>
+              {isSortOpen ? <BsChevronUp /> : <BsChevronDown />}
+            </button>
+
+            {isSortOpen && (
+              <div
+                className='products-sort-overlay'
+                onClick={() => setIsSortOpen(false)}
+              >
+                <div
+                  className='products-sort-menu'
+                  role='listbox'
+                  onClick={(event) => event.stopPropagation()}
                 >
-                  <span>Sort By</span>
-                  {isSortOpen ? <BsChevronUp /> : <BsChevronDown />}
-                </button>
+                  <div className='products-sort-menu-header'>
+                    <span>SORT BY</span>
 
-                {isSortOpen && (
-                  <div
-                    className='products-sort-overlay'
-                    onClick={() => setIsSortOpen(false)}
-                  >
-                    <div
-                      className='products-sort-menu'
-                      role='listbox'
-                      onClick={(event) => event.stopPropagation()}
+                    <button
+                      type='button'
+                      className='products-sort-close'
+                      onClick={() => setIsSortOpen(false)}
+                      aria-label='Close sort menu'
                     >
-                      <div className='products-sort-menu-header'>
-                        <span>SORT BY</span>
-
-                        <button
-                          type='button'
-                          className='products-sort-close'
-                          onClick={() => setIsSortOpen(false)}
-                          aria-label='Close sort menu'
-                        >
-                          ×
-                        </button>
-                      </div>
-
-                      <div className='products-sort-options'>
-                        {sortOptions.map((option) => (
-                          <button
-                            key={option.value}
-                            type='button'
-                            className={`products-sort-option ${
-                              sort === option.value ? 'active' : ''
-                            }`}
-                            onClick={() => {
-                              const params = new URLSearchParams(
-                                location.search,
-                              );
-
-                              if (option.value === 'latest') {
-                                params.delete('sort');
-                              } else {
-                                params.set('sort', option.value);
-                              }
-
-                              const queryString = params.toString();
-
-                              const pageOnePath = location.pathname.replace(
-                                /\/page\/\d+$/,
-                                '',
-                              );
-
-                              navigate(
-                                `${pageOnePath}${
-                                  queryString ? `?${queryString}` : ''
-                                }`,
-                              );
-
-                              setIsSortOpen(false);
-                            }}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                      ×
+                    </button>
                   </div>
-                )}
+
+                  <div className='products-sort-options'>
+                    {sortOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type='button'
+                        className={`products-sort-option ${
+                          sort === option.value ? 'active' : ''
+                        }`}
+                        onClick={() => {
+                          const params = new URLSearchParams(location.search);
+
+                          if (option.value === 'latest') {
+                            params.delete('sort');
+                          } else {
+                            params.set('sort', option.value);
+                          }
+
+                          const queryString = params.toString();
+
+                          const pageOnePath = location.pathname.replace(
+                            /\/page\/\d+$/,
+                            '',
+                          );
+
+                          navigate(
+                            `${pageOnePath}${
+                              queryString ? `?${queryString}` : ''
+                            }`,
+                          );
+
+                          setIsSortOpen(false);
+                        }}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
+        </div>
+      </div>
 
-          <ProductFilters
-            show={isFilterOpen}
-            onHide={() => setIsFilterOpen(false)}
-            keyword={keyword}
-            category={category}
-            isNewArrival={isNewArrivals}
-            isBestSeller={isBestSellers}
-            isFeatured={isFeatured}
-          />
+      <ProductFilters
+        show={isFilterOpen}
+        onHide={() => setIsFilterOpen(false)}
+        keyword={keyword}
+        category={category}
+        isNewArrival={isNewArrivals}
+        isBestSeller={isBestSellers}
+        isFeatured={isFeatured}
+      />
 
-          <AppliedFilters />
+      <AppliedFilters />
 
-          {data.products.length === 0 ? (
-            <NoProductsFound />
-          ) : (
-            <Row className='g-4'>
-              {data.products.map((product) => (
-                <Col key={product._id} xs={col.xs} md={col.md} lg={col.lg}>
-                  <Product product={product} />
-                </Col>
-              ))}
-            </Row>
-          )}
-
-          <Paginate
-            pages={data.pages}
-            page={data.page}
-            collection={
-              isNewArrivals
-                ? 'new-arrivals'
-                : isBestSellers
-                  ? 'best-sellers'
-                  : isFeatured
-                    ? 'featured'
-                    : ''
-            }
-            category={category}
-            keyword={keyword}
-            sort={sort}
-          />
-        </>
+      {isLoading || isFetching ? (
+        <Loader />
+      ) : data.products.length === 0 ? (
+        <NoProductsFound />
+      ) : (
+        <Row className='g-4'>
+          {data.products.map((product) => (
+            <Col key={product._id} xs={col.xs} md={col.md} lg={col.lg}>
+              <Product product={product} />
+            </Col>
+          ))}
+        </Row>
       )}
+
+      <Paginate
+        pages={data.pages}
+        page={data.page}
+        collection={
+          isNewArrivals
+            ? 'new-arrivals'
+            : isBestSellers
+              ? 'best-sellers'
+              : isFeatured
+                ? 'featured'
+                : ''
+        }
+        category={category}
+        keyword={keyword}
+        sort={sort}
+      />
     </>
   );
 };
