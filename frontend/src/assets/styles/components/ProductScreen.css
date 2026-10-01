@@ -657,6 +657,42 @@
   line-height: 1.7;
 }
 
+.review-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  padding: 30px;
+  border: 1px solid #eeeae4;
+  border-radius: 12px;
+  background: #fff;
+  text-align: center;
+}
+
+.review-empty-state h3 {
+  margin: 0 0 8px;
+  color: #2c2222;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.review-empty-state p {
+  margin: 0;
+  color: #777;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.review-login-state {
+  min-height: 140px;
+}
+
+.review-login-state .product-login-link {
+  color: #2c2222;
+  font-weight: 600;
+  text-decoration: underline;
+}
 
 /* =========================================================
    REVIEW FORM
@@ -1030,6 +1066,19 @@
   .review-section {
     margin-top: 60px;
   }
+
+  .review-empty-state {
+  min-height: 130px;
+  padding: 24px 18px;
+}
+
+.review-empty-state h3 {
+  font-size: 0.98rem;
+}
+
+.review-empty-state p {
+  font-size: 0.84rem;
+}
 }
 
 

@@ -829,7 +829,12 @@ const ProductScreen = () => {
 
               <div className='review-content'>
                 {product.reviews?.length === 0 ? (
-                  <Message>No reviews yet.</Message>
+                  <div className='review-empty-state'>
+                    <h3>No reviews yet</h3>
+                    <p>
+                      Be the first to share your experience with this product.
+                    </p>
+                  </div>
                 ) : (
                   <div className='review-list'>
                     {product.reviews.map((review) => (
@@ -906,17 +911,21 @@ const ProductScreen = () => {
                     </Button>
                   </Form>
                 ) : (
-                  <Message>
-                    Please{' '}
-                    <button
-                      type='button'
-                      className='product-login-link'
-                      onClick={() => openAuth()}
-                    >
-                      log in
-                    </button>{' '}
-                    to write a review.
-                  </Message>
+                  <div className='review-empty-state review-login-state'>
+                    <h3>Want to share your experience?</h3>
+
+                    <p>
+                      Please{' '}
+                      <button
+                        type='button'
+                        className='product-login-link'
+                        onClick={() => openAuth()}
+                      >
+                        log in
+                      </button>{' '}
+                      to write a review.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

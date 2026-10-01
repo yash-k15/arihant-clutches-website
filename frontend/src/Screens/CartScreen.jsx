@@ -2,8 +2,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Image, Button } from 'react-bootstrap';
 import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
-
-import Message from '../Components/Message.jsx';
 import { addToCart, removeFromCart } from '../slices/cartSlice.js';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
 import { useCheckout } from '../Components/Checkout/CheckoutContext.jsx';
@@ -74,9 +72,22 @@ const CartScreen = () => {
 
         {cartItems.length === 0 ? (
           <div className='cart-empty'>
-            <Message>
-              Your cart is empty <Link to='/products'>Shop Now</Link>
-            </Message>
+            <div className='cart-empty-content'>
+              <div className='cart-empty-icon' aria-hidden='true'>
+                🛒
+              </div>
+
+              <h2>Your cart is empty</h2>
+
+              <p>
+                Add something you love to your cart and come back here when
+                you're ready.
+              </p>
+
+              <Link to='/products' className='cart-empty-btn'>
+                Shop Now
+              </Link>
+            </div>
           </div>
         ) : (
           <Row className='cart-layout'>
