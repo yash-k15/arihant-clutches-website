@@ -238,41 +238,23 @@ const getDashboardSales = asyncHandler(async (req, res) => {
     };
   }
 
-  const [sales, allTimeSalesResult] = await Promise.all([
-    Order.aggregate([
-      {
-        $match: match,
-      },
-      {
-        $group: {
-          _id: groupId,
-          sales: {
-            $sum: '$totalPrice',
-          },
+  const sales = await Order.aggregate([
+    {
+      $match: match,
+    },
+    {
+      $group: {
+        _id: groupId,
+        sales: {
+          $sum: '$totalPrice',
         },
       },
-      {
-        $sort: {
-          _id: 1,
-        },
+    },
+    {
+      $sort: {
+        _id: 1,
       },
-    ]),
-
-    Order.aggregate([
-      {
-        $match: {
-          isPaid: true,
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          totalSales: {
-            $sum: '$totalPrice',
-          },
-        },
-      },
-    ]),
+    },
   ]);
 
   const periods = generateSalesPeriods(startDate, endDate, groupBy);
@@ -296,7 +278,6 @@ const getDashboardSales = asyncHandler(async (req, res) => {
     endDate,
     groupBy,
     totalSales,
-    allTimeSales: allTimeSalesResult[0]?.totalSales || 0,
     sales: periods,
   });
 });
