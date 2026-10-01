@@ -942,9 +942,9 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  padding: 10px 0 15px 0;
   gap: 0.4rem;
   margin: 0.75rem 0 0;
-  padding: 0.35rem 0;
   border: none;
   background: transparent;
   color: #2c2222;
@@ -1153,7 +1153,35 @@
      ----------------------------------------------- */
 
   .product-detail-section {
-    padding: 22px 0;
+    padding: 0;
+  }
+
+    .collapsible-section-title {
+    min-height: 52px;
+    padding: 14px 0;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+  }
+
+  .collapsible-section-title svg {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+
+  .collapsible-section .product-description {
+    padding-bottom: 16px;
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .collapsible-section .product-meta {
+    padding-bottom: 16px;
+  }
+
+  .product-meta-row {
+    padding: 8px 0;
+    font-size: 0.8rem;
   }
 
   .variant-selector {
@@ -1176,16 +1204,6 @@
   .variant-option-color {
     font-size: 0.68rem;
   }
-
-  .product-description {
-    font-size: 0.9rem;
-    line-height: 1.7;
-  }
-
-  .product-meta-row {
-    font-size: 0.82rem;
-  }
-
 
   /* -----------------------------------------------
      Purchase
