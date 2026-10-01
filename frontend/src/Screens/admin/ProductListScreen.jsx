@@ -23,6 +23,7 @@ import Paginate from '../../Components/Paginate';
 import { getCloudinaryImage } from '../../utils/cloudinary';
 import AdminTableToolbar from '../../Components/AdminTableToolbar';
 import AdminFilterPanel from '../../Components/AdminFilterPanel';
+import ConfirmationModal from '../../Components/ConfirmationModal';
 
 import '../../assets/styles/components/ProductListScreen.css';
 
@@ -88,6 +89,9 @@ const ProductListScreen = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [editingCategory, setEditingCategory] = useState(null);
+
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const productSortOptions = [
     { value: 'latest', label: 'Latest' },
@@ -179,12 +183,6 @@ const ProductListScreen = () => {
   };
 
   const deleteCategoryHandler = async (category) => {
-    if (
-      !window.confirm(`Are you sure you want to delete "${category.name}"?`)
-    ) {
-      return;
-    }
-
     try {
       await deleteCategory(category._id).unwrap();
 
@@ -227,19 +225,17 @@ const ProductListScreen = () => {
   };
 
   const deleteHandler = async (slug) => {
-    if (window.confirm('Are you sure?')) {
-      try {
-        await deleteProduct(slug).unwrap();
-        toast.success('Product Deleted');
-        refetch();
-      } catch (error) {
-        toast.error(
-          error?.data?.error ||
-            error?.data?.message ||
-            error?.error ||
-            'Unable to delete product',
-        );
-      }
+    try {
+      await deleteProduct(slug).unwrap();
+      toast.success('Product Deleted');
+      refetch();
+    } catch (error) {
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to delete product',
+      );
     }
   };
 
@@ -639,7 +635,14 @@ const ProductListScreen = () => {
                           <Button
                             variant='light'
                             className='admin-products-delete-btn'
-                            onClick={() => deleteHandler(product.slug)}
+                            onClick={() => {
+                              setDeleteTarget({
+                                type: 'product',
+                                id: product.slug,
+                                name: product.name,
+                              });
+                              setShowDeleteConfirmation(true);
+                            }}
                             aria-label={`Delete ${product.name}`}
                             title='Delete product'
                           >
@@ -746,7 +749,14 @@ const ProductListScreen = () => {
                     <Button
                       variant='light'
                       className='admin-product-card-delete-btn'
-                      onClick={() => deleteHandler(product.slug)}
+                      onClick={() => {
+                        setDeleteTarget({
+                          type: 'product',
+                          id: product.slug,
+                          name: product.name,
+                        });
+                        setShowDeleteConfirmation(true);
+                      }}
                     >
                       <FaTrash />
                       <span>Delete</span>
@@ -835,7 +845,14 @@ const ProductListScreen = () => {
 
                     <Button
                       className='admin-category-delete-btn'
-                      onClick={() => deleteCategoryHandler(category)}
+                      onClick={() => {
+                        setDeleteTarget({
+                          type: 'category',
+                          id: category._id,
+                          name: category.name,
+                        });
+                        setShowDeleteConfirmation(true);
+                      }}
                       disabled={
                         loadingCreateCategory ||
                         loadingUpdateCategory ||
@@ -862,6 +879,36 @@ const ProductListScreen = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <ConfirmationModal
+        show={showDeleteConfirmation}
+        title={`Delete ${deleteTarget?.type === 'category' ? 'Category' : 'Product'}?`}
+        message={`Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
+        confirmText='Delete'
+        cancelText='Cancel'
+        onCancel={() => {
+          setShowDeleteConfirmation(false);
+          setDeleteTarget(null);
+        }}
+        onConfirm={async () => {
+          if (!deleteTarget) return;
+
+          if (deleteTarget.type === 'category') {
+            await deleteCategoryHandler(deleteTarget.id);
+          } else {
+            await deleteHandler(deleteTarget.id);
+          }
+
+          setShowDeleteConfirmation(false);
+          setDeleteTarget(null);
+        }}
+        isLoading={
+          deleteTarget?.type === 'category'
+            ? loadingDeleteCategory
+            : loadingDelete
+        }
+        loadingText='Deleting...'
+      />
     </div>
   );
 };

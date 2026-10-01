@@ -8,6 +8,7 @@ import Message from '../Components/Message';
 import { BsX, BsHeart } from 'react-icons/bs';
 import { IoShareOutline, IoCloseSharp } from 'react-icons/io5';
 import { toast } from 'sonner';
+import ConfirmationModal from '../Components/ConfirmationModal.jsx';
 
 import {
   getGuestWishlist,
@@ -402,58 +403,20 @@ const WishlistScreen = () => {
         </>
       )}
 
-      {showClearConfirmation && (
-        <div
-          className='wishlist-confirmation-backdrop'
-          onClick={() => {
-            if (!isClearing) {
-              setShowClearConfirmation(false);
-            }
-          }}
-        >
-          <div
-            className='wishlist-confirmation-modal'
-            role='dialog'
-            aria-modal='true'
-            aria-labelledby='clear-wishlist-title'
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className='wishlist-confirmation-icon'>
-              <IoCloseSharp />
-            </div>
-
-            <h2 id='clear-wishlist-title'>Clear Wishlist?</h2>
-
-            <p>
-              Are you sure you want to remove all items from your wishlist? This
-              action cannot be undone.
-            </p>
-
-            <div className='wishlist-confirmation-actions'>
-              <button
-                type='button'
-                className='wishlist-confirmation-cancel'
-                onClick={() => setShowClearConfirmation(false)}
-                disabled={isClearing}
-              >
-                Cancel
-              </button>
-
-              <button
-                type='button'
-                className='wishlist-confirmation-clear'
-                onClick={async () => {
-                  await clearWishlistHandler();
-                  setShowClearConfirmation(false);
-                }}
-                disabled={isClearing}
-              >
-                {isClearing ? 'Clearing...' : 'Clear Wishlist'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmationModal
+        show={showClearConfirmation}
+        title='Clear Wishlist?'
+        message='Are you sure you want to remove all items from your wishlist? This action cannot be undone.'
+        confirmText='Clear Wishlist'
+        cancelText='Cancel'
+        onCancel={() => setShowClearConfirmation(false)}
+        onConfirm={async () => {
+          await clearWishlistHandler();
+          setShowClearConfirmation(false);
+        }}
+        isLoading={isClearing}
+        loadingText='Clearing...'
+      />
     </>
   );
 };

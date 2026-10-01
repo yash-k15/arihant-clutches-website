@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import Message from '../Components/Message.jsx';
 import Loader from '../Components/Loader.jsx';
 import Paginate from '../Components/Paginate.jsx';
+import ConfirmationModal from '../Components/ConfirmationModal';
 
 import {
   useProfileMutation,
@@ -39,6 +40,10 @@ const ProfileScreen = () => {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
   const [openAddressMenu, setOpenAddressMenu] = useState(null);
+
+  const [showDeleteAddressConfirmation, setShowDeleteAddressConfirmation] =
+    useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
 
   const [pageNumber, setPageNumber] = useState(1);
   const ordersSectionRef = useRef(null);
@@ -199,12 +204,6 @@ const ProfileScreen = () => {
   };
 
   const handleDeleteAddress = async (addressId) => {
-    setOpenAddressMenu(null);
-
-    if (!window.confirm('Are you sure you want to delete this address?')) {
-      return;
-    }
-
     try {
       await deleteUserAddress(addressId).unwrap();
 
@@ -455,7 +454,11 @@ const ProfileScreen = () => {
                   key={address._id}
                   address={address}
                   onEdit={handleEditAddress}
-                  onDelete={handleDeleteAddress}
+                  onDelete={(addressId) => {
+                    setAddressToDelete(addressId);
+                    setShowDeleteAddressConfirmation(true);
+                    setOpenAddressMenu(null);
+                  }}
                   showMenu={openAddressMenu === address._id}
                   onToggleMenu={handleToggleAddressMenu}
                   isDeleting={deletingAddress}
@@ -625,6 +628,24 @@ const ProfileScreen = () => {
           </>
         )}
       </section>
+      <ConfirmationModal
+        show={showDeleteAddressConfirmation}
+        title='Delete Address?'
+        message='Are you sure you want to delete this address? This action cannot be undone.'
+        confirmText='Delete'
+        cancelText='Cancel'
+        onCancel={() => {
+          setShowDeleteAddressConfirmation(false);
+          setAddressToDelete(null);
+        }}
+        onConfirm={async () => {
+          await handleDeleteAddress(addressToDelete);
+          setShowDeleteAddressConfirmation(false);
+          setAddressToDelete(null);
+        }}
+        isLoading={deletingAddress}
+        loadingText='Deleting...'
+      />
     </div>
   );
 };

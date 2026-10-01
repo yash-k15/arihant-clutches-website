@@ -13,6 +13,7 @@ import {
 import AdminTableToolbar from '../../Components/AdminTableToolbar';
 import AdminFilterPanel from '../../Components/AdminFilterPanel';
 import Paginate from '../../Components/Paginate';
+import ConfirmationModal from '../../Components/ConfirmationModal';
 
 import '../../assets/styles/components/UserListScreen.css';
 
@@ -87,6 +88,9 @@ const UserListScreen = () => {
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
   const openRoleModal = (user) => {
     setSelectedUser(user);
     setShowRoleModal(true);
@@ -128,18 +132,16 @@ const UserListScreen = () => {
   };
 
   const deleteHandler = async (id) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      try {
-        await deleteUser(id).unwrap();
-        toast.success('User deleted');
-      } catch (error) {
-        toast.error(
-          error?.data?.error ||
-            error?.data?.message ||
-            error?.error ||
-            'Unable to delete user',
-        );
-      }
+    try {
+      await deleteUser(id).unwrap();
+      toast.success('User deleted');
+    } catch (error) {
+      toast.error(
+        error?.data?.error ||
+          error?.data?.message ||
+          error?.error ||
+          'Unable to delete user',
+      );
     }
   };
 
@@ -232,7 +234,13 @@ const UserListScreen = () => {
         className={
           mobile ? 'admin-users-mobile-delete-btn' : 'admin-users-delete-btn'
         }
-        onClick={() => deleteHandler(user._id)}
+        onClick={() => {
+          setUserToDelete({
+            id: user._id,
+            name: user.name,
+          });
+          setShowDeleteConfirmation(true);
+        }}
         disabled={loadingDelete}
         title='Delete user'
       >
@@ -539,6 +547,28 @@ const UserListScreen = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <ConfirmationModal
+        show={showDeleteConfirmation}
+        title='Delete User?'
+        message={`Are you sure you want to delete "${userToDelete?.name}"? This action cannot be undone.`}
+        confirmText='Delete'
+        cancelText='Cancel'
+        onCancel={() => {
+          setShowDeleteConfirmation(false);
+          setUserToDelete(null);
+        }}
+        onConfirm={async () => {
+          if (!userToDelete) return;
+
+          await deleteHandler(userToDelete.id);
+
+          setShowDeleteConfirmation(false);
+          setUserToDelete(null);
+        }}
+        isLoading={loadingDelete}
+        loadingText='Deleting...'
+      />
     </div>
   );
 };
