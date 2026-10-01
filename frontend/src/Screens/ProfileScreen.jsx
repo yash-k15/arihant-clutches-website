@@ -394,7 +394,7 @@ const ProfileScreen = () => {
 
         {loadingAddresses ? (
           <div className='profile-addresses-loader'>
-            <Loader />
+            <Loader size='small' />
           </div>
         ) : isAddingAddress ? (
           <div className='profile-address-form-card'>
@@ -511,7 +511,7 @@ const ProfileScreen = () => {
 
         {isLoading ? (
           <div className='profile-orders-loader'>
-            <Loader />
+            <Loader size='small' />
           </div>
         ) : error ? (
           <Message variant='danger'>

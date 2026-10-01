@@ -1,17 +1,15 @@
-import { Spinner } from 'react-bootstrap';
+import '../assets/styles/components/Loader.css';
 
-const Loader = () => {
+const Loader = ({ size = 'default' }) => {
   return (
-    <Spinner
-      animation='border'
+    <div
+      className={`loader-container loader-${size}`}
       role='status'
-      style={{
-        width: '100px',
-        height: '100px',
-        margin: 'auto',
-        display: 'block',
-      }}
-    ></Spinner>
+      aria-live='polite'
+    >
+      <span className='loader-spinner' aria-hidden='true'></span>
+      <span className='visually-hidden'>Loading...</span>
+    </div>
   );
 };
 
