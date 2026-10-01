@@ -75,6 +75,8 @@ const ProductScreen = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [isModalVideoPlaying, setIsModalVideoPlaying] = useState(false);
 
+  const [isVariantLoading, setIsVariantLoading] = useState(false);
+
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
@@ -226,6 +228,11 @@ const ProductScreen = () => {
    */
 
   const handleVariantChange = (variant) => {
+    if (variant._id === selectedVariant?._id) {
+      return;
+    }
+
+    setIsVariantLoading(true);
     setSelectedVariant(variant);
     setIsVideoSelected(false);
     setIsMainVideoPlaying(false);
@@ -596,15 +603,27 @@ const ProductScreen = () => {
                   </div>
                 ) : (
                   selectedImage && (
-                    <Image
-                      src={getCloudinaryImage(
-                        selectedImage,
-                        'w_1200,f_auto,q_auto',
+                    <>
+                      {isVariantLoading && (
+                        <div className='product-variant-loader'>
+                          <Loader size='small' />
+                        </div>
                       )}
-                      alt={product.name}
-                      className='product-main-image'
-                      onClick={openImageModal}
-                    />
+
+                      <Image
+                        src={getCloudinaryImage(
+                          selectedImage,
+                          'w_1200,f_auto,q_auto',
+                        )}
+                        alt={product.name}
+                        className={`product-main-image ${
+                          isVariantLoading ? 'product-main-image-loading' : ''
+                        }`}
+                        onLoad={() => setIsVariantLoading(false)}
+                        onError={() => setIsVariantLoading(false)}
+                        onClick={openImageModal}
+                      />
+                    </>
                   )
                 )}
               </div>
