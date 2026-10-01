@@ -78,7 +78,7 @@ const ProductsScreen = () => {
   const isBestSellers = location.pathname.startsWith('/products/best-sellers');
   const isFeatured = location.pathname.startsWith('/products/featured');
 
-  const { data, isLoading, isFetching, error } = useGetProductsQuery({
+  const { data, isLoading, isFetching } = useGetProductsQuery({
     keyword,
     pageNumber,
     category,
@@ -263,6 +263,8 @@ const ProductsScreen = () => {
 
       {isLoading || isFetching ? (
         <Loader />
+      ) : !data ? (
+        <Message variant='danger'>Unable to load products.</Message>
       ) : data.products.length === 0 ? (
         <NoProductsFound />
       ) : (
@@ -275,22 +277,24 @@ const ProductsScreen = () => {
         </Row>
       )}
 
-      <Paginate
-        pages={data.pages}
-        page={data.page}
-        collection={
-          isNewArrivals
-            ? 'new-arrivals'
-            : isBestSellers
-              ? 'best-sellers'
-              : isFeatured
-                ? 'featured'
-                : ''
-        }
-        category={category}
-        keyword={keyword}
-        sort={sort}
-      />
+      {!isLoading && !isFetching && data && (
+        <Paginate
+          pages={data.pages}
+          page={data.page}
+          collection={
+            isNewArrivals
+              ? 'new-arrivals'
+              : isBestSellers
+                ? 'best-sellers'
+                : isFeatured
+                  ? 'featured'
+                  : ''
+          }
+          category={category}
+          keyword={keyword}
+          sort={sort}
+        />
+      )}
     </>
   );
 };
