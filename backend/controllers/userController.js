@@ -739,9 +739,17 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 
   await user.save();
 
+  // Log the user in after a successful password reset
+  generateToken(res, user);
+
   res.status(200).json({
     success: true,
-    message: 'Password reset successfull',
+    message: 'Password reset successful',
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    isAdmin: user.isAdmin,
   });
 });
 

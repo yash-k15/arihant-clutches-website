@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import { toast } from 'sonner';
 
 import Loader from '../Components/Loader.jsx';
 import { useResetPasswordMutation } from '../slices/usersApiSlice.js';
+import { setCredentials } from '../slices/authSlice.js';
 
 import '../assets/styles/components/ResetPasswordScreen.css';
 
@@ -31,6 +33,7 @@ const ResetPasswordScreen = () => {
 
   const { token } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
@@ -50,10 +53,12 @@ const ResetPasswordScreen = () => {
     }
 
     try {
-      await resetPassword({
+      const res = await resetPassword({
         token,
         password,
       }).unwrap();
+
+      dispatch(setCredentials(res));
 
       toast.success('Password reset successful.');
 
