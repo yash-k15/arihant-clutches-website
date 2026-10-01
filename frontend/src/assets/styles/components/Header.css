@@ -27,6 +27,8 @@
 /* ---------- Top Header ---------- */
 
 .header-top {
+  position: relative;
+  z-index: 1003;
   border-bottom: 1px solid #f3f3f3;
 }
 
@@ -208,7 +210,14 @@
 
 /* ---------- Main Navigation ---------- */
 
+.header {
+  position: relative;
+  z-index: 1000;
+}
+
 .header-navigation {
+  position: relative;
+  z-index: 1001;
   border-bottom: 1px solid #f3f3f3;
 }
 
@@ -302,6 +311,7 @@
 
 .header-category-menu {
   position: absolute;
+  z-index: 1002;
 
   top: calc(100% + 1px);
   left: 50%;
