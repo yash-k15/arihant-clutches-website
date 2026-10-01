@@ -414,3 +414,44 @@
     font-size: 0.65rem;
   }
 }
+
+/* =========================================
+   Single Column Mobile
+   ========================================= */
+
+@media (max-width: 767.98px) {
+  .products-single-column .product-card-body {
+    padding: 14px 4px 5px;
+  }
+
+  .products-single-column .product-variants {
+    gap: 7px;
+    margin-bottom: 13px;
+  }
+
+  .products-single-column .product-variant {
+    width: 46px;
+    height: 57px;
+  }
+
+  .products-single-column .product-title {
+    font-size: 0.84rem;
+    letter-spacing: 1px;
+  }
+
+  .products-single-column .product-card .product-price {
+    font-size: 0.88rem;
+  }
+
+  .products-single-column .product-rating .rating svg {
+    font-size: 0.76rem;
+  }
+
+  .products-single-column .product-reviews {
+    font-size: 0.68rem;
+  }
+
+  .products-single-column .product-image-wrapper {
+    aspect-ratio: 5 / 5;
+  } 
+}

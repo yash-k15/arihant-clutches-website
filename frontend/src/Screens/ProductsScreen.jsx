@@ -270,7 +270,13 @@ const ProductsScreen = () => {
       ) : (
         <Row className='g-4'>
           {data.products.map((product) => (
-            <Col key={product._id} xs={col.xs} md={col.md} lg={col.lg}>
+            <Col
+              key={product._id}
+              xs={col.xs}
+              md={col.md}
+              lg={col.lg}
+              className={view === 'small' ? 'products-single-column' : ''}
+            >
               <Product product={product} />
             </Col>
           ))}
