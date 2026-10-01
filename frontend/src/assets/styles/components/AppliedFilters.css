@@ -57,19 +57,35 @@
   color: #b08d57;
 }
 
+.applied-filter-row {
+  display: contents;
+}
+
 @media (max-width: 767.98px) {
   .applied-filters {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
     padding: 12px 0;
   }
 
   .applied-filters-list {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .applied-filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .applied-filter {
+    max-width: 100%;
   }
 
   .applied-filters-clear {
-    align-self: flex-end;
+    flex-shrink: 0;
   }
 }
