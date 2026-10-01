@@ -820,10 +820,10 @@ const sendOTP = asyncHandler(async (req, res, next) => {
           otpHash,
           expiresAt,
           lastSentAt: now,
+          attempts: 0,
         },
         $setOnInsert: {
           email,
-          attempts: 0,
         },
       },
       {

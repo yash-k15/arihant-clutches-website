@@ -10,13 +10,23 @@ const authLimiter = rateLimit({
   },
 });
 
-const otpLimiter = rateLimit({
+const otpSendLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  limit: 5,
+  limit: 3,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   message: {
     message: 'Too many OTP requests. Please try again later.',
+  },
+});
+
+const otpVerifyLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: {
+    message: 'Too many OTP verification attempts. Please try again later.',
   },
 });
 
@@ -103,7 +113,8 @@ const paymentVerificationOrderLimiter = rateLimit({
 
 export {
   authLimiter,
-  otpLimiter,
+  otpSendLimiter,
+  otpVerifyLimiter,
   passwordResetLimiter,
   contactLimiter,
   guestWishlistLimiter,

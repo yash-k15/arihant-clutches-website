@@ -22,7 +22,8 @@ import {
 import { protect, admin } from '../middleware/authMiddleware.js';
 import {
   authLimiter,
-  otpLimiter,
+  otpSendLimiter,
+  otpVerifyLimiter,
   passwordResetLimiter,
 } from '../middleware/rateLimitMiddleware.js';
 
@@ -51,8 +52,8 @@ router
 
 router.put('/addresses/:addressId/default', protect, setDefaultUserAddress);
 
-router.post('/send-otp', otpLimiter, sendOTP);
-router.post('/verify-otp', otpLimiter, verifyOTP);
+router.post('/send-otp', otpSendLimiter, sendOTP);
+router.post('/verify-otp', otpVerifyLimiter, verifyOTP);
 
 router
   .route('/:id')
