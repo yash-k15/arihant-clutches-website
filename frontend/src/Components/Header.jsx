@@ -21,8 +21,7 @@ import { clearCart } from '../slices/cartSlice.js';
 import { apiSlice } from '../slices/apiSlice.js';
 import { clearGuestWishlist } from '../utils/wishlistUtils.js';
 
-const LOGO_URL =
-  'https://res.cloudinary.com/doykjfgps/image/upload/v1790252476/Arihant_Clutches_Logo.png';
+import { LOGO_URL } from '../constants.js';
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);

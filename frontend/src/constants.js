@@ -9,3 +9,5 @@ export const WISHLIST_URL = '/api/wishlist';
 export const GUEST_WISHLIST_URL = '/api/wishlist/guest';
 export const GUEST_WISHLIST_SHARE_URL = '/api/wishlist/guest/share';
 export const USER_ADDRESSES_URL = '/api/users/addresses';
+export const LOGO_URL =
+  'https://res.cloudinary.com/arihantclutches/image/upload/v1791025149/Arihant_Clutches_Logo.png';
