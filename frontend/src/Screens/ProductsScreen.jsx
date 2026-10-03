@@ -20,6 +20,8 @@ import ProductFilters from '../Components/ProductFilters';
 import AppliedFilters from '../Components/AppliedFilters';
 import NoProductsFound from '../Components/NoProductsFound';
 
+import Meta from '../Components/Meta.jsx';
+
 import '../assets/styles/components/ProductsScreen.css';
 
 const ProductsScreen = () => {
@@ -78,6 +80,67 @@ const ProductsScreen = () => {
   const isBestSellers = location.pathname.startsWith('/products/best-sellers');
   const isFeatured = location.pathname.startsWith('/products/featured');
 
+  const getSeoData = () => {
+    if (isNewArrivals) {
+      return {
+        title: 'New Arrivals | Arihant Clutches',
+        description:
+          'Explore the latest clutch and handbag arrivals from Arihant Clutches.',
+        canonical: 'https://arihantclutches.com/products/new-arrivals',
+      };
+    }
+
+    if (isBestSellers) {
+      return {
+        title: 'Best Selling Clutches | Arihant Clutches',
+        description:
+          'Shop the best selling clutches and handbags from Arihant Clutches.',
+        canonical: 'https://arihantclutches.com/products/best-sellers',
+      };
+    }
+
+    if (isFeatured) {
+      return {
+        title: 'Featured Clutches | Arihant Clutches',
+        description:
+          'Explore featured clutches and handbags from Arihant Clutches.',
+        canonical: 'https://arihantclutches.com/products/featured',
+      };
+    }
+
+    if (category) {
+      const categoryName = category
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+
+      return {
+        title: `${categoryName} | Arihant Clutches`,
+        description: `Shop ${categoryName.toLowerCase()} from Arihant Clutches.`,
+        canonical: `https://arihantclutches.com/products/category/${category}`,
+      };
+    }
+
+    return {
+      title: 'Shop Clutches & Handbags | Arihant Clutches',
+      description:
+        'Shop elegant clutches and handbags from Arihant Clutches. Discover stylish designs for every occasion.',
+      canonical: 'https://arihantclutches.com/products',
+    };
+  };
+
+  const seo = getSeoData();
+
+  const seoCanonical = pageNumber
+    ? `${seo.canonical}/page/${pageNumber}`
+    : seo.canonical;
+
+  const hasFilters =
+    availability !== null ||
+    hasPriceFilter ||
+    productTypes.length > 0 ||
+    sort !== 'latest' ||
+    keyword;
+
   const { data, isLoading, isFetching } = useGetProductsQuery({
     keyword,
     pageNumber,
@@ -128,6 +191,12 @@ const ProductsScreen = () => {
 
   return (
     <>
+      <Meta
+        title={seo.title}
+        description={seo.description}
+        canonical={seoCanonical}
+        noindex={Boolean(hasFilters)}
+      />
       <div className='products-toolbar'>
         <div className='products-view-toggle'>
           <button

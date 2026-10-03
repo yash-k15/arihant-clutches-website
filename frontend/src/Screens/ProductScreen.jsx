@@ -509,7 +509,88 @@ const ProductScreen = () => {
         </Message>
       ) : (
         <>
-          <Meta title={product.name} />
+          <Meta
+            title={`${product.name} | Arihant Clutches`}
+            description={product.description}
+            keywords={`${product.name}, ${product.category}, clutches, handbags, Arihant Clutches`}
+            canonical={`https://arihantclutches.com/products/${product.slug}`}
+            image={product.image}
+          />
+
+          <script type='application/ld+json'>
+            {JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Product',
+              name: product.name,
+              image: [
+                product.image,
+                ...(product.images || []),
+                ...(product.variants || []).flatMap(
+                  (variant) => variant.images || [],
+                ),
+              ].filter(Boolean),
+              description: product.description,
+              brand: {
+                '@type': 'Brand',
+                name: product.brand || 'Arihant Clutches',
+              },
+              category: product.category,
+              aggregateRating:
+                product.numReviews > 0
+                  ? {
+                      '@type': 'AggregateRating',
+                      ratingValue: product.rating,
+                      reviewCount: product.numReviews,
+                      bestRating: 5,
+                      worstRating: 1,
+                    }
+                  : undefined,
+              offers: {
+                '@type': 'AggregateOffer',
+                priceCurrency: 'INR',
+                lowPrice: Math.min(
+                  ...(product.variants || []).map((variant) => variant.price),
+                ),
+                highPrice: Math.max(
+                  ...(product.variants || []).map((variant) => variant.price),
+                ),
+                offerCount: product.variants?.length || 0,
+                availability: product.variants?.some(
+                  (variant) => variant.countInStock > 0,
+                )
+                  ? 'https://schema.org/InStock'
+                  : 'https://schema.org/OutOfStock',
+                url: `https://arihantclutches.com/products/${product.slug}`,
+              },
+            })}
+          </script>
+
+          <script type='application/ld+json'>
+            {JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                {
+                  '@type': 'ListItem',
+                  position: 1,
+                  name: 'Home',
+                  item: 'https://arihantclutches.com/',
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 2,
+                  name: 'Products',
+                  item: 'https://arihantclutches.com/products',
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 3,
+                  name: product.name,
+                  item: `https://arihantclutches.com/products/${product.slug}`,
+                },
+              ],
+            })}
+          </script>
 
           {/* ========================================== */}
           {/* PRODUCT AREA                               */}
