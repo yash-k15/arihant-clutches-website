@@ -24,7 +24,7 @@ const ALLOWED_IMAGE_TYPES = new Set([
   'image/heic',
 ]);
 
-const ALLOWED_VIDEO_TYPES = new Set(['video/mp4']);
+const ALLOWED_VIDEO_TYPES = new Set(['video/mp4', 'video/quicktime']);
 
 const validateFileContent = async (file, allowedTypes) => {
   const detectedType = await fileTypeFromBuffer(file.buffer);
@@ -53,8 +53,8 @@ function imageFileFilter(req, file, cb) {
 }
 
 function videoFileFilter(req, file, cb) {
-  const filetypes = /mp4/;
-  const mimetypes = /video\/mp4/;
+  const filetypes = /mp4|mov/;
+  const mimetypes = /video\/mp4|video\/quicktime/;
 
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 
@@ -63,7 +63,7 @@ function videoFileFilter(req, file, cb) {
   if (extname && mimetype) {
     cb(null, true);
   } else {
-    cb(new Error('MP4 videos only!'), false);
+    cb(new Error('MP4 or MOV videos only!'), false);
   }
 }
 
@@ -213,7 +213,7 @@ router.post('/video', protect, admin, (req, res) => {
 
     if (!req.file) {
       return res.status(400).send({
-        message: 'Please select an MP4 video',
+        message: 'Please select an MP4 or MOV video',
       });
     }
 
@@ -233,7 +233,7 @@ router.post('/video', protect, admin, (req, res) => {
 
       if (!isValid) {
         return res.status(400).send({
-          message: 'Invalid MP4 video content.',
+          message: 'Invalid MP4 or MOV video content.',
         });
       }
 
