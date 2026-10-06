@@ -16,7 +16,13 @@ const router = express.Router();
 
 const storage = multer.memoryStorage();
 
-const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const ALLOWED_IMAGE_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/heif',
+  'image/heic',
+]);
 
 const ALLOWED_VIDEO_TYPES = new Set(['video/mp4']);
 
@@ -31,8 +37,9 @@ const validateFileContent = async (file, allowedTypes) => {
 };
 
 function imageFileFilter(req, file, cb) {
-  const filetypes = /jpe?g|png|webp/;
-  const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
+  const filetypes = /jpe?g|png|webp|heif|heic/;
+  const mimetypes =
+    /image\/jpe?g|image\/png|image\/webp|image\/heif|image\/heic/;
 
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 
@@ -64,7 +71,7 @@ const imageUpload = multer({
   storage,
   fileFilter: imageFileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5 MB
+    fileSize: 15 * 1024 * 1024, // 15 MB
   },
 });
 
@@ -72,7 +79,7 @@ const videoUpload = multer({
   storage,
   fileFilter: videoFileFilter,
   limits: {
-    fileSize: 50 * 1024 * 1024, // 50 MB
+    fileSize: 100 * 1024 * 1024, // 100 MB
   },
 });
 
