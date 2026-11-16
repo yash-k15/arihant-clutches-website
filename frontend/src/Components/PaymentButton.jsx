@@ -13,14 +13,54 @@ import { useCheckout } from './Checkout/CheckoutContext.jsx';
 
 import '../assets/styles/components/PaymentButton.css';
 
+const getPersistentIdempotencyKey = (paymentMethod, checkoutFingerprint) => {
+  const storageKey = `arihant_checkout_idempotency_${paymentMethod}`;
+
+  try {
+    const storedValue = sessionStorage.getItem(storageKey);
+
+    if (storedValue) {
+      const parsedValue = JSON.parse(storedValue);
+
+      if (
+        parsedValue.fingerprint === checkoutFingerprint &&
+        typeof parsedValue.key === 'string' &&
+        parsedValue.key
+      ) {
+        return parsedValue.key;
+      }
+    }
+
+    const key = crypto.randomUUID();
+
+    sessionStorage.setItem(
+      storageKey,
+      JSON.stringify({ fingerprint: checkoutFingerprint, key }),
+    );
+
+    return key;
+  } catch {
+    // Continue checkout if browser storage is unavailable.
+    return crypto.randomUUID();
+  }
+};
+
+const clearPersistentIdempotencyKey = (paymentMethod) => {
+  try {
+    sessionStorage.removeItem(
+      `arihant_checkout_idempotency_${paymentMethod}`,
+    );
+  } catch {
+    // Checkout completion should not depend on browser storage.
+  }
+};
+
 const PaymentButton = ({ disabled }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [paymentInProgress, setPaymentInProgress] = useState(false);
 
-  const codIdempotencyKeyRef = useRef(crypto.randomUUID());
-  const onlineIdempotencyKeyRef = useRef(crypto.randomUUID());
   const paymentInProgressRef = useRef(false);
   const paymentVerificationInProgressRef = useRef(false);
   const paymentOutcomeRef = useRef(null);
@@ -29,6 +69,16 @@ const PaymentButton = ({ disabled }) => {
   const userInfo = useSelector((state) => state.auth);
 
   const { closeCheckout } = useCheckout();
+
+  const checkoutFingerprint = JSON.stringify({
+    userId: userInfo?._id || userInfo?.id || null,
+    cartItems: cart.cartItems.map((item) => ({
+      product: item._id,
+      variantId: item.variantId,
+      qty: item.qty,
+    })),
+    shippingAddress: cart.shippingAddress,
+  });
 
   const [checkStock] = useCheckStockMutation();
   const [createRazorpayOrder, { isLoading }] = useCreateRazorpayOrderMutation();
@@ -65,7 +115,10 @@ const PaymentButton = ({ disabled }) => {
       // ---------- COD ----------
       if (cart.paymentMethod === 'COD') {
         const orderPromise = verifyPayment({
-          idempotencyKey: codIdempotencyKeyRef.current,
+          idempotencyKey: getPersistentIdempotencyKey(
+            'COD',
+            checkoutFingerprint,
+          ),
           orderData: {
             orderItems: cart.cartItems.map((item) => ({
               product: item._id,
@@ -102,6 +155,7 @@ const PaymentButton = ({ disabled }) => {
         try {
           const res = await orderPromise;
 
+          clearPersistentIdempotencyKey('COD');
           dispatch(clearCart());
           closeCheckout();
           navigate(`/order/${res.order._id}`, {
@@ -133,7 +187,10 @@ const PaymentButton = ({ disabled }) => {
         })),
         paymentMethod: 'ONLINE',
         shippingAddress: cart.shippingAddress,
-        idempotencyKey: onlineIdempotencyKeyRef.current,
+        idempotencyKey: getPersistentIdempotencyKey(
+          'ONLINE',
+          checkoutFingerprint,
+        ),
       }).unwrap();
 
       // RAZORPAY OPTIONS
@@ -170,6 +227,7 @@ const PaymentButton = ({ disabled }) => {
             if (res.success) {
               paymentOutcomeRef.current = 'success';
 
+              clearPersistentIdempotencyKey('ONLINE');
               dispatch(clearCart());
               closeCheckout();
               navigate(`/order/${res.order._id}`, {
