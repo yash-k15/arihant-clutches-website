@@ -360,31 +360,32 @@ const OrderScreen = () => {
                 </ListGroup.Item>
               )}
 
-              {userInfo?.isAdmin && (!order.isPaid || !order.isDelivered) && (
-                <ListGroup.Item className='order-admin-action'>
-                  {!order.isPaid && (
-                    <Button
-                      type='button'
-                      className='admin-create-btn w-100'
-                      onClick={payOrderHandler}
-                      disabled={loadingPay || loadingDeliver}
-                    >
-                      Mark As Paid
-                    </Button>
-                  )}
+              {userInfo?.isAdmin &&
+                ((!order.isPaid && isCashOnDelivery) || !order.isDelivered) && (
+                  <ListGroup.Item className='order-admin-action'>
+                    {!order.isPaid && isCashOnDelivery && (
+                      <Button
+                        type='button'
+                        className='admin-create-btn w-100'
+                        onClick={payOrderHandler}
+                        disabled={loadingPay || loadingDeliver}
+                      >
+                        Mark As Paid
+                      </Button>
+                    )}
 
-                  {!order.isDelivered && (
-                    <Button
-                      type='button'
-                      className='admin-create-btn w-100'
-                      onClick={deliverOrderHandler}
-                      disabled={loadingPay || loadingDeliver}
-                    >
-                      Mark As Delivered
-                    </Button>
-                  )}
-                </ListGroup.Item>
-              )}
+                    {!order.isDelivered && (
+                      <Button
+                        type='button'
+                        className='admin-create-btn w-100'
+                        onClick={deliverOrderHandler}
+                        disabled={loadingPay || loadingDeliver}
+                      >
+                        Mark As Delivered
+                      </Button>
+                    )}
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>

@@ -66,6 +66,23 @@ const updateOrderToPaid = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Order not found', 404));
   }
 
+  const isCashOnDelivery =
+    order.paymentMethod?.toLowerCase().includes('cod') ||
+    order.paymentMethod?.toLowerCase().includes('cash');
+
+  if (!isCashOnDelivery) {
+    return next(
+      new ErrorResponse(
+        'Only Cash on Delivery orders can be manually marked as paid',
+        400,
+      ),
+    );
+  }
+
+  if (order.isPaid) {
+    return next(new ErrorResponse('Order is already marked as paid', 400));
+  }
+
   order.isPaid = true;
   order.paidAt = Date.now();
 
