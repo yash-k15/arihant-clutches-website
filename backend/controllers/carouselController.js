@@ -18,7 +18,24 @@ const getCarousel = asyncHandler(async (req, res, next) => {
     });
   }
 
-  res.status(200).json(carousel);
+  // A product may have been deleted, or a variant may have been removed
+  // while the item was still referenced by the carousel.
+  const validItems = carousel.items.filter((item) => {
+    const product = item.product;
+
+    if (!product || !item.variantId || !Array.isArray(product.variants)) {
+      return false;
+    }
+
+    return product.variants.some(
+      (variant) => variant._id.toString() === item.variantId.toString(),
+    );
+  });
+
+  res.status(200).json({
+    ...carousel.toObject(),
+    items: validItems,
+  });
 });
 
 // @desc    Add product variant to carousel

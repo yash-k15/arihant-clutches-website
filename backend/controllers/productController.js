@@ -1,6 +1,7 @@
 import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import Product, { Category } from '../models/productModel.js';
+import Carousel from '../models/carouselModel.js';
 import slugify from 'slugify';
 import escapeRegex from '../utils/escapeRegex.js';
 
@@ -685,6 +686,25 @@ const updateProduct = asyncHandler(async (req, res, next) => {
 
   const updatedProduct = await product.save();
 
+  // Keep the carousel in sync when variants are removed from a product.
+  if (Array.isArray(variants)) {
+    const remainingVariantIds = updatedProduct.variants.map((variant) =>
+      variant._id.toString(),
+    );
+
+    await Carousel.updateMany(
+      { 'items.product': updatedProduct._id },
+      {
+        $pull: {
+          items: {
+            product: updatedProduct._id,
+            variantId: { $nin: remainingVariantIds },
+          },
+        },
+      },
+    );
+  }
+
   res.status(200).json(updatedProduct);
 });
 
@@ -767,6 +787,16 @@ const deleteProduct = asyncHandler(async (req, res, next) => {
   if (!product) {
     return next(new ErrorResponse('Resource not found', 404));
   }
+
+  // Remove carousel references before deleting the product.
+  await Carousel.updateMany(
+    { 'items.product': product._id },
+    {
+      $pull: {
+        items: { product: product._id },
+      },
+    },
+  );
 
   await Product.deleteOne({ _id: product._id });
   res.status(200).json({ message: 'Product deleted' });
