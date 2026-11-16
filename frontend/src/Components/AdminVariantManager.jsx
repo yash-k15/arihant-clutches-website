@@ -106,6 +106,18 @@ const AdminVariantManager = ({
   const removeVariantHandler = (index) => {
     const variantToRemove = variants[index];
 
+    // Existing variants with stock must be cleared before they can be removed.
+    if (
+      isEditMode &&
+      variantToRemove?._id &&
+      Number(variantToRemove.countInStock) > 0
+    ) {
+      toast.warning(
+        `Cannot remove "${variantToRemove.color}" because it has ${variantToRemove.countInStock} in stock. Set its stock to 0 first.`,
+      );
+      return;
+    }
+
     if (isEditMode && variantToRemove?.images?.length > 0) {
       const existingImagesToRemove = variantToRemove.images.filter(
         (imageUrl) => !uploadedImageUrls.includes(imageUrl),
