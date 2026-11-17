@@ -1,3 +1,5 @@
+import siteConfig from '../../config/siteConfig.js';
+
 const orderConfirmationEmail = (order, paymentId, customerEmail) => {
   const escapeHtml = (value) =>
     String(value ?? '')
@@ -49,8 +51,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
 
   const formatPrice = (price) => `₹${Number(price).toLocaleString('en-IN')}`;
 
-  const logoUrl =
-    'https://res.cloudinary.com/doykjfgps/image/upload/v1790252476/Arihant_Clutches_Logo.png';
+  const logoUrl = siteConfig.emailLogoUrl;
 
   return `
     <!DOCTYPE html>
@@ -61,7 +62,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
           name="viewport"
           content="width=device-width, initial-scale=1.0"
         />
-        <title>Order Confirmation - Arihant Clutches</title>
+        <title>Order Confirmation - ${siteConfig.brandName}</title>
       </head>
 
       <body style="
@@ -128,7 +129,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                         >
                           <img
                             src="${logoUrl}"
-                            alt="Arihant Clutches"
+                            alt="${siteConfig.brandName}"
                             width="220"
                             style="
                               display: block;
@@ -657,14 +658,14 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                     ">
                       Contact us at
                       <a
-                        href="mailto:arihantfashionsindia@gmail.com"
+                        href="mailto:${siteConfig.supportEmail}"
                         style="
                           color: #b08d57;
                           text-decoration: none;
                           font-weight: 600;
                         "
                       >
-                        arihantfashionsindia@gmail.com
+                        ${siteConfig.supportEmail}
                       </a>
                     </p>
                   </td>
@@ -686,14 +687,14 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                       letter-spacing: 0.8px;
                       margin-bottom: 6px;
                     ">
-                      ARIHANT CLUTCHES
+                      ${siteConfig.brandName.toUpperCase()}
                     </div>
 
                     <div style="
                       color: #cfc4b8;
                       font-size: 11px;
                     ">
-                      Thank you for choosing Arihant Clutches.
+                      Thank you for choosing ${siteConfig.brandName}.
                     </div>
                   </td>
                 </tr>

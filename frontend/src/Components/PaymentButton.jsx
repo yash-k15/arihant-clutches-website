@@ -1,3 +1,4 @@
+import siteConfig from '../config/siteConfig.js';
 import { useRef, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -47,9 +48,7 @@ const getPersistentIdempotencyKey = (paymentMethod, checkoutFingerprint) => {
 
 const clearPersistentIdempotencyKey = (paymentMethod) => {
   try {
-    sessionStorage.removeItem(
-      `arihant_checkout_idempotency_${paymentMethod}`,
-    );
+    sessionStorage.removeItem(`arihant_checkout_idempotency_${paymentMethod}`);
   } catch {
     // Checkout completion should not depend on browser storage.
   }
@@ -199,7 +198,7 @@ const PaymentButton = ({ disabled }) => {
         amount: order.amount,
         currency: order.currency,
         order_id: order.id,
-        name: 'Arihant Clutches',
+        name: siteConfig.brand.name,
         description: `${cart.cartItems.length} items purchase`,
 
         // PAYMENT SUCCESS HANDLER
@@ -289,7 +288,7 @@ const PaymentButton = ({ disabled }) => {
 
         // OPTIONAL THEME
         theme: {
-          color: '#3399cc',
+          color: siteConfig.theme.razorpayColor,
         },
       };
 

@@ -1,3 +1,5 @@
+import siteConfig from '../../config/siteConfig.js';
+
 const resetPasswordEmail = (resetUrl) => {
   return `
     <!DOCTYPE html>
@@ -58,7 +60,7 @@ const resetPasswordEmail = (resetUrl) => {
                         font-weight: 700;
                       "
                     >
-                      Arihant Clutches
+                      ${siteConfig.brandName}
                     </h1>
                   </td>
                 </tr>
@@ -87,7 +89,7 @@ const resetPasswordEmail = (resetUrl) => {
                       "
                     >
                       We received a request to reset the password for your
-                      Arihant Clutches account.
+                      ${siteConfig.brandName} account.
                     </p>
 
                     <p
@@ -224,7 +226,7 @@ const resetPasswordEmail = (resetUrl) => {
                         line-height: 1.5;
                       "
                     >
-                      © 2026 Arihant Clutches. All rights reserved.
+                      © 2026 ${siteConfig.brandName}. All rights reserved.
                     </p>
                   </td>
                 </tr>

@@ -1,3 +1,4 @@
+import siteConfig from '../config/siteConfig.js';
 import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail.js';
 import sendAuthEmail from '../utils/sendAuthEmail.js';
@@ -683,7 +684,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   try {
     await sendAuthEmail({
       email: user.email,
-      subject: 'Reset your Arihant Clutches password',
+      subject: siteConfig.emailSubjects.passwordReset,
       html: resetPasswordEmail(resetUrl),
     });
 
@@ -847,7 +848,7 @@ const sendOTP = asyncHandler(async (req, res, next) => {
   try {
     await sendAuthEmail({
       email,
-      subject: 'Your Arihant Clutches Login OTP',
+      subject: siteConfig.emailSubjects.loginOtp,
       html: otpEmail(otp, OTP_EXPIRY_MINUTES),
     });
 

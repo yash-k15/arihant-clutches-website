@@ -1,3 +1,4 @@
+import siteConfig from '../config/siteConfig.js';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -21,7 +22,7 @@ const FooterComponent = () => {
           <p className='footer-social-label'>FOLLOW US</p>
 
           <a
-            href='https://www.instagram.com/_clutches_arihant_fashions/'
+            href={siteConfig.social.instagramUrl}
             target='_blank'
             rel='noreferrer'
             className='footer-social-link'
@@ -39,30 +40,27 @@ const FooterComponent = () => {
           <Col lg={4} md={6}>
             <div className='footer-brand'>
               <h5 className='footer-heading footer-brand-heading'>
-                Arihant Clutches
+                {siteConfig.brand.name}
               </h5>
 
               <span className='footer-heading-accent' />
 
-              <p className='footer-text'>
-                Premium purses and clutches crafted for elegance and everyday
-                style.
-              </p>
+              <p className='footer-text'>{siteConfig.brand.tagline}</p>
 
               <div className='footer-developer'>
                 <p className='footer-developer-credit'>
-                  Website is designed and developed by Yash Kothari
+                  {siteConfig.developer.credit}
                 </p>
 
                 <a
-                  href='mailto:kothariyash49@gmail.com'
+                  href={`mailto:${siteConfig.developer.email}`}
                   className='footer-developer-link'
                 >
-                  kothariyash49@gmail.com
+                  {siteConfig.developer.email}
                 </a>
 
-                <a href='tel:+919167015147' className='footer-developer-link'>
-                  +91 9167015147
+                <a href={`tel:${siteConfig.developer.phoneLink}`} className='footer-developer-link'>
+                  {siteConfig.developer.phoneDisplay}
                 </a>
               </div>
             </div>
@@ -166,17 +164,17 @@ const FooterComponent = () => {
             <span className='footer-heading-accent' />
 
             <div className='footer-contact'>
-              <p className='footer-contact-name'>Sneha Kothari</p>
+              <p className='footer-contact-name'>{siteConfig.contact.name}</p>
 
               <a
-                href='mailto:arihantfashionsindia@gmail.com'
+                href={`mailto:${siteConfig.contact.email}`}
                 className='footer-contact-link'
               >
-                arihantfashionsindia@gmail.com
+                {siteConfig.contact.email}
               </a>
 
-              <a href='tel:+919909025236' className='footer-contact-link'>
-                +91 99090 25236
+              <a href={`tel:${siteConfig.contact.phoneLink}`} className='footer-contact-link'>
+                {siteConfig.contact.phoneDisplay}
               </a>
             </div>
           </Col>
@@ -187,7 +185,7 @@ const FooterComponent = () => {
         {/* FOOTER BOTTOM */}
         <div className='footer-bottom'>
           <span>
-            © {new Date().getFullYear()} Arihant Clutches. All rights reserved.
+            © {new Date().getFullYear()} {siteConfig.brand.name}. All rights reserved.
           </span>
         </div>
       </Container>

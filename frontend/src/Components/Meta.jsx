@@ -1,16 +1,17 @@
+import siteConfig from '../config/siteConfig.js';
 import { Helmet } from 'react-helmet-async';
 
 const Meta = ({
-  title = 'Arihant Clutches',
-  description = 'Discover elegant clutches and handbags from Arihant Clutches. Shop the latest collection of handcrafted, stylish and premium clutches.',
-  keywords = 'clutches, purses, handbags, clutch bags, Arihant Clutches',
+  title = siteConfig.brand.name,
+  description = siteConfig.seo.description,
+  keywords = siteConfig.seo.keywords,
   canonical,
   image,
   noindex = false,
 }) => {
-  const siteUrl = 'https://arihantclutches.com';
+  const siteUrl = siteConfig.seo.siteUrl;
   const canonicalUrl = canonical || siteUrl;
-  const imageUrl = image || 'https://arihantclutches.com/social-image.jpg';
+  const imageUrl = image || siteConfig.seo.socialImage;
 
   return (
     <Helmet>
@@ -30,7 +31,7 @@ const Meta = ({
       <meta property='og:url' content={canonicalUrl} />
       <meta property='og:type' content='website' />
       <meta property='og:image' content={imageUrl} />
-      <meta property='og:site_name' content='Arihant Clutches' />
+      <meta property='og:site_name' content={siteConfig.brand.name} />
 
       {/* Twitter / X */}
       <meta name='twitter:card' content='summary_large_image' />

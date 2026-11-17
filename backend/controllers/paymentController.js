@@ -1,3 +1,4 @@
+import siteConfig from '../config/siteConfig.js';
 import crypto from 'crypto';
 import mongoose from 'mongoose';
 import asyncHandler from '../middleware/asyncHandler.js';
@@ -556,7 +557,7 @@ const reconcilePayment = async ({
     try {
       await sendEmail({
         email: customerEmail,
-        subject: 'Order Confirmation from Arihant Clutches',
+        subject: siteConfig.emailSubjects.orderConfirmation,
         html: orderConfirmationEmail(
           finalizedOrder,
           currentPayment.id,
@@ -741,7 +742,7 @@ const verifyPayment = asyncHandler(async (req, res) => {
           try {
             await sendEmail({
               email: req.user.email,
-              subject: 'Order Confirmation from Arihant Clutches',
+              subject: siteConfig.emailSubjects.orderConfirmation,
               html: orderConfirmationEmail(
                 order,
                 'Cash on Delivery',
