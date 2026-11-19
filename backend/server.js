@@ -31,6 +31,10 @@ const allowedOrigins = [
   process.env.CLIENT_URL,
   'https://arihantclutches.com',
   'https://www.arihantclutches.com',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:4000',
+  'http://127.0.0.1:4000',
 ].filter(Boolean);
 
 app.use(
