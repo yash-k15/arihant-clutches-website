@@ -155,7 +155,7 @@
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  z-index: 1000;
+  z-index: 1200;
   min-width: 190px;
   padding: 6px;
   border: 1px solid #e5dfd8;
@@ -499,9 +499,18 @@
   }
 
   .admin-sort-menu {
-    left: 0;
+    position: fixed;
+    top: auto;
+    left: 12px;
     right: auto;
+    z-index: 1200;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
+
   .admin-filter-panel {
     width: 100%;
   }
