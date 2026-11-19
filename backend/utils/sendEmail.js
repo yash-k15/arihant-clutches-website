@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import isValidEmail from './emailValidator.js';
+import siteConfig from '../config/siteConfig.js';
 
 const sendEmail = async (options) => {
   if (!isValidEmail(options?.email)) {
@@ -20,7 +21,10 @@ const sendEmail = async (options) => {
     from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
     to: options.email,
     replyTo: options.replyTo,
-    subject: options.subject,
+    subject: options.subject?.replaceAll(
+      '{brandName}',
+      siteConfig.brandName,
+    ),
     text: options.message,
     html: options.html,
   };

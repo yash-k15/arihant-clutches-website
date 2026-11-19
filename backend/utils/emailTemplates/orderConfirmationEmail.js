@@ -36,12 +36,18 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
     ? new Date(order.createdAt)
     : new Date();
 
-  const orderDate = `${getOrdinal(
-    orderDateValue.getDate(),
-  )} ${orderDateValue.toLocaleDateString('en-IN', {
+  const orderDateParts = new Intl.DateTimeFormat('en-IN', {
+    timeZone: siteConfig.timezone,
+    day: 'numeric',
     month: 'long',
     year: 'numeric',
-  })}`;
+  }).formatToParts(orderDateValue);
+  const orderDateValues = Object.fromEntries(
+    orderDateParts.map(({ type, value }) => [type, value]),
+  );
+  const orderDate = `${getOrdinal(Number(orderDateValues.day))} ${
+    orderDateValues.month
+  } ${orderDateValues.year}`;
 
   const paymentMethod = isCOD ? 'Cash on Delivery' : 'Online Payment';
 
@@ -52,6 +58,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
   const formatPrice = (price) => `₹${Number(price).toLocaleString('en-IN')}`;
 
   const logoUrl = siteConfig.emailLogoUrl;
+  const colors = siteConfig.emailColors;
 
   return `
     <!DOCTYPE html>
@@ -68,9 +75,9 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
       <body style="
         margin: 0;
         padding: 0;
-        background-color: #f7f3ee;
+        background-color: ${colors.background};
         font-family: Arial, Helvetica, sans-serif;
-        color: #2c2222;
+        color: ${colors.primary};
       ">
         <table
           width="100%"
@@ -78,7 +85,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
           cellspacing="0"
           border="0"
           style="
-            background-color: #f7f3ee;
+            background-color: ${colors.background};
             padding: 30px 15px;
           "
         >
@@ -93,10 +100,10 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                 border="0"
                 style="
                   max-width: 680px;
-                  background-color: #ffffff;
+                  background-color: ${colors.white};
                   border-radius: 12px;
                   overflow: hidden;
-                  border: 1px solid #e8ddcd;
+                  border: 1px solid ${colors.border};
                 "
               >
 
@@ -105,7 +112,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                   <td
                     align="center"
                     style="
-                      background-color: #2c2222;
+                      background-color: ${colors.primary};
                       padding: 28px 25px 24px;
                     "
                   >
@@ -115,7 +122,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                       cellspacing="0"
                       border="0"
                       style="
-                        background-color: #fdfaf5;
+                        background-color: ${colors.surface};
                         border-radius: 10px;
                         margin: 0 auto;
                       "
@@ -144,7 +151,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                     </table>
 
                     <div style="
-                      color: #fdfaf5;
+                      color: ${colors.surface};
                       font-size: 13px;
                       margin-top: 16px;
                       letter-spacing: 0.3px;
@@ -161,7 +168,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                   ">
                     <h1 style="
                       margin: 0 0 12px;
-                      color: #2c2222;
+                      color: ${colors.primary};
                       font-size: 26px;
                       line-height: 1.3;
                     ">
@@ -170,7 +177,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
 
                     <p style="
                       margin: 0;
-                      color: #6f6258;
+                      color: ${colors.text};
                       font-size: 15px;
                       line-height: 1.6;
                     ">
@@ -181,7 +188,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
 
                     <p style="
                       margin: 10px 0 0;
-                      color: #8a7b6d;
+                      color: ${colors.muted};
                       font-size: 13px;
                       line-height: 1.6;
                     ">
@@ -201,8 +208,8 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                       cellspacing="0"
                       border="0"
                       style="
-                        background-color: #fdfaf5;
-                        border: 1px solid #e8ddcd;
+                        background-color: ${colors.surface};
+                        border: 1px solid ${colors.border};
                         border-radius: 10px;
                       "
                     >
@@ -214,7 +221,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           vertical-align: top;
                         ">
                           <div style="
-                            color: #9a8979;
+                            color: ${colors.subtle};
                             font-size: 11px;
                             font-weight: 700;
                             letter-spacing: 1px;
@@ -225,7 +232,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           </div>
 
                           <div style="
-                            color: #2c2222;
+                            color: ${colors.primary};
                             font-size: 15px;
                             font-weight: 600;
                             word-break: break-all;
@@ -240,7 +247,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           vertical-align: top;
                         ">
                           <div style="
-                            color: #9a8979;
+                            color: ${colors.subtle};
                             font-size: 11px;
                             font-weight: 700;
                             letter-spacing: 1px;
@@ -251,7 +258,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           </div>
 
                           <div style="
-                            color: #2c2222;
+                            color: ${colors.primary};
                             font-size: 15px;
                             font-weight: 600;
                           ">
@@ -267,7 +274,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           vertical-align: top;
                         ">
                           <div style="
-                            color: #9a8979;
+                            color: ${colors.subtle};
                             font-size: 11px;
                             font-weight: 700;
                             letter-spacing: 1px;
@@ -278,7 +285,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           </div>
 
                           <div style="
-                            color: #2c2222;
+                            color: ${colors.primary};
                             font-size: 15px;
                             font-weight: 600;
                           ">
@@ -294,7 +301,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                                 vertical-align: top;
                               ">
                                 <div style="
-                                  color: #9a8979;
+                                  color: ${colors.subtle};
                                   font-size: 11px;
                                   font-weight: 700;
                                   letter-spacing: 1px;
@@ -305,7 +312,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                                 </div>
 
                                 <div style="
-                                  color: #2c2222;
+                                  color: ${colors.primary};
                                   font-size: 12px;
                                   font-weight: 600;
                                   word-break: break-all;
@@ -328,7 +335,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                   ">
                     <h2 style="
                       margin: 0 0 15px;
-                      color: #2c2222;
+                      color: ${colors.primary};
                       font-size: 18px;
                     ">
                       Your Items
@@ -345,13 +352,13 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                     >
                       <thead>
                         <tr style="
-                          border-bottom: 2px solid #e8ddcd;
+                          border-bottom: 2px solid ${colors.border};
                         ">
                           <th
                             align="left"
                             style="
                               padding: 10px 5px;
-                              color: #9a8979;
+                              color: ${colors.subtle};
                               font-size: 11px;
                               text-transform: uppercase;
                               letter-spacing: 0.5px;
@@ -364,7 +371,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                             align="center"
                             style="
                               padding: 10px 5px;
-                              color: #9a8979;
+                              color: ${colors.subtle};
                               font-size: 11px;
                               text-transform: uppercase;
                               letter-spacing: 0.5px;
@@ -377,7 +384,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                             align="right"
                             style="
                               padding: 10px 5px;
-                              color: #9a8979;
+                              color: ${colors.subtle};
                               font-size: 11px;
                               text-transform: uppercase;
                               letter-spacing: 0.5px;
@@ -393,11 +400,11 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           .map(
                             (item) => `
                               <tr style="
-                                border-bottom: 1px solid #eee6dc;
+                                border-bottom: 1px solid ${colors.lightBorder};
                               ">
                                 <td style="
                                   padding: 15px 5px;
-                                  color: #2c2222;
+                                  color: ${colors.primary};
                                   font-size: 14px;
                                 ">
                                   <div style="
@@ -411,7 +418,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                                     item.color
                                       ? `
                                         <div style="
-                                          color: #8a7b6d;
+                                          color: ${colors.muted};
                                           font-size: 12px;
                                         ">
                                           Color: ${escapeHtml(item.color)}
@@ -425,7 +432,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                                   align="center"
                                   style="
                                     padding: 15px 5px;
-                                    color: #6f6258;
+                                    color: ${colors.text};
                                     font-size: 14px;
                                   "
                                 >
@@ -436,7 +443,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                                   align="right"
                                   style="
                                     padding: 15px 5px;
-                                    color: #2c2222;
+                                    color: ${colors.primary};
                                     font-size: 14px;
                                     font-weight: 600;
                                   "
@@ -459,7 +466,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                   ">
                     <h2 style="
                       margin: 0 0 15px;
-                      color: #2c2222;
+                      color: ${colors.primary};
                       font-size: 18px;
                     ">
                       Order Summary
@@ -474,7 +481,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                       <tr>
                         <td style="
                           padding: 6px 0;
-                          color: #6f6258;
+                          color: ${colors.text};
                           font-size: 14px;
                         ">
                           Subtotal
@@ -484,7 +491,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           align="right"
                           style="
                             padding: 6px 0;
-                            color: #2c2222;
+                            color: ${colors.primary};
                             font-size: 14px;
                           "
                         >
@@ -495,7 +502,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                       <tr>
                         <td style="
                           padding: 6px 0;
-                          color: #6f6258;
+                          color: ${colors.text};
                           font-size: 14px;
                         ">
                           Shipping
@@ -505,7 +512,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           align="right"
                           style="
                             padding: 6px 0;
-                            color: #2c2222;
+                            color: ${colors.primary};
                             font-size: 14px;
                           "
                         >
@@ -518,7 +525,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           colspan="2"
                           style="
                             padding-top: 15px;
-                            border-top: 1px solid #e8ddcd;
+                            border-top: 1px solid ${colors.border};
                           "
                         ></td>
                       </tr>
@@ -526,7 +533,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                       <tr>
                         <td style="
                           padding: 5px 0;
-                          color: #2c2222;
+                          color: ${colors.primary};
                           font-size: 17px;
                           font-weight: 700;
                         ">
@@ -537,7 +544,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           align="right"
                           style="
                             padding: 5px 0;
-                            color: #b08d57;
+                            color: ${colors.accent};
                             font-size: 20px;
                             font-weight: 700;
                           "
@@ -556,7 +563,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                   ">
                     <h2 style="
                       margin: 0 0 15px;
-                      color: #2c2222;
+                      color: ${colors.primary};
                       font-size: 18px;
                     ">
                       Shipping Address
@@ -568,20 +575,20 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                       cellspacing="0"
                       border="0"
                       style="
-                        background-color: #fdfaf5;
-                        border: 1px solid #e8ddcd;
+                        background-color: ${colors.surface};
+                        border: 1px solid ${colors.border};
                         border-radius: 10px;
                       "
                     >
                       <tr>
                         <td style="
                           padding: 18px;
-                          color: #6f6258;
+                          color: ${colors.text};
                           font-size: 14px;
                           line-height: 1.7;
                         ">
                           <strong style="
-                            color: #2c2222;
+                            color: ${colors.primary};
                           ">
                             ${escapeHtml(order.shippingAddress.fullName)}
                           </strong>
@@ -609,7 +616,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           <br />
 
                           <span style="
-                            color: #8a7b6d;
+                            color: ${colors.muted};
                           ">
                             Phone: ${escapeHtml(order.shippingAddress.phone)}
                           </span>
@@ -617,7 +624,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                           <br />
 
                           <span style="
-                            color: #8a7b6d;
+                            color: ${colors.muted};
                           ">
                             Email: ${escapeHtml(customerEmail)}
                           </span>
@@ -637,13 +644,13 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                   >
                     <div style="
                       height: 1px;
-                      background-color: #e8ddcd;
+                      background-color: ${colors.border};
                       margin-bottom: 25px;
                     "></div>
 
                     <p style="
                       margin: 0 0 8px;
-                      color: #2c2222;
+                      color: ${colors.primary};
                       font-size: 14px;
                       font-weight: 600;
                     ">
@@ -652,7 +659,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
 
                     <p style="
                       margin: 0;
-                      color: #8a7b6d;
+                      color: ${colors.muted};
                       font-size: 13px;
                       line-height: 1.6;
                     ">
@@ -660,7 +667,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                       <a
                         href="mailto:${siteConfig.supportEmail}"
                         style="
-                          color: #b08d57;
+                          color: ${colors.accent};
                           text-decoration: none;
                           font-weight: 600;
                         "
@@ -676,12 +683,12 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                   <td
                     align="center"
                     style="
-                      background-color: #2c2222;
+                      background-color: ${colors.primary};
                       padding: 22px;
                     "
                   >
                     <div style="
-                      color: #b08d57;
+                      color: ${colors.accent};
                       font-size: 14px;
                       font-weight: 700;
                       letter-spacing: 0.8px;
@@ -691,7 +698,7 @@ const orderConfirmationEmail = (order, paymentId, customerEmail) => {
                     </div>
 
                     <div style="
-                      color: #cfc4b8;
+                      color: ${colors.footerText};
                       font-size: 11px;
                     ">
                       Thank you for choosing ${siteConfig.brandName}.

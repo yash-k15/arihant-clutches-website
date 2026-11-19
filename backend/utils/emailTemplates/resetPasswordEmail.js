@@ -1,6 +1,11 @@
 import siteConfig from '../../config/siteConfig.js';
 
 const resetPasswordEmail = (resetUrl) => {
+  const colors = siteConfig.emailColors;
+  const copyright = siteConfig.emailFooter.copyright
+    .replace('{year}', new Date().getFullYear())
+    .replace('{brandName}', siteConfig.brandName);
+
   return `
     <!DOCTYPE html>
     <html>
@@ -14,9 +19,9 @@ const resetPasswordEmail = (resetUrl) => {
         style="
           margin: 0;
           padding: 0;
-          background-color: #f7f5f2;
+          background-color: ${colors.resetBackground};
           font-family: Arial, Helvetica, sans-serif;
-          color: #2c2222;
+          color: ${colors.primary};
         "
       >
         <table
@@ -24,7 +29,7 @@ const resetPasswordEmail = (resetUrl) => {
           cellpadding="0"
           cellspacing="0"
           border="0"
-          style="background-color: #f7f5f2; padding: 40px 20px;"
+          style="background-color: ${colors.resetBackground}; padding: 40px 20px;"
         >
           <tr>
             <td align="center">
@@ -36,8 +41,8 @@ const resetPasswordEmail = (resetUrl) => {
                 border="0"
                 style="
                   max-width: 600px;
-                  background-color: #ffffff;
-                  border: 1px solid #e8e1d9;
+                  background-color: ${colors.white};
+                  border: 1px solid ${colors.resetBorder};
                   border-radius: 12px;
                   overflow: hidden;
                 "
@@ -49,13 +54,13 @@ const resetPasswordEmail = (resetUrl) => {
                     align="center"
                     style="
                       padding: 30px 30px 24px;
-                      border-bottom: 1px solid #eee8e2;
+                      border-bottom: 1px solid ${colors.resetDivider};
                     "
                   >
                     <h1
                       style="
                         margin: 0;
-                        color: #2c2222;
+                        color: ${colors.primary};
                         font-size: 26px;
                         font-weight: 700;
                       "
@@ -72,7 +77,7 @@ const resetPasswordEmail = (resetUrl) => {
                     <h2
                       style="
                         margin: 0 0 18px;
-                        color: #2c2222;
+                        color: ${colors.primary};
                         font-size: 24px;
                         font-weight: 600;
                       "
@@ -83,7 +88,7 @@ const resetPasswordEmail = (resetUrl) => {
                     <p
                       style="
                         margin: 0 0 18px;
-                        color: #555555;
+                        color: ${colors.resetText};
                         font-size: 16px;
                         line-height: 1.6;
                       "
@@ -95,7 +100,7 @@ const resetPasswordEmail = (resetUrl) => {
                     <p
                       style="
                         margin: 0 0 28px;
-                        color: #555555;
+                        color: ${colors.resetText};
                         font-size: 16px;
                         line-height: 1.6;
                       "
@@ -114,7 +119,7 @@ const resetPasswordEmail = (resetUrl) => {
                         <td
                           align="center"
                           style="
-                            background-color: #2c2222;
+                            background-color: ${colors.primary};
                             border-radius: 8px;
                           "
                         >
@@ -123,7 +128,7 @@ const resetPasswordEmail = (resetUrl) => {
                             style="
                               display: inline-block;
                               padding: 14px 28px;
-                              color: #ffffff;
+                              color: ${colors.white};
                               text-decoration: none;
                               font-size: 16px;
                               font-weight: 600;
@@ -138,7 +143,7 @@ const resetPasswordEmail = (resetUrl) => {
                     <p
                       style="
                         margin: 0 0 18px;
-                        color: #777777;
+                        color: ${colors.resetMuted};
                         font-size: 14px;
                         line-height: 1.6;
                       "
@@ -150,7 +155,7 @@ const resetPasswordEmail = (resetUrl) => {
                     <p
                       style="
                         margin: 0 0 18px;
-                        color: #777777;
+                        color: ${colors.resetMuted};
                         font-size: 14px;
                         line-height: 1.6;
                       "
@@ -162,7 +167,7 @@ const resetPasswordEmail = (resetUrl) => {
                     <p
                       style="
                         margin: 0 0 28px;
-                        color: #777777;
+                        color: ${colors.resetMuted};
                         font-size: 14px;
                         line-height: 1.6;
                       "
@@ -176,8 +181,8 @@ const resetPasswordEmail = (resetUrl) => {
                       style="
                         margin: 0;
                         padding-top: 20px;
-                        border-top: 1px solid #eee8e2;
-                        color: #999999;
+                        border-top: 1px solid ${colors.resetDivider};
+                        color: ${colors.resetSubtle};
                         font-size: 12px;
                         line-height: 1.6;
                       "
@@ -197,7 +202,7 @@ const resetPasswordEmail = (resetUrl) => {
                       <a
                         href="${resetUrl}"
                         style="
-                          color: #8a6a3f;
+                          color: ${colors.resetLink};
                           text-decoration: underline;
                         "
                       >
@@ -214,19 +219,19 @@ const resetPasswordEmail = (resetUrl) => {
                     align="center"
                     style="
                       padding: 22px 30px;
-                      background-color: #faf9f7;
-                      border-top: 1px solid #eee8e2;
+                      background-color: ${colors.resetFooterBackground};
+                      border-top: 1px solid ${colors.resetDivider};
                     "
                   >
                     <p
                       style="
                         margin: 0;
-                        color: #999999;
+                        color: ${colors.resetSubtle};
                         font-size: 12px;
                         line-height: 1.5;
                       "
                     >
-                      © 2026 ${siteConfig.brandName}. All rights reserved.
+                      ${copyright}
                     </p>
                   </td>
                 </tr>
