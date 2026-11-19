@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import isValidEmail from './emailValidator.js';
+import siteConfig from '../config/siteConfig.js';
 
 const sendAuthEmail = async (options) => {
   if (!isValidEmail(options?.email)) {
@@ -20,7 +21,7 @@ const sendAuthEmail = async (options) => {
     from: `${process.env.AUTH_FROM_NAME} <${process.env.AUTH_FROM_EMAIL}>`,
     to: options.email,
     replyTo: options.replyTo,
-    subject: options.subject,
+    subject: options.subject?.replaceAll('{brandName}', siteConfig.brandName),
     text: options.message,
     html: options.html,
   };
