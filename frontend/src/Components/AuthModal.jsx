@@ -22,6 +22,7 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -379,6 +380,7 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
   const resetForm = () => {
     setEmail('');
     setPassword('');
+    setShowLoginPassword(false);
     setConfirmPassword('');
     setName('');
     setOtp(['', '', '', '', '', '']);
@@ -431,14 +433,52 @@ const AuthModal = ({ show, onHide, onSuccess }) => {
 
             <Form.Group>
               <Form.Label>Password</Form.Label>
-              <Form.Control
-                type='password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder='Enter your password'
-                autoComplete='current-password'
-                required
-              />
+              <div className='auth-password-field'>
+                <Form.Control
+                  type={showLoginPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder='Enter your password'
+                  autoComplete='current-password'
+                  required
+                />
+                <button
+                  type='button'
+                  className='auth-password-toggle'
+                  onClick={() =>
+                    setShowLoginPassword((visible) => !visible)
+                  }
+                  aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                  aria-pressed={showLoginPassword}
+                >
+                  <svg
+                    viewBox='0 0 24 24'
+                    width='18'
+                    height='18'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='1.8'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    aria-hidden='true'
+                    focusable='false'
+                  >
+                    { !showLoginPassword ? (
+                      <>
+                        <path d='M3 3l18 18' />
+                        <path d='M10.6 10.6a2 2 0 0 0 2.8 2.8' />
+                        <path d='M9.9 5.2A10.8 10.8 0 0 1 12 5c5 0 9 4.5 10 7-.4 1-1.3 2.2-2.5 3.3' />
+                        <path d='M6.2 6.2C3.8 7.7 2.4 10 2 12c1 2.5 5 7 10 7 1.1 0 2.1-.2 3-.6' />
+                      </>
+                    ) : (
+                      <>
+                        <path d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z' />
+                        <circle cx='12' cy='12' r='3' />
+                      </>
+                    )}
+                  </svg>
+                </button>
+              </div>
             </Form.Group>
 
             <div className='auth-modal-link-row'>
