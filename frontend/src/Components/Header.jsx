@@ -23,6 +23,16 @@ import { clearGuestWishlist } from '../utils/wishlistUtils.js';
 
 import { LOGO_URL } from '../constants.js';
 
+// Display category names consistently in Title Case without changing stored values.
+const formatCategoryName = (name = '') =>
+  String(name)
+    .trim()
+    .toLowerCase()
+    .split(/\\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
@@ -213,7 +223,7 @@ const Header = () => {
                         to={`/products/category/${category.slug}`}
                         className='header-category-item'
                       >
-                        {category.name}
+                        {formatCategoryName(category.name)}
                       </Link>
                     ))}
                   </div>
@@ -366,7 +376,7 @@ const Header = () => {
                         className='mobile-nav-link mobile-category-link'
                         onClick={closeMobileMenu}
                       >
-                        {category.name}
+                        {formatCategoryName(category.name)}
                       </Link>
                     ))}
                   </div>
