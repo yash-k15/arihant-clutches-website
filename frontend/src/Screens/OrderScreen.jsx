@@ -12,6 +12,7 @@ import {
   useDeliverOrderMutation,
 } from '../slices/ordersApiSlice';
 import { getCloudinaryImage } from '../utils/cloudinary.js';
+import { getDatePartsInBusinessTimeZone } from '../utils/dateTime.js';
 
 import '../assets/styles/components/OrderScreen.css';
 
@@ -102,26 +103,21 @@ const OrderScreen = () => {
     }).format(price);
 
   const formatDateWithOrdinal = (date) => {
-    const parsedDate = new Date(date);
-    const day = parsedDate.getDate();
+    const { day, month, year } = getDatePartsInBusinessTimeZone(date);
+    const numericDay = Number(day);
 
     const suffix =
-      day >= 11 && day <= 13
+      numericDay >= 11 && numericDay <= 13
         ? 'th'
-        : day % 10 === 1
+        : numericDay % 10 === 1
           ? 'st'
-          : day % 10 === 2
+          : numericDay % 10 === 2
             ? 'nd'
-            : day % 10 === 3
+            : numericDay % 10 === 3
               ? 'rd'
               : 'th';
 
-    const monthYear = parsedDate.toLocaleDateString('en-GB', {
-      month: 'long',
-      year: 'numeric',
-    });
-
-    return `${day}${suffix} ${monthYear}`;
+    return `${numericDay}${suffix} ${month} ${year}`;
   };
 
   return (

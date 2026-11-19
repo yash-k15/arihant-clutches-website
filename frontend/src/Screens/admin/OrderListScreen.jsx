@@ -10,6 +10,11 @@ import { useGetOrdersQuery } from '../../slices/ordersApiSlice';
 import AdminTableToolbar from '../../Components/AdminTableToolbar';
 import AdminFilterPanel from '../../Components/AdminFilterPanel';
 import Paginate from '../../Components/Paginate';
+import {
+  addDaysToDateString,
+  formatDateInBusinessTimeZone,
+  getDateStringInBusinessTimeZone,
+} from '../../utils/dateTime.js';
 
 import '../../assets/styles/components/OrderListScreen.css';
 
@@ -85,33 +90,17 @@ const OrderListScreen = () => {
     if (!currentDateFrom && !currentDateTo) {
       setDraftDatePreset('all');
     } else if (currentDateFrom && currentDateTo) {
-      const today = new Date();
-
-      const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-
-        return `${year}-${month}-${day}`;
-      };
-
-      const todayString = formatDate(today);
-
-      const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(today.getDate() - 6);
-
-      const thirtyDaysAgo = new Date(today);
-      thirtyDaysAgo.setDate(today.getDate() - 29);
+      const todayString = getDateStringInBusinessTimeZone();
 
       if (currentDateFrom === todayString && currentDateTo === todayString) {
         setDraftDatePreset('today');
       } else if (
-        currentDateFrom === formatDate(sevenDaysAgo) &&
+        currentDateFrom === addDaysToDateString(todayString, -6) &&
         currentDateTo === todayString
       ) {
         setDraftDatePreset('7days');
       } else if (
-        currentDateFrom === formatDate(thirtyDaysAgo) &&
+        currentDateFrom === addDaysToDateString(todayString, -29) &&
         currentDateTo === todayString
       ) {
         setDraftDatePreset('30days');
@@ -155,7 +144,7 @@ const OrderListScreen = () => {
   }, [searchValue, searchParams, navigate]);
 
   const formatDate = (date) =>
-    new Date(date).toLocaleDateString('en-GB', {
+    formatDateInBusinessTimeZone(date, {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
@@ -248,15 +237,7 @@ const OrderListScreen = () => {
       params.delete('deliveryStatus');
     }
 
-    const today = new Date();
-
-    const formatDate = (date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-
-      return `${year}-${month}-${day}`;
-    };
+    const todayString = getDateStringInBusinessTimeZone();
 
     if (draftDatePreset === 'all') {
       params.delete('dateFrom');
@@ -264,26 +245,18 @@ const OrderListScreen = () => {
     }
 
     if (draftDatePreset === 'today') {
-      const todayDate = formatDate(today);
-
-      params.set('dateFrom', todayDate);
-      params.set('dateTo', todayDate);
+      params.set('dateFrom', todayString);
+      params.set('dateTo', todayString);
     }
 
     if (draftDatePreset === '7days') {
-      const startDate = new Date(today);
-      startDate.setDate(today.getDate() - 6);
-
-      params.set('dateFrom', formatDate(startDate));
-      params.set('dateTo', formatDate(today));
+      params.set('dateFrom', addDaysToDateString(todayString, -6));
+      params.set('dateTo', todayString);
     }
 
     if (draftDatePreset === '30days') {
-      const startDate = new Date(today);
-      startDate.setDate(today.getDate() - 29);
-
-      params.set('dateFrom', formatDate(startDate));
-      params.set('dateTo', formatDate(today));
+      params.set('dateFrom', addDaysToDateString(todayString, -29));
+      params.set('dateTo', todayString);
     }
 
     if (draftDatePreset === 'custom') {

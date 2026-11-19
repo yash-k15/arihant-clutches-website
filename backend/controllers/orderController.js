@@ -6,6 +6,8 @@ import User from '../models/userModel.js';
 import escapeRegex from '../utils/escapeRegex.js';
 import calculateOrderPricing from '../utils/orderPricing.js';
 import { parsePageNumber, parsePageSize } from '../utils/pagination.js';
+import businessConfig from '../config/businessConfig.js';
+import { getDateRangeInTimeZone } from '../utils/dateTime.js';
 
 // @desc    Get logged in user order
 // @route   GET /api/orders/myorders
@@ -195,19 +197,13 @@ const getOrders = asyncHandler(async (req, res, next) => {
     filters.isDelivered = false;
   }
 
-  // Date range
-  const createdAtFilter = {};
-
-  if (req.query.dateFrom) {
-    createdAtFilter.$gte = new Date(`${req.query.dateFrom}T00:00:00.000+05:30`);
-  }
-
-  if (req.query.dateTo) {
-    createdAtFilter.$lte = new Date(`${req.query.dateTo}T23:59:59.999+05:30`);
-  }
-
-  if (Object.keys(createdAtFilter).length > 0) {
-    filters.createdAt = createdAtFilter;
+  // Date-only filters are interpreted in the configured business timezone.
+  if (req.query.dateFrom || req.query.dateTo) {
+    filters.createdAt = getDateRangeInTimeZone(
+      req.query.dateFrom,
+      req.query.dateTo,
+      businessConfig.timezone,
+    );
   }
 
   // Count filtered orders
@@ -280,13 +276,10 @@ const calculatePricing = asyncHandler(async (req, res, next) => {
 const checkStock = asyncHandler(async (req, res, next) => {
   const { orderItems } = req.body ?? {};
 
-  const MAX_CHECK_STOCK_ITEMS = 50;
-  const MAX_ITEM_QUANTITY = 15;
-
   if (
     !Array.isArray(orderItems) ||
     orderItems.length === 0 ||
-    orderItems.length > MAX_CHECK_STOCK_ITEMS
+    orderItems.length > businessConfig.orderLimits.maxItems
   ) {
     return next(new ErrorResponse('Invalid order items', 400));
   }
@@ -301,7 +294,7 @@ const checkStock = asyncHandler(async (req, res, next) => {
       typeof item.variantId !== 'string' ||
       !Number.isInteger(item.qty) ||
       item.qty < 1 ||
-      item.qty > MAX_ITEM_QUANTITY
+      item.qty > businessConfig.orderLimits.maxQuantityPerItem
     ) {
       return next(new ErrorResponse('Invalid order item', 400));
     }

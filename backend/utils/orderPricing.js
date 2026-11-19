@@ -1,13 +1,11 @@
 import Product from '../models/productModel.js';
-
-const MAX_ORDER_ITEMS = 50;
-const MAX_ITEM_QUANTITY = 15;
+import businessConfig from '../config/businessConfig.js';
 
 const calculateOrderPricing = async (orderItems, paymentMethod) => {
   if (
     !Array.isArray(orderItems) ||
     orderItems.length === 0 ||
-    orderItems.length > MAX_ORDER_ITEMS
+    orderItems.length > businessConfig.orderLimits.maxItems
   ) {
     throw new Error('Invalid order items');
   }
@@ -24,7 +22,7 @@ const calculateOrderPricing = async (orderItems, paymentMethod) => {
       typeof item.variantId !== 'string' ||
       !Number.isInteger(item.qty) ||
       item.qty < 1 ||
-      item.qty > MAX_ITEM_QUANTITY
+      item.qty > businessConfig.orderLimits.maxQuantityPerItem
     ) {
       throw new Error('Invalid order item');
     }

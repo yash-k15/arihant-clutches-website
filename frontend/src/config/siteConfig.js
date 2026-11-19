@@ -1,6 +1,9 @@
 // Centralized, client-specific website identity and presentation settings.
 // Keep frontend-only values here; backend configuration lives separately.
 const siteConfig = {
+  business: {
+    timezone: 'Asia/Kolkata',
+  },
   brand: {
     name: 'Arihant Clutches',
     tagline:

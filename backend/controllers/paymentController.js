@@ -9,6 +9,7 @@ import calculateOrderPricing from '../utils/orderPricing.js';
 import sendEmail from '../utils/sendEmail.js';
 import orderConfirmationEmail from '../utils/emailTemplates/orderConfirmationEmail.js';
 import { validateAddress } from '../utils/inputValidation.js';
+import businessConfig from '../config/businessConfig.js';
 
 const createOrder = asyncHandler(async (req, res) => {
   try {
@@ -129,8 +130,11 @@ const createOrder = asyncHandler(async (req, res) => {
       isPaid: false,
       paidAt: null,
 
-      // Temporary online payment orders expire after 48 hours
-      expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
+      // Temporary online payment orders expire after the configured duration
+      expiresAt: new Date(
+        Date.now() +
+          businessConfig.temporaryOnlineOrderExpiryHours * 60 * 60 * 1000,
+      ),
     });
 
     return res.json({
